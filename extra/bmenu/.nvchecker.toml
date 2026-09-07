@@ -1,0 +1,3 @@
+[bmenu]
+source = "git"
+git = "https://github.com/puxplaying/toolbox.git"

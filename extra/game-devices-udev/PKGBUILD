@@ -1,0 +1,37 @@
+# Maintainer: Mark Wagie <mark@manjaro.org>
+# Contributor: Stefano Capitani <stefanoatmanjarodotorg>
+# Contributor: Fabian Bornschein <fabiscafe-at-mailbox-dot-org>
+
+pkgname=game-devices-udev
+pkgver=1.0
+pkgrel=1
+pkgdesc="Udev rules for controllers"
+url="https://codeberg.org/fabiscafe/game-devices-udev"
+arch=('any')
+license=('MIT')
+depends=('udev')
+makedepends=(
+  'git'
+  'meson'
+)
+provides=('nintendo-udev')
+install="$pkgname.install"
+source=("git+https://codeberg.org/fabiscafe/game-devices-udev.git#tag=$pkgver?signed"
+        'uinput.conf')
+sha256sums=('b643bfa389d5a7f2bbb36f0e6bf662f59dbc9df3a5b5fe6d88bf42e2e36d3691'
+            'a771c9695d7283f7771adc00b680bd27391e6ac00e9fd026f4796067ee9a87eb')
+validpgpkeys=('6E58E886A8E07538A2485FAED6A4F386B4881229') # Fabian Bornschein <fabiscafe@mailbox.org>
+
+build() {
+  arch-meson "$pkgname" build
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+
+  install -Dm644 "$srcdir/uinput.conf" -t \
+    "$pkgdir/usr/lib/modules-load.d/"
+  install -Dm644 "$srcdir/$pkgname/LICENSE" -t \
+    "$pkgdir/usr/share/licenses/$pkgname/"
+}

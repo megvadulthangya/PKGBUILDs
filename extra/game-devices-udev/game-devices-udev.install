@@ -1,0 +1,22 @@
+post_install() {
+  ## Load uinput if it is not loaded already
+  /usr/bin/grep -q 'uinput' /proc/modules
+  if [ ! $? -eq 0 ] && [ -d "/lib/modules/$(uname -r)" ]
+    then
+      /usr/bin/modprobe uinput
+  fi
+
+  ## reload udev rules
+  /usr/bin/udevadm control --reload-rules
+}
+
+post_upgrade() {
+  ## reload udev rules
+  /usr/bin/udevadm control --reload-rules
+}
+
+post_remove() {
+  ## reload udev rules
+  /usr/bin/udevadm control --reload-rules
+  printf "You need to reboot your system now"
+}

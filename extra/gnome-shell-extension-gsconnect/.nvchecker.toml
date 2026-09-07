@@ -1,0 +1,4 @@
+[gnome-shell-extension-gsconnect]
+source = "git"
+git = "https://github.com/GSConnect/gnome-shell-extension-gsconnect.git"
+prefix = "v"

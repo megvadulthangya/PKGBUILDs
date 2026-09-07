@@ -1,0 +1,37 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=ryzenadj
+pkgver=0.19.0
+pkgrel=1
+pkgdesc="Adjust power management settings for Ryzen APUs"
+arch=('x86_64')
+url="https://github.com/FlyGoat/RyzenAdj"
+license=('LGPL-3.0-or-later')
+depends=('pciutils')
+makedepends=('cmake')
+optdepends=('ryzen_smu: access pm_table on systems with strict memory access policy')
+provides=("lib${pkgname}.so")
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('d1998b6c2d1b564f5d43c786cbf764ca9a1d8bb213e2001f98f611ead3087c7e')
+
+prepare() {
+  cd "RyzenAdj-$pkgver"
+  rm -rf win32
+}
+
+build() {
+  cmake -B build -S "RyzenAdj-$pkgver" \
+    -DCMAKE_BUILD_TYPE='RelWithDebInfo' \
+    -DCMAKE_INSTALL_PREFIX='/usr' \
+    -Wno-dev
+  cmake --build build
+}
+
+package() {
+
+  # Only installs binary
+  DESTDIR="$pkgdir" cmake --install build
+
+  install -Dm755 "build/lib${pkgname}.so" -t "$pkgdir/usr/lib/"
+  install -Dm644 "RyzenAdj-$pkgver/lib/$pkgname.h" -t "$pkgdir/usr/include/"
+}

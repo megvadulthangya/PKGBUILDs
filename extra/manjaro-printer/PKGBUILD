@@ -1,0 +1,34 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhardd@manjaro.org>
+
+pkgname=manjaro-printer
+pkgver=20240827
+pkgrel=1
+pkgdesc="Manjaro meta package for complete printing support"
+arch=('any')
+url="https://wiki.manjaro.org/index.php/Printing"
+license=('GPL-3.0-or-later')
+depends=(
+  'cups'
+  'cups-pdf'
+  'gsfonts'
+  'gutenprint'
+  'foomatic-db'
+  'foomatic-db-engine'
+  'foomatic-db-ppds'
+  'foomatic-db-gutenprint-ppds'
+  'foomatic-db-nonfree'
+  'foomatic-db-nonfree-ppds'
+)
+optdepends=(
+  'hplip: HP printer and scanner support and tools'
+  'print-manager: A KDE tool for managing print jobs and printers'
+  'simple-scan: Gtk3 scanning utility'
+  'skanlite: Image Scanning Application for KDE'
+  'splix: CUPS drivers for SPL (Samsung Printer Language) printers'
+  'system-config-printer: A Gtk cups printer configuration tool and status applet'
+)
+
+pkgver() {
+  date +%Y%m%d
+}

@@ -1,0 +1,4 @@
+[hunspell-sk]
+source = "git"
+git = "https://github.com/sk-spell/hunspell-sk.git"
+prefix = "v"

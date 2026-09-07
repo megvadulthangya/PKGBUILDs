@@ -1,0 +1,34 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=wayback-x11
+pkgver=0.3
+pkgrel=1
+pkgdesc="X11 compatibility layer leveraging wlroots and Xwayland"
+arch=('x86_64')
+url="https://wayback.freedesktop.org"
+license=('MIT')
+depends=(
+  'libxkbcommon'
+  'wayland'
+  'wlroots0.19'
+  'xorg-xwayland'
+)
+makedepends=(
+  'meson'
+  'scdoc'
+  'wayland-protocols'
+)
+source=("https://gitlab.freedesktop.org/wayback/wayback/-/archive/$pkgver/wayback-$pkgver.tar.gz")
+sha256sums=('e23f1a77d00db14af0f4fd11bc046e2193f4aeb851832173a5062676ac901e8a')
+
+build() {
+  arch-meson "wayback-$pkgver" build
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+
+  cd "wayback-$pkgver"
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

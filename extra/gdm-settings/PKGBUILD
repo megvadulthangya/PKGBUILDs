@@ -1,0 +1,58 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=gdm-settings
+pkgver=5.0+13+g32eb7d2
+pkgrel=1
+pkgdesc="A settings app for GNOME's Login Manager, GDM"
+arch=('any')
+url="https://gdm-settings.github.io"
+license=('AGPL-3.0-or-later')
+depends=(
+  'gdm'
+  'glib2-devel'
+  'gtk4'
+  'libadwaita'
+  'polkit'
+  'python-gobject'
+)
+makedepends=(
+  'blueprint-compiler'
+  'git'
+  'meson'
+)
+_commit=32eb7d2c0984fc66dff712fbe51dcf8555788c45
+source=("git+https://github.com/gdm-settings/gdm-settings.git#commit=${_commit}"
+        'maia-color.patch'
+        'https://github.com/gdm-settings/gdm-settings/pull/300.patch')
+sha256sums=('2076b7dfc6bfa2d97eefb4cbc9576d6a9c2f64c7a7ba537ae5488b83742f1271'
+            'acd94585b24109ebf876c24fe42d9cafb0e97e09295472f5b1b5d6af8f503d00'
+            'ec34e42dd2017f295d386d1cf5883a426443e8e006d90ba068f2cc4b909e6cf1')
+
+pkgver() {
+  cd "$pkgname"
+  git describe --tags --abbrev=7 | sed 's/^v//;s/-/+/g'
+}
+
+prepare() {
+  cd "$pkgname"
+
+  # Add VRR Support
+  # https://github.com/gdm-settings/gdm-settings/issues/283
+  patch -Np1 -i ../300.patch
+
+  # Add Maia accent color
+  patch -Np1 -i ../maia-color.patch
+}
+
+build() {
+  arch-meson "$pkgname" build --buildtype=release
+  meson compile -C build
+}
+
+check() {
+  meson test -C build --no-rebuild --print-errorlogs
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir="$pkgdir"
+}

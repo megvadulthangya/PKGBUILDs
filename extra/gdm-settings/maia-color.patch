@@ -1,0 +1,33 @@
+diff --unified --recursive --text a/data/gschemas/io.github.realmazharhussain.GdmSettings.appearance.gschema.xml b/data/gschemas/io.github.realmazharhussain.GdmSettings.appearance.gschema.xml
+--- a/data/gschemas/io.github.realmazharhussain.GdmSettings.appearance.gschema.xml	2024-11-27 12:01:39.000000000 -0700
++++ b/data/gschemas/io.github.realmazharhussain.GdmSettings.appearance.gschema.xml	2024-12-24 18:11:20.782783731 -0700
+@@ -14,6 +14,7 @@
+ 	     <choice value="pink"/>
+ 	     <choice value="purple"/>
+ 	     <choice value="slate"/>
++	     <choice value="maia"/>
+ 	   </choices>
+ 	 </key>
+ 
+diff --unified --recursive --text a/gdms/gui/pages/appearance.py b/gdms/gui/pages/appearance.py
+--- a/gdms/gui/pages/appearance.py	2024-11-27 12:01:39.000000000 -0700
++++ b/gdms/gui/pages/appearance.py	2024-12-24 13:15:31.354100085 -0700
+@@ -108,6 +108,7 @@
+         'pink' : _('Pink'),
+         'purple' : _('Purple'),
+         'slate' : _('Slate'),
++        'maia' : _('Maia'),
+     }
+ 
+     selected: str = GProperty(str, default="blue")
+diff --unified --recursive --text a/resources/style.css b/resources/style.css
+--- a/resources/style.css	2024-11-27 12:01:39.000000000 -0700
++++ b/resources/style.css	2024-12-24 13:05:26.901641619 -0700
+@@ -58,3 +58,7 @@
+ button.toggle.accent.slate {
+     --accent-bg-color: var(--accent-slate);
+ }
++
++button.toggle.accent.maia {
++    --accent-bg-color: var(--accent-maia);
++}

@@ -1,0 +1,4 @@
+[matray]
+source = "git"
+git = "https://git.nerdvpn.de/NerdVPN.de/matray.git"
+prefix = "v"

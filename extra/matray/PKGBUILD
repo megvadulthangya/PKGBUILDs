@@ -1,0 +1,50 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=matray
+_app_id="org.moson.$pkgname"
+pkgver=1.1.6
+pkgrel=1
+pkgdesc="A Manjaro Linux announcements notification app"
+arch=('x86_64' 'aarch64')
+url="https://git.nerdvpn.de/NerdVPN.de/matray"
+license=('BSD-3-Clause AND GPL-3.0-or-later')
+depends=(
+  'gtk3'
+  'json-glib'
+  'libappindicator'
+  'libgee'
+  'libsoup3'
+  'noto-fonts'
+)
+makedepends=(
+  'git'
+  'meson'
+  'vala'
+)
+conflicts=('mntray')
+replaces=('mntray')
+source=("git+https://git.nerdvpn.de/NerdVPN.de/matray.git#tag=v$pkgver")
+sha256sums=('8b534760bb17c5c3db1dccbe625b05f34341f346309acaef99bee3a00271386c')
+
+build() {
+  arch-meson "$pkgname" build
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+
+  cd "$pkgname"
+  install -Dm644 "resources/misc/$pkgname.desktop" \
+    "$pkgdir/usr/share/applications/${_app_id}.desktop"
+  install -Dm644 "resources/misc/autostart.desktop" \
+    "$pkgdir/etc/xdg/autostart/${_app_id}.desktop"
+
+  icons="resources/icons/"
+  for file in $(find "${icons}" -type f); do
+    install -Dm644 "${file}" "$pkgdir/usr/share/icons/hicolor/${file#$icons}"
+  done
+
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

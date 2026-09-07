@@ -1,0 +1,41 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Contributor: Helmut Stult
+
+pkgname=lightdm-settings
+pkgver=2.1.1
+pkgrel=1
+pkgdesc="A configuration tool for the LightDM display manager "
+arch=('any')
+url="https://github.com/linuxmint/lightdm-settings"
+license=('GPL-3.0-or-later')
+depends=(
+  'gtk3'
+  'hicolor-icon-theme'
+  'lightdm-slick-greeter'
+  'polkit'
+  'python-gobject'
+  'python-setproctitle'
+  'xorg-xrandr'
+)
+install='add-autologin-group.install'
+source=("$pkgname-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz"
+        'add-autologin-group.script'
+        'add-autologin-group.service')
+sha256sums=('8a7a394ab30703fad32cf4073ff4f3f4e8c585d4cdd7877e1d8f2945724263b8'
+            '1f9fd7253f69b2c59f7ca247edfd6b3a566ce7e3291f131fc021a8ca10bb2eb5'
+            '2199300cc27b6b407e46206abd181b2be2679d2520ddd183e4a37a3fc691739a')
+
+build() {
+  cd "$pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  cp -r usr "$pkgdir"
+
+  # install systemd service
+  install -Dm755 "$srcdir/add-autologin-group.script" "$pkgdir/usr/bin/add-autologin-group"
+  install -Dm644 "$srcdir/add-autologin-group.service" -t "$pkgdir/usr/lib/systemd/system/"
+}

@@ -1,0 +1,3 @@
+[python-ftputil]
+source = "pypi"
+pypi = "ftputil"

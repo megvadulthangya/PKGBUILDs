@@ -1,0 +1,5 @@
+[enpass]
+source = "aur"
+aur = "enpass-bin"
+# source = "cmd"
+# cmd = "curl -so- https://apt.enpass.io/dists/stable/main/binary-amd64/Packages.gz | zcat | grep -E 'Package|Version|SHA256' | head -n 3"

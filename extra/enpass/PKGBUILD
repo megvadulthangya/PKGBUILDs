@@ -1,0 +1,60 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Matti Hyttinen <matti@manjaro.org>
+
+# Distributed with permission from Enpass Technologies, Inc.
+
+# Check for new version:
+# curl -so- https://apt.enpass.io/dists/stable/main/binary-amd64/Packages.gz | zcat | grep -E "Package|Version|SHA256" | head -n 3
+
+pkgname=enpass
+pkgver=6.11.13.1957
+pkgrel=1
+pkgdesc="A cross-platform, complete password management solution"
+arch=('x86_64')
+url="http://enpass.io/"
+license=('LicenseRef-custom')
+depends=(
+  'gtk3'
+  'libxkbcommon-x11'
+  'libice'
+  'libpulse'
+  'libsm'
+  'libxss'
+  'lsof'
+  'xcb-util-image'
+  'xcb-util-keysyms'
+  'xcb-util-renderutil'
+  'xcb-util-wm'
+)
+optdepends=(
+  'libxdg-basedir: Open links in the default browser'
+  'libqtxdg: Open links in the default browser (Qt implementation)'
+)
+options=('!strip') # Disable strip as otherwise the browser extension will not work
+install="$pkgname.install"
+source=("https://apt.enpass.io/pool/main/e/enpass/${pkgname}_${pkgver}_amd64.deb"
+        'Terms-of-Use_Enpass.html')
+sha256sums=('2d8c90643851591aff41057b380a7e87bb839bf5c5aa0ca1456144e9996c902a'
+            'da4b860c8132add975fbe4214677e7a9546d2f394c4b6e292562c6b865de00ff')
+
+package() {
+  # Extract data
+  bsdtar xfz data.tar.gz -C "${pkgdir}/" --no-same-owner
+
+  # Correct directory permissions
+  find "${pkgdir}" -type d -exec chmod 755 {} \;
+
+  # Files have the world writable bit set
+  chmod 0755 "${pkgdir}/opt/${pkgname}"/{Enpass,importer_enpass,wifisyncserver_bin}
+  chmod 0644 "${pkgdir}/opt/${pkgname}/qt.conf"
+  chmod 0644 "${pkgdir}/usr/share/applications/${pkgname}.desktop"
+  chmod 0644 "${pkgdir}/usr/share/mime/packages/application-${pkgname}.xml"
+  find "${pkgdir}/usr/share/icons/" -type f -exec chmod 644 {} \;
+
+  # Symlink binary to "/usr/bin" so it is accessible via cli
+  install -d "${pkgdir}/usr/bin"
+  ln -s /opt/enpass/Enpass "${pkgdir}/usr/bin/$pkgname"
+
+  install -Dm644 Terms-of-Use_Enpass.html -t \
+    "$pkgdir/usr/share/licenses/${pkgname}/"
+}

@@ -1,0 +1,25 @@
+# Maintainer:
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=i3-help
+pkgver=20180110
+pkgrel=2
+pkgdesc="Help-files for Manjaro i3"
+arch=('any')
+url="https://github.com/oberon-manjaro/i3-help"
+license=('GPL-3.0-or-later')
+groups=('i3-manjaro')
+makedepends=('git')
+_commit=aea241f4db1b1071027f997f04850236b1f7c529
+source=("git+https://github.com/oberon-manjaro/i3-help.git#commit=${_commit}")
+sha256sums=('1c4a67ccac52bb18ec3497f3418c069089d2fb62f8246d8d2e8315faa571632e')
+
+pkgver() {
+  cd "$pkgname"
+  git show -s --date=format:'%Y%m%d' --format=%cd
+}
+
+package() {
+  cd "$pkgname"
+  install -Dm644 *.pdf -t "$pkgdir"/usr/share/doc/manjaro/
+}

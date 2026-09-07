@@ -1,0 +1,5 @@
+[steam-installer]
+source = "git"
+git = "https://salsa.debian.org/games-team/steam-installer"
+prefix = "debian/1%"
+exclude_regex= "upstream.*"

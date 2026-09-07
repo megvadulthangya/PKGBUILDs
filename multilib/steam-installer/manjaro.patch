@@ -1,0 +1,224 @@
+diff --unified --recursive --text a/debian/scripts/steam.in b/debian/scripts/steam.in
+--- a/debian/scripts/steam.in	2025-10-06 09:22:13.000000000 -0600
++++ b/debian/scripts/steam.in	2025-10-07 08:52:48.485391244 -0600
+@@ -2,15 +2,22 @@
+ # Copyright (C) 2013-2018 Michael Gilbert <mgilbert@debian.org>
+ # Copyright (C) 2018-2023 Simon McVittie
+ # Copyright (C) 2020-2024 Collabora Ltd.
++# Copyright (C) 2025 Manjaro GmbH & Co. KG
+ # SPDX-License-Identifier: MIT
+ 
+ set -e
+ 
++if [ -e /arkdep ]; then
++    # Get user details
++    owner=$(awk -F : 'NR == 2 { print $3":"$4 }' /arkdep/overlay/etc/passwd)
++    homedir=$(awk -F : 'NR == 2 { print $1 }' /arkdep/overlay/etc/passwd)
++fi
++
+ # Used by diagnostic tools to identify the launcher
+ export STEAMSCRIPT="$0"
+ # Used by diagnostic tools to identify the launcher version
+ # Edited by debian/rules to fill in the real version number
+-export STEAMSCRIPT_VERSION='uninstalled/Debian'
++export STEAMSCRIPT_VERSION='uninstalled/Manjaro'
+ 
+ # According to Valve, ~/.steam is intended to be a control directory containing
+ # symbolic links pointing to the currently-running or most-recently-run Steam
+@@ -58,7 +65,7 @@
+ elif [ -L "$STEAMCONFIG/root" ]; then
+     STEAMDIR="$(readlink -e -q "$STEAMCONFIG/root")"
+ elif [ -d "$STEAMCONFIG/steam" ] && ! [ -L "$STEAMCONFIG/steam" ]; then
+-    # The historical Debian behaviour has been to use ~/.steam as the
++    # The historical Manjaro behaviour has been to use ~/.steam as the
+     # installation directory in addition to using it as the control
+     # directory.This causes some file collisions, so we've moved away
+     # from that, but we can't easily disentangle this in existing
+@@ -67,9 +74,9 @@
+ else
+     # This is a new installation, so use a distinct directory to avoid
+     # file collisions. Valve would use $XDG_DATA_HOME/Steam here.
+-    # Debian uses a subdirectory of ~/.steam, to avoid having a mixture
++    # Manjaro uses a subdirectory of ~/.steam, to avoid having a mixture
+     # of XDG basedirs and traditional dotfiles in the same application.
+-    STEAMDIR="$HOME/.steam/debian-installation"
++    STEAMDIR="$HOME/.steam/manjaro-installation"
+ fi
+ 
+ # use C locale (bug #764311)
+@@ -91,10 +98,10 @@
+ version="1.0.0.87"
+ # This only needs to differ from ${version} or be incremented when the
+ # installed files from steam-launcher change
+-deb_version="${version}"
++mjr_version="${version}"
+ sha256="649375d2f9377f8009aaf3e2ff09978041eb9114897d9c5a3886f1d82e27ba1f"
+-url="https://repo.steampowered.com/steam/archive/beta/steam_${version}.tar.gz"
+-installed="$(cat "$STEAMDIR/deb-installer/version" 2>/dev/null || true)"
++url="https://repo.steampowered.com/steam/archive/beta/steam_${version}.tar.gz"
++installed="$(cat "$STEAMDIR/mjr-installer/version" 2>/dev/null || true)"
+ new_installation=
+ 
+ mkdir -p "$STEAMDIR"
+@@ -110,59 +117,32 @@
+     fi
+ done
+ 
+-if [ -n "$new_installation" ]; then
+-    if command -v zenity >/dev/null; then
+-        zenityish=zenity
+-    else
+-        zenityish=yad
+-    fi
+-
+-    if ! "$zenityish" \
+-        --question \
+-        --title="Steam installer" \
+-        --icon-name=steam \
+-        --width=600 \
+-        --ok-label="Install" \
+-        --cancel-label="Cancel" \
+-        --text="Steam is proprietary (binary-only) software.
+-
+-See /usr/share/doc/steam-installer/README.Debian for more information about this package.
+-
+-Steam will be installed into: $STEAMDIR
+-" \
+-        --no-markup \
+-        --default-cancel \
+-        ${NULL+}
+-    then
+-        echo "steam: Installation cancelled" >&2
+-        exit 1
++if [ "$installed" != "$mjr_version" ] || [ -n "$new_installation" ]; then
++    mkdir -p "$STEAMDIR/mjr-installer"
++    if [ $(wget -q --spider https://manjaro.org ; echo $?) == "0" ]; then
++        curl -o "$STEAMDIR/mjr-installer/steam_${version}.tar.gz.$$" "$url"
+     fi
+-fi
+-
+-if [ "$installed" != "$deb_version" ] || [ -n "$new_installation" ]; then
+-    mkdir -p "$STEAMDIR/deb-installer"
+-    curl -o "$STEAMDIR/deb-installer/steam_${version}.tar.gz.$$" "$url"
+-    got="$(sha256sum -b "$STEAMDIR/deb-installer/steam_${version}.tar.gz.$$")"
++    got="$(sha256sum -b "$STEAMDIR/mjr-installer/steam_${version}.tar.gz.$$")"
+ 
+     if [ "${got% *}" != "$sha256" ]; then
+         echo "SHA256 verification failed" >&2
+         echo "Expected: $sha256" >&2
+         echo "Got:      $got" >&2
+-        rm -f "$STEAMDIR/deb-installer/steam_${version}.tar.gz.$$"
++        rm -f "$STEAMDIR/mjr-installer/steam_${version}.tar.gz.$$"
+         exit 1
+     fi
+ 
+     tar \
+-        -C "$STEAMDIR/deb-installer" \
+-        -zxf "$STEAMDIR/deb-installer/steam_${version}.tar.gz.$$" \
++        -C "$STEAMDIR/mjr-installer" \
++        -zxf "$STEAMDIR/mjr-installer/steam_${version}.tar.gz.$$" \
+         steam-launcher/bootstraplinux_ubuntu12_32.tar.xz \
+         steam-launcher/icons \
+         steam-launcher/steam.desktop \
+         ${NULL+}
+     mv \
+-        "$STEAMDIR/deb-installer/steam-launcher/bootstraplinux_ubuntu12_32.tar.xz" \
++        "$STEAMDIR/mjr-installer/steam-launcher/bootstraplinux_ubuntu12_32.tar.xz" \
+         "$STEAMDIR/bootstrap.tar.xz"
+-    rm -f "$STEAMDIR/deb-installer/steam_${version}.tar.gz.$$"
++    rm -f "$STEAMDIR/mjr-installer/steam_${version}.tar.gz.$$"
+ 
+     if [ -n "$new_installation" ]; then
+         tar -C "$STEAMDIR" \
+@@ -172,14 +152,14 @@
+ 
+     # Use the proprietary icons to replace the ones from the .deb
+     for i in 16 24 32 48 256; do
+-        target="$STEAMDIR/deb-installer/steam-launcher/icons/$i/steam.png"
++        target="$STEAMDIR/mjr-installer/steam-launcher/icons/$i/steam.png"
+         dest="${XDG_DATA_HOME}/icons/hicolor/${i}x${i}/apps/steam.png"
+         mkdir -p "${dest%/*}"
+         if [ -L "$dest" ] || ! [ -e "$dest" ]; then
+             ln -fns "$target" "$dest"
+         fi
+ 
+-        target="$STEAMDIR/deb-installer/steam-launcher/icons/$i/steam_tray_mono.png"
++        target="$STEAMDIR/mjr-installer/steam-launcher/icons/$i/steam_tray_mono.png"
+         dest="${XDG_DATA_HOME}/icons/hicolor/${i}x${i}/apps/steam_tray_mono.png"
+         if [ -e "$target" ]; then
+             if [ -L "$dest" ] || ! [ -e "$dest" ]; then
+@@ -189,16 +169,14 @@
+     done
+ 
+     # Use the proprietary .desktop file to replace the one from the .deb
+-    target="$STEAMDIR/deb-installer/steam.desktop"
++    target="$STEAMDIR/mjr-installer/steam.desktop"
+     dest="${XDG_DATA_HOME}/applications/steam.desktop"
+     mkdir -p "${dest%/*}"
+     # Adjust proprietary .desktop file for our installation location
+     sed \
+         -e '1i#!/usr/bin/env xdg-open' \
+-        -e '/^Exec=/ s,/usr/bin/steam,/usr/games/steam,g' \
+-        -e 's,^Exec=steam ,Exec=/usr/games/steam ,' \
+         -e '/^Actions=/ a Keywords=Games' \
+-        < "$STEAMDIR/deb-installer/steam-launcher/steam.desktop" \
++        < "$STEAMDIR/mjr-installer/steam-launcher/steam.desktop" \
+         > "$target"
+     # It needs to be executable for KDE (#1029806), because KIO and GLib
+     # have different interpretations of what it means for a .desktop file
+@@ -214,8 +192,8 @@
+     touch "${XDG_DATA_HOME}/icons/hicolor/"
+     touch "${XDG_DATA_HOME}/applications/"
+ 
+-    echo "$deb_version" > "$STEAMDIR/deb-installer/version.$$"
+-    mv "$STEAMDIR/deb-installer/version.$$" "$STEAMDIR/deb-installer/version"
++    echo "$mjr_version" > "$STEAMDIR/mjr-installer/version.$$"
++    mv "$STEAMDIR/mjr-installer/version.$$" "$STEAMDIR/mjr-installer/version"
+ fi
+ 
+ # Remove old log file to avoid confusion. To debug game/Steam issues,
+@@ -224,6 +202,25 @@
+ rm -f "$STEAMDIR/error.log"
+ 
+ # launch the Valve run script
+-exec "$STEAMDIR/steam.sh" -nominidumps -nobreakpad "$@"
++exec "$STEAMDIR/steam.sh" -nominidumps -nobreakpad "$@" &
++
++if [ -e /arkdep ]; then
++    process_id=$!
++    # Wait for steam process to end ...
++    wait $process_id
++    if [ -e "$STEAMDIR/ubuntu12_32/steam-runtime/run.sh" ] && ! [ -e /arkdep/shared/home/$homedir/Desktop/com.steampowered.Logout.nonplus.desktop ]; then
++        rm /arkdep/shared/home/$homedir/Desktop/steam.desktop
++        if [ -e /etc/skel/Desktop/com.steampowered.Logout.nonplus.desktop ]; then
++            cp /etc/skel/Desktop/com.steampowered.Logout.nonplus.desktop /arkdep/shared/home/$homedir/Desktop/com.steampowered.Logout.nonplus.desktop
++            chmod +x /arkdep/shared/home/$homedir/Desktop/com.steampowered.Logout.nonplus.desktop
++            chown $owner /arkdep/shared/home/$homedir/Desktop/com.steampowered.Logout.nonplus.desktop
++        fi
++        if [ -e /etc/skel/Desktop/com.steampowered.Logout.desktop ]; then
++            cp /etc/skel/Desktop/com.steampowered.Logout.desktop /arkdep/shared/home/$homedir/Desktop/com.steampowered.Logout.desktop
++            chmod +x /arkdep/shared/home/$homedir/Desktop/com.steampowered.Logout.desktop
++            chown $owner /arkdep/shared/home/$homedir/Desktop/com.steampowered.Logout.desktop
++        fi
++    fi
++fi
+ 
+ # vi:set sw=4 sts=4 et:
+diff --unified --recursive --text a/debian/steam.desktop b/debian/steam.desktop
+--- a/debian/steam.desktop	2025-10-06 09:22:13.000000000 -0600
++++ b/debian/steam.desktop	2025-10-07 08:44:12.841198587 -0600
+@@ -1,10 +1,13 @@
+ [Desktop Entry]
+ Version=1.0
+ Categories=FileTransfer;Game;Network;
+-Exec=/usr/games/steam %U
++Exec=/usr/bin/steam %U
+ Icon=steam
+ MimeType=x-scheme-handler/steam;x-scheme-handler/steamlink;
+ Name=Install Steam
+ Terminal=false
+ Type=Application
+ Keywords=games;installer;steam-installer;valve;
++Comment=
++Path=
++StartupNotify=false

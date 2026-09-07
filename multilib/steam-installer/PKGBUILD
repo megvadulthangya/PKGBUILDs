@@ -1,0 +1,103 @@
+# Maintainer: Philip Mueller <philm@manjaro.org>
+# Contributor: Mark Wagie <mark@manjaro.org>
+# Contributor: Alexandru Ianu <alexandru@manjaro.org>
+# Contributor: Manuel Hüsers <manuel.huesers@uni-ol.de>
+# Contributor: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Contributor: Giancarlo Razzolini <grazzolini@archlinux.org>
+# Contributor: Daniel Wallace <danielwallace at gtmanfred dot com>
+# Contributor: K900 <k0009000@gmail.com>
+
+pkgname=steam-installer
+pkgver=1.0.0.87
+pkgrel=1
+_deb_rel=ds-1
+pkgdesc="Valve's digital software delivery system (Installer Version)"
+url='https://steampowered.com/'
+arch=('x86_64')
+license=('LicenseRef-steam-subscriber-agreement')
+depends=(
+  bash
+  desktop-file-utils
+  diffutils
+  hicolor-icon-theme
+  curl
+  dbus
+  freetype2
+  gdk-pixbuf2
+  ttf-font
+  zenity
+  lsb-release
+  nss
+  usbutils
+  xorg-xrandr
+  vulkan-icd-loader
+  lsof
+  python
+  xdg-user-dirs
+  glibc
+  libxcrypt
+  libxcrypt-compat
+  libgcc
+)
+depends_x86_64=(
+  lib32-glibc
+  lib32-libxcrypt
+  lib32-libxcrypt-compat
+  lib32-libgl
+  lib32-gcc-libs
+  lib32-libx11
+  lib32-libxss
+  lib32-alsa-plugins
+  lib32-libgpg-error
+  lib32-nss
+  lib32-vulkan-icd-loader
+)
+optdepends=(
+  'vulkan-driver: packaged vulkan driver'
+  'lib32-vulkan-driver: packaged vulkan driver (32 bit)'
+  'xdg-desktop-portal-impl: improved file dialog support'
+  'game-devices-udev: additional rules for controllers'
+  'xorg-fonts-misc: for non-latin locales'
+)
+conflicts=("$pkgname-manjaro" 'steam')
+replaces=("$pkgname-manjaro")
+source=("https://salsa.debian.org/games-team/steam-installer/-/archive/debian/1%25${pkgver}_${_deb_rel}/$pkgname-debian-1%25${pkgver}_${_deb_rel}.tar.gz"
+        'manjaro.patch')
+sha256sums=('91bb46fb13453a89516b8c9392f2a3651023d053d6bac9d76f47e2a6bb91eee6'
+            'e1b3652382fe1ce8696bbdf4e554d339eafe5a0b698cd48a02522d59375ef6c2')
+
+prepare() {
+  cd "$pkgname-debian-1%${pkgver}_${_deb_rel}"
+  patch -p1 -i ../manjaro.patch
+}
+
+package() {
+  cd "$pkgname-debian-1%${pkgver}_${_deb_rel}"
+
+  install -Dm 644 debian/copyright -t "${pkgdir}/usr/share/licenses/${pkgname}"
+  install -Dm 644 debian/changelog -t "${pkgdir}/usr/share/doc/${pkgname}"
+
+  install -Dm 644 com.valvesoftware.Steam.metainfo.xml -t "${pkgdir}"/usr/share/metainfo
+
+  install -Dm 755 debian/scripts/steam.in "${pkgdir}"/usr/bin/steam
+  install -Dm 644 debian/steam.desktop  -t "${pkgdir}"/usr/share/applications
+
+  install -Dm 644 debian/icons/16/steam.png  -t "${pkgdir}"/usr/share/icons/hicolor/16x16/apps
+  install -Dm 644 debian/icons/24/steam.png  -t "${pkgdir}"/usr/share/icons/hicolor/24x24/apps
+  install -Dm 644 debian/icons/32/steam.png  -t "${pkgdir}"/usr/share/icons/hicolor/32x32/apps
+  install -Dm 644 debian/icons/48/steam.png  -t "${pkgdir}"/usr/share/icons/hicolor/48x48/apps
+  install -Dm 644 debian/icons/256/steam.png  -t "${pkgdir}"/usr/share/icons/hicolor/256x256/apps
+
+  install -Dm 644 steam_launcher/__init__.py -t "${pkgdir}"/usr/lib/steam/steam_launcher/
+  install -Dm 644 steam_launcher/launcherutils.py -t "${pkgdir}"/usr/lib/steam/steam_launcher/
+
+  # blank steamdeps because apt-get
+  ln -sf /usr/bin/true "${pkgdir}/usr/bin/steamdeps"
+
+  install -Dm 644 subprojects/steam-devices/60-steam-input.rules \
+    "${pkgdir}/usr/lib/udev/rules.d/70-steam-input.rules"
+  install -Dm 644 subprojects/steam-devices/60-steam-vr.rules \
+    "${pkgdir}/usr/lib/udev/rules.d/70-steam-vr.rules"
+}
+
+# vim: ts=2 sw=2 et:

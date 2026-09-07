@@ -1,0 +1,4 @@
+[calamares-tools]
+source = "git"
+git = "https://gitlab.manjaro.org/applications/calamares-tools.git"
+prefix = "v"

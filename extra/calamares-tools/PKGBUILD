@@ -1,0 +1,19 @@
+# Maintainer: Philip Müller <philm@manjaro.org>
+# Contributor: artoo
+
+pkgname=calamares-tools
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Development tools for Calamares"
+arch=('any')
+url="https://gitlab.manjaro.org/applications/calamares-tools"
+license=('GPL-3.0-or-later')
+makedepends=('git')
+source=("git+https://gitlab.manjaro.org/applications/calamares-tools.git#tag=v$pkgver")
+sha256sums=('734e048c5ccc3481ad6e8a81e5ad0096ad357c26cd0c198829508d7d68a931e1')
+
+package() {
+  cd "${pkgname}"
+  install -d "${pkgdir}/usr/share/calamares/"
+  cp -rv schemas/ "${pkgdir}/usr/share/calamares/"
+}

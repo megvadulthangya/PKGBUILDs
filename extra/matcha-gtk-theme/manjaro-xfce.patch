@@ -1,0 +1,105 @@
+diff -Npur matcha-f73401ba27570213dd8a6350f1d60d4113134a27.orig/src/gtk-3.0/gtk-aliz.css matcha-f73401ba27570213dd8a6350f1d60d4113134a27/src/gtk-3.0/gtk-aliz.css
+--- matcha-f73401ba27570213dd8a6350f1d60d4113134a27.orig/src/gtk-3.0/gtk-aliz.css	2018-10-06 16:30:16.000000000 +0200
++++ matcha-f73401ba27570213dd8a6350f1d60d4113134a27/src/gtk-3.0/gtk-aliz.css	2018-10-06 19:38:23.380343204 +0200
+@@ -5691,7 +5691,8 @@ XfdesktopIconView.view:active, Xfdesktop
+ }
+ 
+ window#whiskermenu-window {
+-  background-color: #ffffff;
++  background-color: #222b2e;
++  color: #ffffff;
+ }
+ 
+ window#whiskermenu-window > frame > border {
+@@ -5704,12 +5705,20 @@ window#whiskermenu-window scrolledwindow
+ 
+ window#whiskermenu-window scrolledwindow > viewport button.radio:checked, window#whiskermenu-window scrolledwindow > viewport button.radio:active {
+   background-color: #F0544C;
++}
++
++window#whiskermenu-window scrolledwindow > viewport button.radio:not(:disabled) {
++  color: #ffffff;
++}
++
++window#whiskermenu-window scrolledwindow > viewport button:hover {
++  background-color: transparent;
+   color: #ffffff;
+ }
+ 
+ window#whiskermenu-window scrolledwindow treeview.view:selected:hover {
+   background-color: rgba(0, 0, 0, 0.1);
+-  color: #222222;
++  color: #ffffff;
+ }
+ 
+ window.thunar toolbar#location-toolbar, window.thunar #location-toolbar.inline-toolbar {
+diff -Npur matcha-f73401ba27570213dd8a6350f1d60d4113134a27.orig/src/gtk-3.0/gtk-azul.css matcha-f73401ba27570213dd8a6350f1d60d4113134a27/src/gtk-3.0/gtk-azul.css
+--- matcha-f73401ba27570213dd8a6350f1d60d4113134a27.orig/src/gtk-3.0/gtk-azul.css	2018-10-06 16:30:16.000000000 +0200
++++ matcha-f73401ba27570213dd8a6350f1d60d4113134a27/src/gtk-3.0/gtk-azul.css	2018-10-06 19:37:44.392554534 +0200
+@@ -5691,7 +5691,8 @@ XfdesktopIconView.view:active, Xfdesktop
+ }
+ 
+ window#whiskermenu-window {
+-  background-color: #ffffff;
++  background-color: #222b2e;
++  color: #ffffff;
+ }
+ 
+ window#whiskermenu-window > frame > border {
+@@ -5704,12 +5705,20 @@ window#whiskermenu-window scrolledwindow
+ 
+ window#whiskermenu-window scrolledwindow > viewport button.radio:checked, window#whiskermenu-window scrolledwindow > viewport button.radio:active {
+   background-color: #3498db;
++}
++
++window#whiskermenu-window scrolledwindow > viewport button.radio:not(:disabled) {
++  color: #ffffff;
++}
++
++window#whiskermenu-window scrolledwindow > viewport button:hover {
++  background-color: transparent;
+   color: #ffffff;
+ }
+ 
+ window#whiskermenu-window scrolledwindow treeview.view:selected:hover {
+   background-color: rgba(0, 0, 0, 0.1);
+-  color: #1b1d24;
++  color: #ffffff;
+ }
+ 
+ window.thunar toolbar#location-toolbar, window.thunar #location-toolbar.inline-toolbar {
+diff -Npur matcha-f73401ba27570213dd8a6350f1d60d4113134a27.orig/src/gtk-3.0/gtk-sea.css matcha-f73401ba27570213dd8a6350f1d60d4113134a27/src/gtk-3.0/gtk-sea.css
+--- matcha-f73401ba27570213dd8a6350f1d60d4113134a27.orig/src/gtk-3.0/gtk-sea.css	2018-10-06 16:30:16.000000000 +0200
++++ matcha-f73401ba27570213dd8a6350f1d60d4113134a27/src/gtk-3.0/gtk-sea.css	2018-10-06 19:37:17.448443472 +0200
+@@ -5691,7 +5691,8 @@ XfdesktopIconView.view:active, Xfdesktop
+ }
+ 
+ window#whiskermenu-window {
+-  background-color: #ffffff;
++  background-color: #222b2e;
++  color: #ffffff;
+ }
+ 
+ window#whiskermenu-window > frame > border {
+@@ -5704,12 +5705,20 @@ window#whiskermenu-window scrolledwindow
+ 
+ window#whiskermenu-window scrolledwindow > viewport button.radio:checked, window#whiskermenu-window scrolledwindow > viewport button.radio:active {
+   background-color: #2eb398;
++}
++
++window#whiskermenu-window scrolledwindow > viewport button.radio:not(:disabled) {
++  color: #ffffff;
++}
++
++window#whiskermenu-window scrolledwindow > viewport button:hover {
++  background-color: transparent;
+   color: #ffffff;
+ }
+ 
+ window#whiskermenu-window scrolledwindow treeview.view:selected:hover {
+   background-color: rgba(0, 0, 0, 0.1);
+-  color: #1b2224;
++  color: #ffffff;
+ }
+ 
+ window.thunar toolbar#location-toolbar, window.thunar #location-toolbar.inline-toolbar {

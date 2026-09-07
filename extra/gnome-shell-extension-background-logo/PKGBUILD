@@ -1,0 +1,40 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Cédric Bellegarde <cedric dot bellegarde at adishatz dot org>
+# Manjaro logo by Bogdan Covaciu
+
+pkgname=gnome-shell-extension-background-logo
+pkgver=50.0
+pkgrel=1
+pkgdesc="GNOME Shell extension to overlay a logo over the default background"
+arch=('any')
+url="https://pagure.io/background-logo-extension"
+license=('GPL-3.0-or-later')
+depends=('gnome-shell')
+makedepends=(
+  'git'
+  'meson'
+)
+source=("git+https://pagure.io/background-logo-extension.git#tag=$pkgver"
+        'manjaro-wm-gnome.svg')
+sha256sums=('eb9a48e0802b76b94760f35289a6625a5fdb33e60e93d64570528a3902b4ba66'
+            '59de2a63919e789b6f8ba7694ce05242e01a9c3eb7c7c4ecc3edafe83bd1cbd8')
+
+prepare() {
+  cd background-logo-extension
+  sed -i "s|fedora-logos/fedora_|manjaro-logos/manjaro_|g" \
+    schemas/org.fedorahosted.background-logo-extension.gschema.xml
+}
+
+build() {
+  arch-meson background-logo-extension build
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+
+  install -Dm644 manjaro-wm-gnome.svg \
+    "$pkgdir"/usr/share/manjaro-logos/manjaro_lightbackground.svg
+  install -Dm644 manjaro-wm-gnome.svg \
+    "$pkgdir"/usr/share/manjaro-logos/manjaro_darkbackground.svg
+}

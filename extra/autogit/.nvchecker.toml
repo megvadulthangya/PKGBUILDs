@@ -1,0 +1,3 @@
+[autogit]
+source = "git"
+git = "https://github.com/puxplaying/autogit.git"

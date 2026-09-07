@@ -1,0 +1,5 @@
+[dkms]
+source="archpkg"
+#source = "git"
+#git = "https://github.com/dkms-project/dkms.git"
+#prefix = "v"

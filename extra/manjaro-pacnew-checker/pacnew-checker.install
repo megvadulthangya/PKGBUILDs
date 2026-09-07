@@ -1,0 +1,22 @@
+post_install() {
+	# Enable pacnew-checker
+	echo ''
+	echo 'Enable pacnew-checker daemon service at boot: Reboot needed'
+	systemctl enable --global pacnew-checker.path
+	echo ''
+}
+
+post_upgrade() {
+	echo ''
+	echo 'Reboot the system to apply new systemd configuration'
+	systemctl daemon-reload
+	echo ''
+}
+
+pre_remove() {
+	# Remove pacnew-checker daemon service
+	systemctl disable --global pacnew-checker.path
+	echo ''
+	echo 'Reboot needed'
+	echo '' 
+}

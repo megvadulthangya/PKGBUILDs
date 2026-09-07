@@ -1,0 +1,3 @@
+[manjaro-pacnew-checker]
+source = "git"
+git = "https://gitlab.manjaro.org/ste74/manjaro-pacnew-checker.git"

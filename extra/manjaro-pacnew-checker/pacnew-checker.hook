@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = *
+
+[Action]
+Description = Looking for Pacnew/Pacsave created.
+When = PostTransaction
+Exec = /usr/share/libalpm/scripts/pacnew-check
+

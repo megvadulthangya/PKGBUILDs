@@ -1,0 +1,62 @@
+# Maintainer: Stefano Capitani <stefano_at_manjaro_dot_org>
+
+pkgname=manjaro-pacnew-checker
+_pkgname=${pkgname#manjaro-}
+pkgdesc="Simple GUI checker for managing pacnew/pacsave files"
+pkgver=0.8.0
+pkgrel=2
+arch=('any')
+url="https://codeberg.org/Ste74/manjaro-pacnew-checker"
+license=('GPL-3.0-or-later')
+depends=(
+  'gtk4'
+  'gvfs'
+  'libadwaita'
+  'manjaro-icons'
+  'meld'
+  'pacman-contrib'
+  'polkit'
+  'python'
+  'python-gobject'
+  'xdg-utils'
+)
+optdepends=('kio-admin: Manage files as administrator using the admin:// KIO protocol for Plasma')
+install="$_pkgname.install"
+source=("$pkgname-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz"
+        "$_pkgname.hook"
+        'pacnew-check.sh')
+noextract=("$pkgname-$pkgver.tar.gz")
+sha256sums=('abedbd71951a713805ac40e2a821b1d513c3012b1b566c9ee27c187993d961e5'
+            'ff3dfa569f5f272e958863a5e274088e417b777ddf92c9bb66782a6c32cdb840'
+            'a619873a960732d8f33abafae6a28bed32241b3e92bd494ef1f4232aeea892a7')
+
+prepare() {
+  mkdir -p "$pkgname-$pkgver"
+  bsdtar xf "$pkgname-$pkgver.tar.gz" --strip-components 1 -C "$pkgname-$pkgver"
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  # Install python and gui
+  install -Dm644 "src/main.py" "$pkgdir/usr/lib/$_pkgname/main.py"
+  install -Dm644 "ui/main.ui" "$pkgdir/usr/lib/$_pkgname/ui/main.ui"
+
+  # Main app
+  install -Dm755 "pacnew-helper.sh" "$pkgdir/usr/lib/$_pkgname/pacnew-helper"
+  install -Dm755 "${_pkgname}0.sh" $pkgdir/usr/bin/"${_pkgname}0"
+
+  # Systemd Hook
+  install -Dm644 "$_pkgname.service" "$pkgdir/usr/lib/systemd/user/$_pkgname.service"
+  install -Dm644 "$_pkgname.path" "$pkgdir/usr/lib/systemd/user/$_pkgname.path"
+  install -Dm644 "$srcdir/$_pkgname.hook" "$pkgdir/usr/share/libalpm/hooks/$_pkgname.hook"
+  install -Dm755 "$srcdir/pacnew-check.sh" "$pkgdir/usr/share/libalpm/scripts/pacnew-check"
+
+  # Polkit, Icon & Desktop
+  install -Dm644 "50-pacnew-check.rules" "$pkgdir/etc/polkit-1/rules.d/50-$_pkgname.rules"
+  install -Dm644 "$_pkgname.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/$_pkgname.svg"
+  install -Dm644 "$_pkgname.desktop" "$pkgdir/usr/share/applications/$_pkgname.desktop"
+
+  # Translations
+  cp -a usr "$pkgdir/"
+}

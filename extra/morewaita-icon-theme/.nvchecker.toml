@@ -1,0 +1,4 @@
+[morewaita-icon-theme]
+source = "git"
+git = "https://github.com/somepaulo/MoreWaita.git"
+prefix = "v"

@@ -1,0 +1,24 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Paulo Fino <somepaulo@duck.com>
+# Contributor: Dušan Simić <dusan.simic1810@gmail.com>
+
+pkgname=morewaita-icon-theme
+pkgver=49
+pkgrel=1
+pkgdesc="An expanded Adwaita-styled companion icon theme with extra icons"
+arch=('any')
+url="https://github.com/somepaulo/MoreWaita"
+license=('GPL-3.0-or-later')
+depends=('adwaita-icon-theme')
+makedepends=('git')
+options=('!strip')
+source=("git+https://github.com/somepaulo/MoreWaita#tag=v$pkgver")
+sha256sums=('f9646c54b9a2fe9fe5189c8c585517065cf511ece01b96422eb83f31646e9038')
+
+package() {
+  cd MoreWaita
+  install -Dm644 index.theme -t "$pkgdir/usr/share/icons/MoreWaita/"
+  cp -r scalable symbolic "$pkgdir/usr/share/icons/MoreWaita"
+
+  find "$pkgdir/usr/share/icons/MoreWaita" -name 'meson.build' -type f | xargs rm
+}

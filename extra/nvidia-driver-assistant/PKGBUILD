@@ -1,0 +1,47 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+
+pkgname=nvidia-driver-assistant
+pkgver=0.23.48.01
+pkgrel=7
+_pkgrel=1
+pkgdesc="Detect and install the best NVIDIA driver packages for the system"
+arch=('any')
+url="http://www.nvidia.com/"
+license=('MIT AND LicenseRef-custom')
+depends=('python')
+source=("https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/${pkgname}_${pkgver}-${_pkgrel}_all.deb"
+        'show-driver'
+        'manjaro.patch'
+        'fix-db.patch'
+        'change-db-to-580xx.patch')
+sha256sums=('63b7eb75805530914f723213af8ec6070089d60782bece179dd6fc22caf914a9'
+            'a0db80df56df5e4a34befb4689d97cdb2322ae09c7bb7a4e1680165da6eae3f7'
+            '071e7d3428cc16b8af6ce1f52fcc3677089a9fd97c1ba8cc3f2504c7935e398f'
+            '6317eaf8a568d523c0d62877e5ae30dc99ecfec862d27ba92eeececb0248c724'
+            '85abf629c9dc8b3bd7106b15b675e7451614cee6e01b397391ecc407e27ddadf')
+
+prepare() {
+  mkdir -p "${pkgname}-${pkgver}"
+  bsdtar -xvf data.tar.xz -C "${pkgname}-${pkgver}"
+
+  cd "${pkgname}-${pkgver}"
+  patch -Np1 -i "${srcdir}/manjaro.patch"
+  patch -Np1 -i "${srcdir}/fix-db.patch"
+  patch -Np1 -i "${srcdir}/change-db-to-580xx.patch"
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  install -Dm755 "usr/bin/${pkgname}" -t "${pkgdir}/usr/bin/"
+  install -Dm644 "usr/share/${pkgname}/supported-gpus"/*.json -t \
+    "${pkgdir}/usr/share/${pkgname}/supported-gpus/"
+  install -Dm644 "usr/share/doc/${pkgname}"/{CONTRIBUTING.md,README.md} -t \
+    "$pkgdir/usr/share/doc/${pkgname}/"
+  install -Dm644 "usr/share/doc/${pkgname}/copyright" -t \
+    "$pkgdir/usr/share/licenses/${pkgname}/"
+  install -Dm644 "usr/share/${pkgname}/driver_eula/LICENSE" -t \
+    "${pkgdir}/usr/share/${pkgname}/driver_eula/"
+  ln -s "/usr/share/${pkgname}/driver_eula/LICENSE" \
+    "$pkgdir/usr/share/licenses/${pkgname}"
+  install -m755 "${srcdir}/show-driver" "${pkgdir}/usr/bin/nvidia-recommended-driver"
+}

@@ -1,0 +1,28 @@
+# Maintainer: Stefano Capitani <stefanoatmanjarodotorg>
+
+pkgname=manjaro-iso-downloader
+pkgver=0.3.6
+pkgrel=2
+pkgdesc="Download and verify Manjaro ISOs"
+arch=('any')
+url="https://gitlab.manjaro.org/ste74/manjaro-iso-downloader"
+license=('GPL-3.0-or-later')
+depends=(
+  'aria2'
+  'curl'
+  'manjaro-icons'
+  'wget'
+  'yad'
+  'zenity'
+)
+conflicts=('manjaro-downloader-images')
+replaces=('manjaro-downloader-images')
+source=("$url/-/archive/$pkgver/$pkgname-$pkgver.tar.gz")
+sha256sums=('86a7fa97858d2dae312f5b3ce063b73c472bd0d9f66efc705358c2b612f8c08f')
+
+package() {
+	cd "$pkgname-$pkgver"
+	install -Dm755 "$pkgname.sh" "$pkgdir/usr/bin/$pkgname"
+	install -Dm644 "$pkgname.desktop" -t "$pkgdir/usr/share/applications/"
+	cp -Rf icons "$pkgdir/usr/share"
+}

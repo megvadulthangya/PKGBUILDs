@@ -1,0 +1,25 @@
+# Contributor: Philip Müller <philm@manjaro.org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=wallpapers-2018
+pkgver=1.2
+pkgrel=2
+pkgdesc="Wallpapers for Manjaro - 2018"
+arch=('any')
+url="https://gitlab.manjaro.org/artwork/wallpapers/wallpapers-2018"
+license=('CC0-1.0')
+makedepends=('git')
+options=('!strip')
+_commit=be84f4de9c7dbd8add2bc6d87902334480c34808
+source=("git+https://gitlab.manjaro.org/artwork/wallpapers/wallpapers-2018.git#commit=${_commit}")
+sha256sums=('9e727fb4f9d17f5252e63eb5cfb1fcc7521126d00fe1d24a11405d1c16df6900')
+
+package() {
+  cd "$pkgname"
+  make DESTDIR="$pkgdir" install
+
+  install -d "$pkgdir"/usr/share/backgrounds/xfce
+  for i in $(ls "$pkgdir"/usr/share/backgrounds/${pkgname}); do
+    ln -sv "/usr/share/backgrounds/$pkgname/${i}" "$pkgdir/usr/share/backgrounds/xfce/${i}"
+  done
+}

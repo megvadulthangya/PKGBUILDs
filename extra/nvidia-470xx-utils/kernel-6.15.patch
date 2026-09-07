@@ -1,0 +1,266 @@
+diff -Npur NVIDIA-Linux-x86_64-470.256.02.orig/kernel/Kbuild NVIDIA-Linux-x86_64-470.256.02/kernel/Kbuild
+--- NVIDIA-Linux-x86_64-470.256.02.orig/kernel/Kbuild	2025-05-26 13:06:44.882006427 +0200
++++ NVIDIA-Linux-x86_64-470.256.02/kernel/Kbuild	2025-05-26 14:46:44.666058685 +0200
+@@ -60,26 +60,26 @@ $(foreach _module, $(NV_KERNEL_MODULES),
+ 
+ 
+ #
+-# Define CFLAGS that apply to all the NVIDIA kernel modules. EXTRA_CFLAGS
++# Define CFLAGS that apply to all the NVIDIA kernel modules. ccflags-y
+ # is deprecated since 2.6.24 in favor of ccflags-y, but we need to support
+ # older kernels which do not have ccflags-y. Newer kernels append
+-# $(EXTRA_CFLAGS) to ccflags-y for compatibility.
++# $(ccflags-y) to ccflags-y for compatibility.
+ #
+ 
+-EXTRA_CFLAGS += -I$(src)/common/inc
+-EXTRA_CFLAGS += -I$(src)
+-EXTRA_CFLAGS += -Wall -MD $(DEFINES) $(INCLUDES) -Wno-cast-qual -Wno-error -Wno-format-extra-args
+-EXTRA_CFLAGS += -D__KERNEL__ -DMODULE -DNVRM -DNV_VERSION_STRING=\"470.256.02\" -Wno-unused-function -Wuninitialized -fno-strict-aliasing -mno-red-zone -mcmodel=kernel -DNV_UVM_ENABLE
+-EXTRA_CFLAGS += $(call cc-option,-Werror=undef,)
+-EXTRA_CFLAGS += -DNV_SPECTRE_V2=$(NV_SPECTRE_V2)
+-EXTRA_CFLAGS += -DNV_KERNEL_INTERFACE_LAYER
++ccflags-y += -I$(src)/common/inc
++ccflags-y += -I$(src)
++ccflags-y += -Wall -MD $(DEFINES) $(INCLUDES) -Wno-cast-qual -Wno-error -Wno-format-extra-args
++ccflags-y += -D__KERNEL__ -DMODULE -DNVRM -DNV_VERSION_STRING=\"470.256.02\" -Wno-unused-function -Wuninitialized -fno-strict-aliasing -mno-red-zone -mcmodel=kernel -DNV_UVM_ENABLE
++ccflags-y += $(call cc-option,-Werror=undef,)
++ccflags-y += -DNV_SPECTRE_V2=$(NV_SPECTRE_V2)
++ccflags-y += -DNV_KERNEL_INTERFACE_LAYER
+ 
+ #
+ # Detect SGI UV systems and apply system-specific optimizations.
+ #
+ 
+ ifneq ($(wildcard /proc/sgi_uv),)
+- EXTRA_CFLAGS += -DNV_CONFIG_X86_UV
++ ccflags-y += -DNV_CONFIG_X86_UV
+ endif
+ 
+ 
+@@ -108,7 +108,7 @@ NV_CONFTEST_CMD := /bin/sh $(NV_CONFTEST
+ 
+ NV_CFLAGS_FROM_CONFTEST := $(shell $(NV_CONFTEST_CMD) build_cflags)
+ 
+-NV_CONFTEST_CFLAGS = $(NV_CFLAGS_FROM_CONFTEST) $(EXTRA_CFLAGS) -fno-pie
++NV_CONFTEST_CFLAGS = $(NV_CFLAGS_FROM_CONFTEST) $(ccflags-y) -fno-pie
+ 
+ NV_CONFTEST_COMPILE_TEST_HEADERS := $(obj)/conftest/macros.h
+ NV_CONFTEST_COMPILE_TEST_HEADERS += $(obj)/conftest/functions.h
+diff -Npur NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia/nv.c NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia/nv.c
+--- NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia/nv.c	2024-05-02 17:16:35.000000000 +0200
++++ NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia/nv.c	2025-05-26 14:18:23.593217081 +0200
+@@ -8,6 +8,8 @@
+  * _NVRM_COPYRIGHT_END_
+  */
+ 
++#include <linux/version.h>
++
+ #include "nvmisc.h"
+ #include "os-interface.h"
+ #include "nv-linux.h"
+@@ -3838,7 +3840,11 @@ int NV_API_CALL nv_stop_rc_timer(
+ 
+     nv_printf(NV_DBG_INFO, "NVRM: stopping rc timer\n");
+     nv->rc_timer_enabled = 0;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
++    timer_delete_sync(&nvl->rc_timer.kernel_timer);
++#else
+     del_timer_sync(&nvl->rc_timer.kernel_timer);
++#endif
+     nv_printf(NV_DBG_INFO, "NVRM: rc timer stopped\n");
+ 
+     return 0;
+@@ -3882,7 +3888,11 @@ void NV_API_CALL nv_stop_snapshot_timer(
+     NV_SPIN_UNLOCK_IRQRESTORE(&nvl->snapshot_timer_lock, flags);
+ 
+     if (timer_active)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
++        timer_delete_sync(&nvl->snapshot_timer.kernel_timer);
++#else
+         del_timer_sync(&nvl->snapshot_timer.kernel_timer);
++#endif
+ }
+ 
+ void NV_API_CALL nv_flush_snapshot_timer(void)
+diff -Npur NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia/nv-frontend.c NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia/nv-frontend.c
+--- NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia/nv-frontend.c	2024-05-02 17:16:35.000000000 +0200
++++ NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia/nv-frontend.c	2025-05-26 13:32:12.730271157 +0200
+@@ -13,6 +13,7 @@
+ #include "nv-reg.h"
+ #include "nv-frontend.h"
+ 
++MODULE_DESCRIPTION("NVIDIA GPU frontend kernel module");
+ #if defined(MODULE_LICENSE)
+ 
+ 
+diff -Npur NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia/nv-mmap.c NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia/nv-mmap.c
+--- NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia/nv-mmap.c	2024-05-02 17:16:35.000000000 +0200
++++ NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia/nv-mmap.c	2025-05-26 13:17:58.416700179 +0200
+@@ -10,11 +10,18 @@
+ 
+ #define  __NO_VERSION__
+ 
++#include <linux/version.h>
++
+ #include "os-interface.h"
+ #include "nv-linux.h"
+ #include "nv-ibmnpu.h"
+ #include "nv_speculation_barrier.h"
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
++#define nv_vm_flags_set(v, f) vm_flags_reset((v), (v)->vm_flags | (f))
++#define nv_vm_flags_clear(v, f) vm_flags_reset((v), (v)->vm_flags & ~(f))
++#endif
++
+ /*
+  * The 'struct vm_operations' open() callback is called by the Linux
+  * kernel when the parent VMA is split or copied, close() when the
+diff -Npur NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia-drm/nvidia-drm-connector.c NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia-drm/nvidia-drm-connector.c
+--- NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia-drm/nvidia-drm-connector.c	2024-05-02 16:50:00.000000000 +0200
++++ NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia-drm/nvidia-drm-connector.c	2025-05-26 13:32:12.726937851 +0200
+@@ -44,6 +44,8 @@
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_edid.h>
+ 
++#include <linux/version.h>
++
+ static void nv_drm_connector_destroy(struct drm_connector *connector)
+ {
+     struct nv_drm_connector *nv_connector = to_nv_connector(connector);
+@@ -302,8 +304,14 @@ static int nv_drm_connector_get_modes(st
+     return count;
+ }
+ 
++// Rel. commit. "drm/connector: make mode_valid take a const struct drm_display_mode" (Dmitry Baryshkov, 14 Dec 2024)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
++static int nv_drm_connector_mode_valid(struct drm_connector          *connector,
++                                       const struct drm_display_mode *mode)
++#else
+ static int nv_drm_connector_mode_valid(struct drm_connector    *connector,
+                                        struct drm_display_mode *mode)
++#endif
+ {
+     struct drm_device *dev = connector->dev;
+     struct nv_drm_device *nv_dev = to_nv_device(dev);
+diff -Npur NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia-drm/nvidia-drm-gem.c NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia-drm/nvidia-drm-gem.c
+--- NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia-drm/nvidia-drm-gem.c	2024-05-02 16:50:00.000000000 +0200
++++ NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia-drm/nvidia-drm-gem.c	2025-05-26 13:16:15.403681328 +0200
+@@ -49,6 +49,13 @@
+ 
+ #include "nv-mm.h"
+ 
++#include <linux/version.h>
++
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
++#define nv_vm_flags_set(v, f) vm_flags_reset((v), (v)->vm_flags | (f))
++#define nv_vm_flags_clear(v, f) vm_flags_reset((v), (v)->vm_flags & ~(f))
++#endif
++
+ void nv_drm_gem_free(struct drm_gem_object *gem)
+ {
+     struct nv_drm_gem_object *nv_gem = to_nv_gem_object(gem);
+diff -Npur NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia-drm/nvidia-drm-gem-user-memory.c NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia-drm/nvidia-drm-gem-user-memory.c
+--- NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia-drm/nvidia-drm-gem-user-memory.c	2024-05-02 16:50:00.000000000 +0200
++++ NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia-drm/nvidia-drm-gem-user-memory.c	2025-05-26 13:16:15.403681328 +0200
+@@ -36,6 +36,13 @@
+ #include "linux/mm.h"
+ #include "nv-mm.h"
+ 
++#include <linux/version.h>
++
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
++#define nv_vm_flags_set(v, f) vm_flags_reset((v), (v)->vm_flags | (f))
++#define nv_vm_flags_clear(v, f) vm_flags_reset((v), (v)->vm_flags & ~(f))
++#endif
++
+ static inline
+ void __nv_drm_gem_user_memory_free(struct nv_drm_gem_object *nv_gem)
+ {
+diff -Npur NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia-drm/nvidia-drm-linux.c NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia-drm/nvidia-drm-linux.c
+--- NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia-drm/nvidia-drm-linux.c	2025-05-26 13:06:44.875339777 +0200
++++ NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia-drm/nvidia-drm-linux.c	2025-05-26 13:32:12.726937851 +0200
+@@ -182,6 +182,7 @@ static void __exit nv_linux_drm_exit(voi
+ module_init(nv_linux_drm_init);
+ module_exit(nv_linux_drm_exit);
+ 
++MODULE_DESCRIPTION("NVIDIA GPU DRM kernel module");
+ #if defined(MODULE_LICENSE)
+ 
+ 
+diff -Npur NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia-modeset/nvidia-modeset-linux.c NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia-modeset/nvidia-modeset-linux.c
+--- NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia-modeset/nvidia-modeset-linux.c	2024-05-02 16:50:44.000000000 +0200
++++ NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia-modeset/nvidia-modeset-linux.c	2025-05-26 14:18:09.006581849 +0200
+@@ -8,6 +8,8 @@
+  * _NVRM_COPYRIGHT_END_
+  */
+ 
++#include <linux/version.h>
++
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+@@ -718,7 +720,11 @@ static void nvkms_kthread_q_callback(voi
+      * pending timers and than waiting for workqueue callbacks.
+      */
+     if (timer->kernel_timer_created) {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
++        timer_delete_sync(&timer->kernel_timer);
++#else
+         del_timer_sync(&timer->kernel_timer);
++#endif
+     }
+ 
+     /*
+@@ -1740,7 +1746,11 @@ restart:
+              * completion, and we wait for queue completion with
+              * nv_kthread_q_stop below.
+              */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
++            if (timer_delete_sync(&timer->kernel_timer) == 1) {
++#else
+             if (del_timer_sync(&timer->kernel_timer) == 1) {
++#endif
+                 /*  We've deactivated timer so we need to clean after it */
+                 list_del(&timer->timers_list);
+ 
+@@ -1778,6 +1788,7 @@ restart:
+ module_init(nvkms_init);
+ module_exit(nvkms_exit);
+ 
++MODULE_DESCRIPTION("NVIDIA GPU modeset kernel module");
+ #if defined(MODULE_LICENSE)
+ 
+ 
+diff -Npur NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia-uvm/uvm.c NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia-uvm/uvm.c
+--- NVIDIA-Linux-x86_64-470.256.02.orig/kernel/nvidia-uvm/uvm.c	2024-05-02 17:16:36.000000000 +0200
++++ NVIDIA-Linux-x86_64-470.256.02/kernel/nvidia-uvm/uvm.c	2025-05-26 13:32:12.730271157 +0200
+@@ -21,6 +21,8 @@
+ 
+ *******************************************************************************/
+ 
++#include <linux/version.h>
++
+ #include "uvm_api.h"
+ #include "uvm_global.h"
+ #include "uvm_gpu_replayable_faults.h"
+@@ -38,6 +40,11 @@
+ 
+ #define NVIDIA_UVM_DEVICE_NAME          "nvidia-uvm"
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
++#define nv_vm_flags_set(v, f) vm_flags_reset((v), (v)->vm_flags | (f))
++#define nv_vm_flags_clear(v, f) vm_flags_reset((v), (v)->vm_flags & ~(f))
++#endif
++
+ static dev_t g_uvm_base_dev;
+ static struct cdev g_uvm_cdev;
+ 
+@@ -1129,6 +1136,7 @@ static void __exit uvm_exit_entry(void)
+ module_init(uvm_init_entry);
+ module_exit(uvm_exit_entry);
+ 
++MODULE_DESCRIPTION("NVIDIA GPU UVM kernel module");
+ MODULE_LICENSE("Dual MIT/GPL");
+ MODULE_INFO(supported, "external");
+ 

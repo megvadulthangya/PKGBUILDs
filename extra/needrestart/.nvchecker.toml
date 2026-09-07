@@ -1,0 +1,4 @@
+[needrestart]
+source = "git"
+git = "https://github.com/liske/needrestart.git"
+prefix = "v"

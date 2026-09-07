@@ -1,0 +1,57 @@
+# Maintainer: Mark Wagie <mark[at]manjaro[dot]org>
+# Contributor: Helmut Stult
+
+pkgname=needrestart
+pkgver=3.11
+pkgrel=4
+pkgdesc="Restart daemons after kernel, library and CPU microcode updates."
+arch=('any')
+url="https://github.com/liske/needrestart"
+license=('GPL-2.0-or-later')
+depends=(
+  'perl-libintl-perl'
+  'perl-module-find'
+  'perl-module-scandeps'
+  'perl-proc-processtable'
+  'perl-sort-naturally'
+  'perl-term-readkey'
+  'which'
+)
+makedepends=('git')
+optdepends=(
+  'iucode-tool: for outdated Intel microcode detection'
+  'libnotify: notify a user session via dbus'
+)
+backup=("etc/$pkgname/$pkgname.conf"
+        "etc/$pkgname/notify.conf")
+source=("git+https://github.com/liske/needrestart.git#tag=v$pkgver"
+        "$pkgname.hook")
+sha256sums=('21908c93cfd95364ba05e6e40a7bdde84771ef900619cb2dc466caf20d658fd7'
+            'e5c6696a281f5445a3b7e2b7d1055f9189a2c39d4940721aa0c2718780f15f63')
+
+prepare() {
+  cd "$pkgname"
+
+  # vmlinuz-get-version: implement decompression for LZ4 and ZSTD
+  # https://github.com/liske/needrestart/pull/355 (merged)
+  git cherry-pick -n 702db55c3e4ed3aa37782e59d64df0e2a67197a9
+
+  find . -type f -exec sed -i 's|usr/sbin|usr/bin|' {} \;
+  sed -i 's|sbin/init|bin/init|g' "$pkgname"
+}
+
+build() {
+  cd "$pkgname"
+  unset PERL5LIB PERL_LOCAL_LIB_ROOT PERL_MB_OPT PERL_MM_OPT
+  export PERL_MM_USE_DEFAULT=1 PERL_AUTOINSTALL=--skipdeps
+  make
+}
+
+package() {
+  cd "$pkgname"
+  unset PERL5LIB PERL_LOCAL_LIB_ROOT PERL_MB_OPT PERL_MM_OPT
+  make DESTDIR="$pkgdir" install
+
+  install -Dm644 "man/$pkgname.1" -t "$pkgdir/usr/share/man/man1/"
+  install -Dm644 "$srcdir/$pkgname.hook" -t "$pkgdir/usr/share/lipalpm/hooks/"
+}

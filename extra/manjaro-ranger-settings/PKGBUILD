@@ -1,0 +1,36 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Matti Hyttinen <matti@manjaro.org>
+
+pkgname=manjaro-ranger-settings
+pkgver=20240626
+pkgrel=1
+pkgdesc="Manjaro Linux ranger settings"
+arch=('any')
+url="https://gitlab.manjaro.org/profiles-and-settings/manjaro-ranger-settings"
+license=('GPL-3.0-or-later')
+depends=(
+  'highlight'
+  'mediainfo'
+  'perl-image-exiftool'
+  'poppler'
+  'python-ueberzug'
+  'ranger'
+  'ttf-terminus-nerd'
+)
+makedepends=(
+  'git'
+)
+_commit=18c25aa46e83d499a5b2a58510d630d6c040799e  # branch/master
+source=("git+$url.git#commit=${_commit}")
+sha256sums=('7aa1e6171b1c29be9d00207c3ffc49f72a6c1bd3ed71ddec0a1040e5bdff8f85')
+
+pkgver() {
+  cd "$pkgname"
+  git show -s --date=format:'%Y%m%d' --format=%cd
+}
+
+package() {
+  cd "$pkgname"
+  install -d "$pkgdir/etc/skel/.config"
+  cp -r ranger "$pkgdir/etc/skel/.config"
+}

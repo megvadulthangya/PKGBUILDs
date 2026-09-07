@@ -1,0 +1,34 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Sam Burgos <santiago.burgos1089@gmail.com>
+
+pkgname=mint-l-theme
+pkgver=2.0.7
+pkgrel=1
+pkgdesc="A collection of legacy Mint themes."
+arch=('any')
+url="https://github.com/linuxmint/mint-l-theme"
+license=('GPL-3.0-or-later')
+makedepends=('python-libsass')
+optdepends=('mint-l-icons')
+options=('!strip')
+#source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+source=("http://packages.linuxmint.com/pool/main/m/$pkgname/${pkgname}_${pkgver}.tar.xz")
+noextract=("${pkgname}_${pkgver}.tar.xz")
+sha256sums=('e1a8e2cc7abfc40ca0ce10c8de63861a18569db48221ebc838d0aeadd9754772')
+
+prepare() {
+  mkdir -p "$pkgname-$pkgver"
+  bsdtar xf "${pkgname}_${pkgver}.tar.xz" --strip-components 1 -C "$pkgname-$pkgver"
+
+#  return 0
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  cp -r usr "$pkgdir/"
+}

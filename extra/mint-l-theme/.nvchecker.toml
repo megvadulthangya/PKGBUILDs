@@ -1,0 +1,3 @@
+[mint-l-theme]
+source = "git"
+git = "https://github.com/linuxmint/mint-l-theme.git"

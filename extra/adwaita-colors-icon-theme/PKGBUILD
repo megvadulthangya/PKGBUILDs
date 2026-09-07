@@ -1,0 +1,42 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: pacu <https://forum.manjaro.org/u/pacu>
+# Contributor: Paulo Fino <somepaulo@duck.com>
+
+pkgname=adwaita-colors-icon-theme
+pkgver=2.6
+pkgrel=1
+pkgdesc="Customizes Adwaita icons to match your GNOME theme's accent color, providing a cohesive, personalized look."
+arch=('any')
+url="https://github.com/dpejoh/Adwaita-colors"
+license=('GPL-3.0-or-later')
+depends=('adwaita-icon-theme')
+makedepends=('git')
+optdepends=('morewaita-icon-theme: inherit MoreWaita icons')
+options=('!strip')
+source=("git+https://github.com/dpejoh/Adwaita-colors#tag=v$pkgver"
+        'recolor.sh')
+sha256sums=('ea11c45be59cffff5aae541f501ba49d969416f34efb0ff8c0ff442004d55b9c'
+            'fde2a1af499eaacee9d1f5b221762f4291d24f01e6acb80dbe098da805c12965')
+
+prepare() {
+  pushd Adwaita-colors
+  sh setup -i -f -p "$srcdir/generated-icons"
+  popd
+
+  # Add Maia colors
+  cd generated-icons
+  sh "$srcdir/recolor.sh"
+
+  # Add Morewaita to Inherits
+  find . \
+    -name index.theme \
+    -exec sed -i \
+    's/Inherits=Adwaita,/Inherits=MoreWaita,Adwaita,/g' \
+    {} +
+}
+
+package() {
+  cd Adwaita-colors
+  install -d "$pkgdir/usr/share/icons"
+  cp -a "$srcdir"/generated-icons/Adwaita-* "$pkgdir/usr/share/icons/"
+}

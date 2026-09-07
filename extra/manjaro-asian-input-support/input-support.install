@@ -1,0 +1,14 @@
+post_install() {
+	echo
+	echo 'Logout or reboot to apply modifications'
+	echo
+}
+
+post_upgrade() {
+	post_install
+}
+
+post_remove() {
+	post_install
+}
+

@@ -1,0 +1,19 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=manjaro-wallpapers-by-aragorn
+pkgver=1.0
+pkgrel=1
+pkgdesc="Manjaro Wallpapers by Aragorn"
+arch=('any')
+url="https://gitlab.manjaro.org/artwork/wallpapers/manjaro-wallpapers-by-aragorn"
+license=('CC-BY-SA-4.0')
+makedepends=('git')
+options=('!strip')
+source=("git+$url.git#tag=$pkgver?signed")
+sha256sums=('034b6ab0a7e1fee6b55b8cacb4179ddc069846db0afc6e57278e78a8930fbada')
+validpgpkeys=('688E8F82879D0E25CE541426150C200743ED46D8') # Mark Wagie <mark@manjaro.org>
+
+package() {
+  cd "$pkgname"
+  install -Dm644 *.jpg -t "$pkgdir/usr/share/backgrounds/aragorn/"
+}

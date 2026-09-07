@@ -1,0 +1,3 @@
+[manjaro-wallpapers-by-aragorn]
+source = "git"
+git = "https://gitlab.manjaro.org/artwork/wallpapers/manjaro-wallpapers-by-aragorn.git"

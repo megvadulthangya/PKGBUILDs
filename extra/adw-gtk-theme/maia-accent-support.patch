@@ -1,0 +1,23 @@
+diff --unified --recursive --text a/src/sass/gtk4/libadwaita-tweaks.scss b/src/sass/gtk4/libadwaita-tweaks.scss
+--- a/src/sass/gtk4/libadwaita-tweaks.scss	2025-09-22 12:03:51.513837082 -0600
++++ b/src/sass/gtk4/libadwaita-tweaks.scss	2025-09-22 12:04:56.146552381 -0600
+@@ -20,6 +20,7 @@
+   --accent-pink: #d56199;
+   --accent-purple: #9141ac;
+   --accent-slate: #6f8396;
++  --accent-maia: #16a085;
+ 
+   --accent-bg-color: var(--accent-blue);
+   --accent-fg-color: @accent_fg_color;
+diff --unified --recursive --text a/src/theme-light/gtk4/libadwaita.css b/src/theme-light/gtk4/libadwaita.css
+--- a/src/theme-light/gtk4/libadwaita.css	2025-09-22 12:03:51.513837082 -0600
++++ b/src/theme-light/gtk4/libadwaita.css	2025-09-22 12:06:47.877320787 -0600
+@@ -97,7 +97,7 @@
+ 
+ @media (prefers-color-scheme: dark) { :root { --standalone-color-oklab: max(l, 0.85) a b; } }
+ 
+-:root { --accent-blue: #3584e4; --accent-teal: #2190a4; --accent-green: #3a944a; --accent-yellow: #c88800; --accent-orange: #ed5b00; --accent-red: #e62d42; --accent-pink: #d56199; --accent-purple: #9141ac; --accent-slate: #6f8396; --accent-bg-color: @accent_bg_color; --accent-fg-color: @accent_fg_color; --accent-color: oklab(
++:root { --accent-blue: #3584e4; --accent-teal: #2190a4; --accent-green: #3a944a; --accent-yellow: #c88800; --accent-orange: #ed5b00; --accent-red: #e62d42; --accent-pink: #d56199; --accent-purple: #9141ac; --accent-slate: #6f8396; --accent-maia: #16a085; --accent-bg-color: @accent_bg_color; --accent-fg-color: @accent_fg_color; --accent-color: oklab(
+     from var(--accent-bg-color) var(--standalone-color-oklab)
+   ); --destructive-bg-color: @destructive_bg_color; --destructive-fg-color: @destructive_fg_color; --destructive-color: oklab(
+     from var(--destructive-bg-color) var(--standalone-color-oklab)

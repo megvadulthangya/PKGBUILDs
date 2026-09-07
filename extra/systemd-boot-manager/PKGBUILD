@@ -1,0 +1,32 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Philip Müller <philm@manjaro.org>
+# Contributor: Stefano Capitani <stefano@manjaro.org>
+# Contributor: Dalto <forum.manjaro.org>
+
+pkgname=systemd-boot-manager
+pkgver=0.9+24+g1ce8294
+pkgrel=1
+pkgdesc="A simple tool to maintain systemd-boot & systemd-boot entries for Manjaro"
+arch=('any')
+url="https://gitlab.com/dalto.8/systemd-boot-manager"
+license=('GPL-2.0-or-later')
+depends=('bash' 'findutils' 'gawk' 'grep' 'systemd')
+makedepends=('git')
+backup=('etc/sdboot-manage.conf')
+_commit=1ce829415bc991914617894a338009e953a06bd9
+source=("git+https://gitlab.com/dalto.8/systemd-boot-manager.git#commit=${_commit}")
+sha256sums=('8412cd5d5e7d8bb4258ba483f701624e3ca4bbde6266b092ab264d8b037da2c3')
+
+pkgver() {
+  cd "${pkgname}"
+  git describe --tags --abbrev=7 | sed 's/-/+/g'
+}
+
+package() {
+  cd "${pkgname}"
+  install -Dm755 sdboot-manage -t "${pkgdir}/usr/bin/"
+  install -Dm644 sdboot-manage.conf -t "${pkgdir}/etc/"
+  install -Dm644 sdboot-kernel-update.hook -t "${pkgdir}/usr/share/libalpm/hooks/"
+  install -Dm644 sdboot-kernel-remove.hook -t "${pkgdir}/usr/share/libalpm/hooks/"
+  install -Dm644 sdboot-systemd-update.hook -t "${pkgdir}/usr/share/libalpm/hooks/"
+}

@@ -1,0 +1,3 @@
+[systemd-boot-manager]
+source = "git"
+git = "https://gitlab.com/dalto.8/systemd-boot-manager.git"

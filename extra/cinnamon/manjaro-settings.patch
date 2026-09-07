@@ -1,0 +1,14 @@
+diff --unified --recursive --text a/files/usr/share/cinnamon/cinnamon-settings/cinnamon-settings.py b/files/usr/share/cinnamon/cinnamon-settings/cinnamon-settings.py
+--- a/files/usr/share/cinnamon/cinnamon-settings/cinnamon-settings.py	2024-06-16 04:04:12.000000000 -0600
++++ b/files/usr/share/cinnamon/cinnamon-settings/cinnamon-settings.py	2024-06-16 09:52:18.465322049 -0600
+@@ -91,7 +91,9 @@
+     [_("Bluetooth"),                  "blueman-manager",                      "cs-bluetooth",              "hardware",   _("bluetooth, dongle, transfer, mobile")],
+     [_("Manage Services and Units"),  "systemd-manager-pkexec",               "cs-sources",                "admin",      _("systemd, units, services, systemctl, init")],
+     [_("Disks"),                      "gnome-disks",                          "org.gnome.DiskUtility",     "hardware",   _("disks, manage, hardware, management, hard, hdd, pendrive, format, erase, test, create, iso, ISO, disk, image")],
+-    [_("Online Accounts"),            "gnome-online-accounts-gtk",            "gnome-online-accounts-gtk", "prefs",      _("google, microsoft, nextcloud, owncloud")]
++    [_("Online Accounts"),            "gnome-online-accounts-gtk",            "gnome-online-accounts-gtk", "prefs",      _("google, microsoft, nextcloud, owncloud")],
++    [_("Manjaro Settings Manager"),   "manjaro-settings-manager",             "cs-cat-hardware",           "admin",      _("manjaro, settings, manager, kernel, graphics, driver, foreign, language, user, account, time, date, keyboard, hardware")],
++    [_("Manjaro Notifier Settings"),  "msm_notifier --settings",              "cs-sources",                "admin",      _("manjaro, settings, notifier, kernel, language, foreign")]
+ ]
+ 
+ ALTERNATE_MODULES = [

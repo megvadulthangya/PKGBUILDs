@@ -1,0 +1,59 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Aaron Griffin <aaron@archlinux.org>
+# Contributor: Federico Quagliata (quaqo) <quaqo@despammed.com>
+# Contributor: cdhotfire <cdhotfire@gmail.com>
+
+pkgname=python-eyed3
+_name=eyeD3
+pkgver=0.9.9
+pkgrel=2
+epoch=1
+pkgdesc="A Python module and program for processing information about mp3 files"
+arch=('any')
+url="http://eyed3.nicfit.net/"
+license=('GPL-3.0-or-later')
+depends=(
+  'python-deprecation'
+  'python-filetype'
+  'python-magic'
+)
+makedepends=(
+  'python-build'
+  'python-poetry-core'
+  'python-installer'
+  'python-wheel'
+)
+checkdepends=(
+  'python-factory-boy'
+  'python-nose'
+  'python-pytest'
+)
+optdepends=(
+  'python-pillow: art plugin'
+  'python-requests: art plugin'
+  'python-ruamel-yaml: yamltag plugin'
+  'python-pyaml: yamltag plugin'
+  'python-pylast: lastfm plugin'
+)
+source=("$_name-$pkgver.tar.gz::https://github.com/nicfit/eyeD3/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('872d57edbde3f81748df4a581951c20f78c77f02384ee104a2ae8a283f3b084e')
+
+build() {
+  cd "$_name-$pkgver"
+  python -m build --wheel --no-isolation
+}
+
+check() {
+  cd "$_name-$pkgver"
+
+  # Ignore tests which require:
+  # - test data (test_classic_plugin.py, test_core.py, id3/test_frames.py,
+  # id3_test_rva.py, test_issues.py)
+#  pytest --ignore=tests/{test_classic_plugin.py,test_core.py,id3/test_frames.py,test_jsonyaml_plugin.py,id3/test_rva.py,test_issues.py}
+  pytest
+}
+
+package() {
+  cd "$_name-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+}

@@ -1,0 +1,6 @@
+[python-eyed3]
+source = "pypi"
+pypi = "eyeD3"
+#source = "git"
+#git = "https://github.com/nicfit/eyeD3.git"
+#prefix = "v"

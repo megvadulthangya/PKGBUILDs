@@ -1,0 +1,28 @@
+# Maintainer:
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=maia-console
+pkgver=1.2
+pkgrel=7
+pkgdesc="Maia color scheme for the console and shell dialog"
+arch=('any')
+url="https://gitlab.manjaro.org/packages/extra/maia-console"
+license=('GPL-3.0-or-later')
+depends=('systemd')
+backup=("etc/systemd/system/getty@.service.d/$pkgname.conf")
+install="$pkgname.install"
+source=("$pkgname"
+        "$pkgname.conf"
+        "${pkgname}@.service"
+        'dialogrc')
+sha256sums=('25941ad525cf95b75d63ef8c58aa4231f10797a58224b903d254d16dd7202629'
+            '414c5e2395a80456058e6e3a37a728dbcf1183b27b9c149f5dbffee6961df7b0'
+            '9da6fe368c0dee21187eedb30af0eb23934882c71c56242533014a19e95a3c57'
+            '6e58b8ad677915fbd25adc3203bbfff0353b4e2a70927c8e31bf8234345de4e1')
+
+package() {
+  install -Dm755 "$pkgname" "$pkgdir/usr/bin/$pkgname"
+  install -Dm644 "${pkgname}@.service" "$pkgdir/etc/systemd/system/${pkgnam}e@.service"
+  install -Dm644 "$pkgname.conf" "$pkgdir/etc/systemd/system/getty@.service.d/$pkgname.conf"
+#  install -Dm644 dialogrc "$pkgdir"/etc/skel/.dialogrc
+}

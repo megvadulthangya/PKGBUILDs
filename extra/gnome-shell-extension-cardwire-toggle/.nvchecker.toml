@@ -1,0 +1,4 @@
+[gnome-shell-extension-cardwire-toggle]
+source = "git"
+git = "https://github.com/chrispouliot/cardwire-toggle.git"
+prefix = "v"

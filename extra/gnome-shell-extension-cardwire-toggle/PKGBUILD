@@ -1,0 +1,32 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=gnome-shell-extension-cardwire-toggle
+pkgver=1.3
+pkgrel=1
+pkgdesc="Quick Settings toggle for Cardwire, the eBPF-based Linux GPU manager."
+arch=('any')
+url="https://github.com/chrispouliot/cardwire-toggle"
+license=('GPL-2.0-or-later')
+depends=(
+  'cardwire'
+  'gnome-shell'
+)
+makedepends=('jq')
+source=("cardwire-toggle-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('1f15052642b0b22e679010b84314fcd1604b90a0de5a6129848903207c53e68e')
+
+build() {
+  cd "cardwire-toggle-$pkgver"
+  gnome-extensions pack src/ \
+    --extra-source=icons/ \
+    --force
+}
+
+package() {
+  cd "cardwire-toggle-$pkgver"
+  _uuid=$(jq -r .uuid src/metadata.json)
+
+  install -d "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}"
+  bsdtar -xvf "${_uuid}.shell-extension.zip" -C \
+    "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}/" --no-same-owner
+}

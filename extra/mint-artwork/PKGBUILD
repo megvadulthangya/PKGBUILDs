@@ -1,0 +1,39 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Contributor: Helmut Stult
+
+pkgbase=mint-artwork
+pkgname=('cinnamon-sounds' 'mint-artwork-styles')
+pkgver=1.9.3
+pkgrel=1
+epoch=1
+arch=('any')
+url="https://www.linuxmint.com"
+license=('GPL-3.0-or-later')
+source=("http://packages.linuxmint.com/pool/main/m/$pkgbase/${pkgbase}_${pkgver}.tar.xz")
+noextract=("${pkgbase}_${pkgver}.tar.xz")
+sha256sums=('5c7dd166af65b347bd98cedc66109290d314c0c27205e15375f9f4d3a3daa8d8')
+
+prepare() {
+  mkdir -p "$pkgbase-$pkgver"
+  bsdtar xf "${pkgbase}_${pkgver}.tar.xz" --strip-components 1 -C "$pkgbase-$pkgver"
+}
+
+package_cinnamon-sounds() {
+  pkgdesc="Linux Mint sounds for the Cinnamon desktop."
+  depends=('cinnamon')
+
+  cd "$pkgbase-$pkgver"
+  install -Dm644 usr/share/$pkgbase/sounds/* -t \
+    "${pkgdir}/usr/share/sounds/LinuxMint/stereo/"
+  cp -r usr/share/sounds/* "${pkgdir}/usr/share/sounds/"
+}
+
+package_mint-artwork-styles() {
+  pkgdesc="Linux Mint artwork styles"
+  depends=('mint-themes')
+
+  cd "$pkgbase-$pkgver"
+  install -Dm644 "usr/share/cinnamon/styles.d/22_${pkgbase}.styles" -t \
+    "$pkgdir/usr/share/cinnamon/styles.d/"
+}

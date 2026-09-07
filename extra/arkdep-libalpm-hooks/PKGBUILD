@@ -1,0 +1,23 @@
+# Maintainer: Philip Mueller <philm@manjaro.org>
+# Contributor: Dennis ten Hoove <contact@arkanelinux.org>
+
+pkgname=arkdep-libalpm-hooks
+pkgver=2024.05.10
+pkgrel=2
+pkgdesc="Libalpm looks for Arkdep"
+url="https://github.com/arkanelinux/arkdep-libalpm-hooks"
+arch=('any')
+license=('GPL-3.0-or-later')
+depends=(
+  'arkdep'
+  'dracut'
+)
+_commit=f9b24dd2d19733d3876f2516fb6789a7d85d006f
+source=("git+https://github.com/arkanelinux/arkdep-libalpm-hooks.git#commit=${_commit}")
+sha256sums=('a96c580e5ee7d2b89ad100dc815a0d7e1570af470e735404a957159221e429fa')
+
+package() {
+  cd "$pkgname/arkdep-kernel-update"
+	install -Dm644 90-arkdep-kernel-update.hook -t "$pkgdir/usr/share/libalpm/hooks/"
+	install -Dm755 arkdep-kernel-update -t "$pkgdir/usr/share/libalpm/scripts/"
+}

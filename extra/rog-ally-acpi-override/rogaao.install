@@ -1,0 +1,9 @@
+post_upgrade() {
+  post_install
+}
+
+post_install() {
+  update_rogaao
+  echo "Note: You may want to run 'update_rogaao' when you update your BIOS!"
+}
+

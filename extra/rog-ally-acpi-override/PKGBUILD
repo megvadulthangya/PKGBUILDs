@@ -1,0 +1,71 @@
+# Maintainer: Philip Müller <philm@manjaro.org>
+
+pkgname=rog-ally-acpi-override
+pkgver=20230907
+pkgrel=2
+pkgdesc="Firmware ACPI overrides for ROG Ally BIOSs"
+url="https://github.com/ChimeraOS/device-quirks"
+license=('MIT')
+arch=('x86_64')
+depends=('iasl' 'grub')
+makedepends=('cpio')
+options=(!strip)
+install=rogaao.install
+source=("rog_ally_0x76.dsl" "rog_ally_0x13.dsl" "rog_ally_0x08.dsl"
+        "rog_ally_0x58.dsl" "update_rogaao")
+sha256sums=('634daaf8be011ca12d5cc45613bf29fffa20f95328f4bcb73e0524810ec109b6'
+            'cd172bf512c10da7fcad2ae276aad46c79f42e1dadf70c88ff65bc992d450f9e'
+            'c21fdef72394d1f4c9986c661c855bc3a2a2d3591956ecce0abf3ddc7eb1fe26'
+            'ea482af6c81dc01f42c14e5758bfa4619f606162d63ff3baaa21bf0be610e9a9'
+            'ff520ae6c8382e65987fe6e58fa3b68a11765f42d0e6058b8d3218757638d542')
+
+build() {
+  iasl -tc rog_ally_0x76.dsl
+  iasl -tc rog_ally_0x13.dsl
+  iasl -tc rog_ally_0x08.dsl
+  iasl -tc rog_ally_0x58.dsl
+  
+  mkdir -p 0x76/kernel/firmware/acpi
+  mkdir -p 0x13/kernel/firmware/acpi
+  mkdir -p 0x08/kernel/firmware/acpi
+  mkdir -p 0x58/kernel/firmware/acpi
+  
+  cp -va rog_ally_0x76.aml 0x76/kernel/firmware/acpi/dsdt.aml
+  cp -vaH rog_ally_0x76.dsl 0x76/kernel/firmware/acpi/dsdt.dsl
+  cp -va rog_ally_0x76.hex 0x76/kernel/firmware/acpi/dsdt.hex
+  
+  cp -va rog_ally_0x13.aml 0x13/kernel/firmware/acpi/dsdt.aml
+  cp -vaH rog_ally_0x13.dsl 0x13/kernel/firmware/acpi/dsdt.dsl
+  cp -va rog_ally_0x13.hex 0x13/kernel/firmware/acpi/dsdt.hex
+  
+  cp -va rog_ally_0x08.aml 0x08/kernel/firmware/acpi/dsdt.aml
+  cp -vaH rog_ally_0x08.dsl 0x08/kernel/firmware/acpi/dsdt.dsl
+  cp -va rog_ally_0x08.hex 0x08/kernel/firmware/acpi/dsdt.hex
+
+  cp -va rog_ally_0x58.aml 0x58/kernel/firmware/acpi/dsdt.aml
+  cp -vaH rog_ally_0x58.dsl 0x58/kernel/firmware/acpi/dsdt.dsl
+  cp -va rog_ally_0x58.hex 0x58/kernel/firmware/acpi/dsdt.hex
+
+  cd ${srcdir}/0x76
+  find kernel | cpio -H newc --create > rog-ally-acpi-override-0x76.img
+
+  cd ${srcdir}/0x13
+  find kernel | cpio -H newc --create > rog-ally-acpi-override-0x13.img
+
+  cd ${srcdir}/0x08
+  find kernel | cpio -H newc --create > rog-ally-acpi-override-0x08.img
+
+  cd ${srcdir}/0x58
+  find kernel | cpio -H newc --create > rog-ally-acpi-override-0x58.img
+}
+
+package() {
+  mkdir -p "${pkgdir}"/var/lib/acpi-overrides
+  cp -a 0x76/rog-ally-acpi-override-0x76.img "${pkgdir}"/var/lib/acpi-overrides
+  cp -a 0x13/rog-ally-acpi-override-0x13.img "${pkgdir}"/var/lib/acpi-overrides
+  cp -a 0x08/rog-ally-acpi-override-0x08.img "${pkgdir}"/var/lib/acpi-overrides
+  cp -a 0x58/rog-ally-acpi-override-0x58.img "${pkgdir}"/var/lib/acpi-overrides
+  install -Dm755 update_rogaao -t "${pkgdir}"/usr/bin
+}
+
+# vim:set sw=2 et:

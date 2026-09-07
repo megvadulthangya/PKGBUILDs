@@ -1,0 +1,120 @@
+#!/bin/bash
+
+_write_log() {
+    echo "# Manjaro ACPI override log" > $OVERRIDE_LOG
+    echo "LAST_BIOS_DATE='$BIOS_DATE'" >> $OVERRIDE_LOG
+    echo "LAST_BIOS_RELEASE='$BIOS_RELEASE'" >> $OVERRIDE_LOG
+    echo "LAST_BIOS_VENDOR='$BIOS_VENDOR'" >> $OVERRIDE_LOG
+    echo "LAST_BIOS_VERSION='$BIOS_VERSION'" >> $OVERRIDE_LOG
+    echo "LAST_DSDT='$DSDT'" >> $OVERRIDE_LOG
+}
+
+_update_grub() {
+    if [[ -e /boot/loader/entries/archiso-aui-0-x86_64-linux.conf ]]; then
+        if ! grep -q "rog-ally-acpi-override" \
+        /boot/loader/entries/archiso-aui-0-x86_64-linux.conf && [[ ! -z ${1} ]]; then
+        sed -i -e "s|initrd  /initramfs|initrd  /${1}\ninitrd  /initramfs|" \
+        /boot/loader/entries/archiso-aui-0-x86_64-linux.conf;
+        elif grep -q "rog-ally-acpi-override" \
+        /boot/loader/entries/archiso-aui-0-x86_64-linux.conf; then
+        sed -i "s|initrd /rog-ally-acpi-override.*|initrd  /${1}|" \
+        /boot/loader/entries/archiso-aui-0-x86_64-linux.conf;
+        fi
+        exit 0
+    fi
+    if ! grep -q "GRUB_EARLY_INITRD_LINUX_CUSTOM" /etc/default/grub; \
+    then echo 'GRUB_EARLY_INITRD_LINUX_CUSTOM=""' >> /etc/default/grub; fi
+    sed -i "s|GRUB_EARLY_INITRD_LINUX_CUSTOM=.*|GRUB_EARLY_INITRD_LINUX_CUSTOM=\"${1}\"|g" \
+    /etc/default/grub
+    update-grub
+}
+
+_check_kernel() {
+    expected=6.4.14-1-MANJARO
+    received=$(uname -r)
+    min=$(echo -e $expected"\n"$received|sort -V|head -n 1)
+    if [[ "$min" = "$expected" ]];then
+        echo "Installed Version is higher than Expected."
+        echo "Removing any DSDT overrides"
+        rm /boot/rog-ally-acpi-override*img
+        if [[ -e /boot/loader/entries/archiso-aui-0-x86_64-linux.conf ]]; then
+            sed -i "|initrd /rog-ally-acpi-override.*|d" \
+            /boot/loader/entries/archiso-aui-0-x86_64-linux.conf;
+            exit 0
+        fi
+        if grep -q "GRUB_EARLY_INITRD_LINUX_CUSTOM" /etc/default/grub; \
+            sed -i "|GRUB_EARLY_INITRD_LINUX_CUSTOM=\"rog-ally-acpi-override.*|d" \
+            /etc/default/grub
+            update-grub
+        fi
+        exit 0
+    else
+        echo "This system may need still the DSDT overrides ..."
+    fi
+}
+
+PRODUCT_NAME="$(cat /sys/devices/virtual/dmi/id/product_name)"
+BOARD_NAME="$(cat /sys/devices/virtual/dmi/id/board_name)"
+CPU_NAME="$(cat /proc/cpuinfo | awk 'NR==5 {print $4$5$6$7}')"
+
+if [[ "ROG Ally RC71L_RC71L" == "$PRODUCT_NAME" ]] && [[ "RC71L" == "$BOARD_NAME" ]] && [[ "AMDRyzenZ1Extreme" == "$CPU_NAME" ]]; then
+  echo "$PRODUCT_NAME detected"
+  _check_kernel
+else
+  echo "This ACPI override doesn't work for $PRODUCT_NAME"
+  exit 1
+fi
+
+# the temp directory used, within /tmp
+# omit the -p parameter to create a temporal directory in the default location
+WORK_DIR=`mktemp -d -p /tmp`
+
+# check if tmp dir was created
+if [[ ! "$WORK_DIR" || ! -d "$WORK_DIR" ]]; then
+  echo "Could not create temp dir"
+  exit 1
+fi
+
+cat /sys/firmware/acpi/tables/DSDT > $WORK_DIR/system-dumped-dsdt.dat
+echo "Dump DSDT from the system"
+iasl -d $WORK_DIR/system-dumped-dsdt.dat &> /dev/null
+iasl -tc $WORK_DIR/system-dumped-dsdt.dat &> /dev/null
+
+DSL_FILE="$WORK_DIR/system-dumped-dsdt.dsl"
+
+# Use sed to extract the checksum value from the DSL file
+CHECK_SUM=$(sed -n 's/.*Checksum[[:space:]]\+\(0x[[:xdigit:]]\+\).*/\1/p' "$DSL_FILE")
+rm -rf "$WORK_DIR"
+
+BIOS_DATE=$(cat /sys/class/dmi/id/bios_date)
+BIOS_RELEASE=$(cat /sys/class/dmi/id/bios_release)
+BIOS_VENDOR=$(cat /sys/class/dmi/id/bios_vendor)
+BIOS_VERSION=$(cat /sys/class/dmi/id/bios_version)
+OVERRIDE_LOG=/var/log/rog-ally-acpi-override.log
+OVERRIDES=/var/lib/acpi-overrides
+
+if [[ -e $OVERRIDE_LOG ]]; then
+     source $OVERRIDE_LOG
+fi
+
+echo "Checksum of BIOS $BIOS_VERSION is: $CHECK_SUM"
+if [[ -e $OVERRIDES/rog-ally-acpi-override-$CHECK_SUM.img ]]; then
+    rm /boot/rog-ally-acpi-override*img
+    cp $OVERRIDES/rog-ally-acpi-override-$CHECK_SUM.img /boot
+    echo "Enabling DSDT Override for $BIOS_VERSION BIOS."
+    DSDT=rog-ally-acpi-override-$CHECK_SUM.img
+elif [[ $BIOS_DATE == $LAST_BIOS_DATE ]] && \
+     [[ $BIOS_RELEASE == $LAST_BIOS_RELEASE ]] && \
+     [[ $BIOS_VENDOR == $LAST_BIOS_VENDOR ]] && \
+     [[ $BIOS_VERSION == $LAST_BIOS_VERSION ]]; then
+    echo "Reenabling DSDT Override for $BIOS_VERSION BIOS." 
+    DSDT=$LAST_DSDT
+else
+    echo "No matching BIOS found. DSDT Override skipped/removed."
+    _update_grub
+    [[ -e $OVERRIDE_LOG ]] && rm $OVERRIDE_LOG
+    exit 1
+fi
+
+_update_grub $DSDT
+_write_log

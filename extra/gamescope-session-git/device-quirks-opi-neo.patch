@@ -1,0 +1,35 @@
+--- gamescope-session/usr/share/gamescope-session-plus/device-quirks	2024-04-03 17:16:27.492271116 +0700
++++ gamescope-session/usr/share/gamescope-session-plus/device-quirks	2024-04-03 17:16:50.212493295 +0700
+@@ -239,3 +239,32 @@ if [[ ":83E1:" =~ ":$SYS_ID:"  ]]; then
+   fi
+ fi
+ 
++# Orange Pi Neo
++if [[ ":NEO-01:" =~ ":$SYS_ID:" ]]; then
++  # Dependent on a special --force-panel-type option in gamescope-plus
++  if ( gamescope --help 2>&1 | grep -e "--force-panel-type" > /dev/null ) ; then
++    export GAMESCOPECMD="/usr/bin/gamescope \
++      -e \
++      --generate-drm-mode fixed \
++      --xwayland-count 2 \
++      -O *,eDP-1 \
++      --default-touch-mode 4 \
++      --hide-cursor-delay 3000 \
++      --fade-out-duration 200 \
++      --force-panel-type external \
++      --force-external-orientation right "
++  # fallback for users of gamescope-git.
++  elif ( gamescope --help 2>&1 | grep -e "--force-orientation" > /dev/null ) ; then
++    export GAMESCOPECMD="/usr/bin/gamescope \
++      -e \
++      --generate-drm-mode fixed \
++      --xwayland-count 2 \
++      -O *,eDP-1 \
++      --default-touch-mode 4 \
++      --hide-cursor-delay 3000 \
++      --fade-out-duration 200 \
++      --force-orientation right "
++  fi
++  # Set refresh rate range and enable refresh rate switching
++  export STEAM_DISPLAY_REFRESH_LIMITS=60,120
++fi

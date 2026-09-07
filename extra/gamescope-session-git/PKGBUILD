@@ -1,0 +1,39 @@
+# Maintainer: Joaquín I. Aramendía <samsagax at gmail dot com>
+
+pkgname=gamescope-session-git
+_gitdir=gamescope-session
+pkgver=r319.1c14e09
+pkgrel=7
+pkgdesc="Common gamescope session files"
+arch=('any')
+url="https://github.com/ChimeraOS/gamescope-session"
+license=('MIT')
+groups=()
+depends=('gamescope')
+makedepends=('git')
+install=gamescope-session.install
+source=("${_gitdir}::git+https://github.com/ChimeraOS/${_gitdir}.git"
+        'disable-plymouth.patch' 'output-connector.patch')
+sha256sums=('SKIP'
+            '49d72f7ad3957d58dba3a03bca203b4070b0fb325d210559d620fb7ac9b18e9b'
+            'c193fb79a6fbc58f2ceb5c8b9654e2b14e4c169343275f781d0870ca70162d17')
+
+pkgver() {
+	cd "$srcdir/${_gitdir}"
+
+# Git, no tags available
+	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+	cd "$srcdir/${_gitdir}"
+	patch -p1 -i ../disable-plymouth.patch
+	#patch -p1 -i ../output-connector.patch
+
+}
+
+package() {
+	cd "$srcdir/${_gitdir}"
+	cp -rv ${srcdir}/${_gitdir}/usr ${pkgdir}/usr
+	install -Dm644 ${srcdir}/${_gitdir}/LICENSE ${pkgdir}/usr/share/licenses/${_gitdir}/LICENSE
+}

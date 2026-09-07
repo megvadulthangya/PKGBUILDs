@@ -1,0 +1,14 @@
+diff --git a/src/settings.c b/src/settings.c
+index ca63996..a684b6c 100644
+--- a/src/settings.c
++++ b/src/settings.c
+@@ -179,6 +179,9 @@ get_accent_color (void)
+     case G_DESKTOP_ACCENT_COLOR_SLATE:
+       color = ADW_ACCENT_COLOR_SLATE;
+       break;
++    case G_DESKTOP_ACCENT_COLOR_MAIA:
++      color = ADW_ACCENT_COLOR_MAIA;
++      break;
+     default:
+       color = ADW_ACCENT_COLOR_BLUE;
+     }

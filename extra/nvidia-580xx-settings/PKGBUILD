@@ -1,0 +1,80 @@
+# Maintainer: Philip Mueller <philm@manjaro.org>
+# Contributor: Vasiliy Stelmachenok <ventureo@cachyos.org>
+# Contributor: Sven-Hendrik Haase <svenstaro@archlinux.org>
+# Contributor: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Contributor: Peter Jung <ptr1337@archlinux.org>
+
+pkgbase=nvidia-580xx-settings
+pkgname=('nvidia-580xx-settings' 'libxnvctrl-580xx')
+pkgver=580.178.04
+pkgrel=1
+pkgdesc='Tool for configuring the NVIDIA graphics driver (580xx)'
+url='https://github.com/NVIDIA/nvidia-settings'
+arch=('x86_64')
+license=('GPL-2.0-only')
+makedepends=('jansson' 'gtk3' 'libxv' 'libvdpau' "nvidia-utils=${pkgver}" 'libxext' 'vulkan-headers')
+options=('staticlibs')
+source=(${pkgbase}-${pkgver}.tar.gz::https://github.com/NVIDIA/nvidia-settings/archive/${pkgver}.tar.gz
+        nvidia-settings-libxnvctrl_so.patch
+        nvidia-settings-lib-permissions.patch)
+sha512sums=('16768ef1fe1c846abc2e422eaf4b703a72aa446801fe8b7de5eff07157a907f064d2526306bb548746e3e929fce4c09ec9d90a6289f3b1e08080ccb6476c2bb8'
+            '0303fe615d6ef4e14112998c531a17613b94776f9a6a027ddb81e400fddd5f2ff15583da8b8631c2306aca854edf2f54a8007eb36f1732b4c064c857aaf268ae'
+            '92aaddab8a2aa65be7e29468070d7165832b7bd14bd912e7f5b5c981c38c7c7532f07c1338fabaf1a5cbc2d8b7ef8b849aec824fc51192ab83f1c60f0883e398')
+
+prepare() {
+  export PREFIX=/usr
+  export NV_USE_BUNDLED_LIBJANSSON=0
+  export OUTPUTDIR=out
+
+  cd nvidia-settings-${pkgver}
+  patch -Np1 -i "${srcdir}"/nvidia-settings-libxnvctrl_so.patch
+
+  # Fix lib permissions
+  # Fedora patch:
+  # https://github.com/negativo17/nvidia-settings
+  patch -Np1 -i "${srcdir}"/nvidia-settings-lib-permissions.patch
+}
+
+build() {
+  cd nvidia-settings-${pkgver}
+  export CFLAGS+=" -ffat-lto-objects"
+  make
+}
+
+package_nvidia-580xx-settings() {
+  depends=('jansson' 'gtk3' 'libxv' 'libvdpau' "nvidia-utils=${pkgver}" "libxnvctrl=${pkgver}")
+  provides=("nvidia-settings=${pkgver}")
+  conflicts=('nvidia-settings' 'nvidia-570xx-settings' 'nvidia-575xx-settings')
+  replaces=('nvidia-570xx-settings' 'nvidia-575xx-settings')
+
+  cd nvidia-settings-${pkgver}
+  DESTDIR="${pkgdir}" make install
+
+  install -D -m644 doc/nvidia-settings.desktop "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
+  install -D -m644 doc/nvidia-settings.png "${pkgdir}/usr/share/pixmaps/nvidia-settings.png"
+  sed \
+    -e 's:__UTILS_PATH__:/usr/bin:' \
+    -e 's:__PIXMAP_PATH__:/usr/share/pixmaps:' \
+    -e 's/__NVIDIA_SETTINGS_DESKTOP_CATEGORIES__/Settings;HardwareSettings;/' \
+    -e 's/Icon=.*/Icon=nvidia-settings/' \
+    -i "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
+}
+
+package_libxnvctrl-580xx() {
+  pkgdesc='NVIDIA NV-CONTROL X extension'
+  depends=('libxext')
+  provides=('libXNVCtrl.so' "libxnvctrl=${pkgver}")
+  conflicts=('libxnvctrl' 'libxnvctrl-570xx' 'libxnvctrl-575xx')
+  replaces=('libxnvctrl-570xx' 'libxnvctrl-575xx')
+
+  cd nvidia-settings-${pkgver}
+  install -Dm 644 doc/{NV-CONTROL-API.txt,FRAMELOCK.txt} -t "${pkgdir}/usr/share/doc/${pkgname}"
+  install -Dm 644 samples/{Makefile,README,*.c,*.h,*.mk} -t "${pkgdir}/usr/share/doc/${pkgname}/samples"
+
+  install -Dm 644 src/libXNVCtrl/*.h -t "${pkgdir}/usr/include/NVCtrl"
+  install -d "${pkgdir}/usr/lib"
+  cp -Pr src/out/libXNVCtrl.* -t "${pkgdir}/usr/lib"
+}
+
+# vim: ts=2 sw=2 et:

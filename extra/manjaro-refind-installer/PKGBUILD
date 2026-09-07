@@ -1,0 +1,36 @@
+# Maintainer: Stefano Capitani <stefanoatmanjarodotorg>
+
+pkgname='manjaro-refind-installer'
+pkgver=0.2
+pkgrel=6
+_commit=2961e0ab6e5719c4584ce8315601b16e620fc4ce
+pkgdesc="Manjaro rEFInd GUI installer"
+arch=('any')
+url='https://gitlab.manjaro.org/ste74/manjaro-refind-installer'
+license=('GPL3')
+depends=('refind' 'yad' 'mhwd' 'manjaro-icons' 'memtest86-efi')
+optdepends=('refind-theme-maia')
+source=("$pkgname-$_commit.tar.gz::$url/-/archive/$_commit/$pkgname-$_commit.tar.gz")
+md5sums=('62b4459af3ef8c426460c8d334ae0b35')
+
+package() {
+	
+	cd $pkgname-$_commit
+	install -Dm755 $pkgname $pkgdir/usr/bin/$pkgname
+	install -Dm755 default-kernel $pkgdir/usr/bin/default-kernel
+	install -Dm755 memtest-efi-install $pkgdir/usr/share/libalpm/scripts/memtest-efi-install
+	install -Dm755 memtest-efi-remove $pkgdir/usr/share/libalpm/scripts/memtest-efi-remove
+	
+	install -Dm644 refind.hook $pkgdir/usr/share/libalpm/hooks/refind.hook
+	install -Dm644 refind-kernel.hook $pkgdir/usr/share/libalpm/hooks/refind-kernel.hook
+	install -Dm644 memtest-efi-install.hook $pkgdir/usr/share/libalpm/hooks/memtest-efi-install.hook
+	install -Dm644 memtest-efi-remove.hook $pkgdir/usr/share/libalpm/hooks/memtest-efi-remove.hook
+	
+	install -Dm644 $pkgname.desktop $pkgdir/usr/share/applications/$pkgname.desktop
+
+	install -Dm644 org.manjaro-refind-installer.policy $pkgdir/usr/share/polkit-1/actions/org.manjaro-refind-installer.policy
+    
+}
+
+
+

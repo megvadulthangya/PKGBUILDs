@@ -1,0 +1,3 @@
+[manjaro-application-utility]
+source = "git"
+git = "https://gitlab.manjaro.org/applications/application-utility.git"

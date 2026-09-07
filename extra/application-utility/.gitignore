@@ -1,0 +1,8 @@
+application-utility
+*~
+locale/*
+__pycache__/
+pkg
+src
+.idea
+*.tar.*

@@ -1,0 +1,47 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: fhdk <fh at manjaro org>
+
+pkgname=manjaro-application-utility
+pkgver=1.4.1
+pkgrel=4
+pkgdesc="A simple application utility for Manjaro Linux"
+arch=('any')
+url="https://gitlab.manjaro.org/applications/application-utility"
+license=('GPL-3.0-or-later')
+depends=(
+  'gtk3'
+  'libpamac'
+  'manjaro-icons'
+  'pamac-cli'
+  'pamac-gtk'
+  'python'
+  'python-gobject'
+  'python-pillow'
+  'python-requests'
+)
+makedepends=(
+  'git'
+  'python-babel'
+  'python-build'
+  'python-installer'
+  'python-setuptools'
+  'python-wheel'
+)
+source=("git+${url}.git#tag=$pkgver")
+sha256sums=('f7d03abb6a5bd4f32b366dacac8fb985c22f5784a39aabad78d5e2483055c59a')
+
+prepare() {
+  cd application-utility
+  git cherry-pick -n 70d880a4d70949e060b1bfc99cec35e576594b32
+}
+
+build() {
+  cd application-utility
+  python setup.py compile_catalog --directory locale --domain application_utility
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd application-utility
+  python -m installer --destdir="$pkgdir" dist/*.whl
+}

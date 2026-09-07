@@ -1,0 +1,19 @@
+# Maintainer: linux-aarhus <fh at manjaro . org>
+
+pkgname='manjaro-get-iso'
+pkgver=0.21
+pkgrel=1
+pkgdesc='A tool to download Manjaro ISO'
+arch=('any')
+url='https://gitlab.manjaro.org/applications/manjaro-get-iso'
+license=('MIT')
+depends=('python-requests' '7zip')
+source=("https://gitlab.manjaro.org/applications/manjaro-get-iso/-/archive/v${pkgver}/${pkgname}-v${pkgver}.tar.gz")
+
+package() {
+    cd "${pkgname}-v${pkgver}"
+    install -Dm755 get-iso -t "$pkgdir/usr/bin"
+    install -Dm644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}"
+}
+
+sha256sums=('2b6f4bec056772f4b39372df197754470376f1dc3f2a058954e4fb49fa4b8b06')

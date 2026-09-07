@@ -1,0 +1,37 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bruno Pagani <archange@archlinux.org>
+# Contributor: Eli Schwartz <eschwartz@archlinux.org>
+# Contributor: Alex Filgueira <alexfilgueira (at antergos.com)>
+# Contributor: Nate Simon <aurpkg (at natesimon.net)>
+
+pkgname=xapp
+pkgver=3.2.0
+pkgrel=0
+pkgdesc="Common library for X-Apps project"
+arch=(x86_64)
+url="https://github.com/linuxmint/xapp"
+license=(GPL)
+depends=(libdbusmenu-gtk3 libgnomekbd xapp-symbolic-icons)
+optdepends=('python: for mate-desktop status applet')
+makedepends=(meson samurai gobject-introspection python-gobject vala glib2-devel)
+provides=(xapps)
+conflicts=(xapps)
+replaces=(xapps)
+source=(${url}/archive/${pkgver}/${pkgname}-${pkgver}.tar.gz)
+sha256sums=('ebec8ee808b0522899f8f37a94ed2ce636ca260d1147adcd5896ca53b2884414')
+b2sums=('7cf2947c186a7fc71ab61e045ae25f1ad0c2c964ae3f434504aae9d73309b8af3eae626d8d5d1beb54b9648616ab626a3fed6f8a8a94e869464ed7f3460e8359')
+
+build() {
+  arch-meson ${pkgname}-${pkgver} build \
+    --buildtype=debugoptimized
+# https://github.com/linuxmint/xapp/issues/169
+  samu -C build
+}
+
+package(){
+  DESTDIR="${pkgdir}" samu -C build install
+
+  # byte-compile python modules since meson does not implement autotools’ py-compile.
+  local site_packages=$(python -c "import site; print(site.getsitepackages()[0])")
+  python -m compileall -o 0 -o 1 -o 2 --hardlink-dupes -s "${pkgdir}" "${pkgdir}"${site_packages}
+}

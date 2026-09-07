@@ -1,0 +1,26 @@
+# Maintainer: Mark Wagie <mark@manjaro.org>
+# Contributor: Matti Hyttinen <matti@manjaro.org>
+
+pkgname=zensu
+pkgver=0.3
+pkgrel=7
+pkgdesc="A simple gksu replacement using kdialog, yad or zenity"
+arch=('any')
+url="https://github.com/Chrysostomus/zensu"
+license=('MIT')
+makedepends=('git')
+optdepends=('kdialog: Option for displaying dialog window'
+            'yad: Option for displaying dialog window'
+            'zenity: Option for displaying dialog window')
+provides=('gksu')
+conflicts=('gksu')
+_commit=8fcc6fb0b91e089eb90fb8448d6dae9d5611da3d
+source=("git+https://github.com/Chrysostomus/zensu.git#commit=$_commit")
+sha256sums=('8fb2db54de2999e1aeadb75c63e4b44c00a0a978bc99b8c0b9217ab98cf9cd69')
+
+package() {
+  cd "$srcdir/$pkgname"
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname"
+  install -Dm755 "$pkgname.sh" "$pkgdir/usr/bin/$pkgname"
+  ln -s "/usr/bin/$pkgname" "$pkgdir/usr/bin/gksu"
+}

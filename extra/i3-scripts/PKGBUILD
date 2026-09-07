@@ -1,0 +1,26 @@
+# Maintainer:
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=i3-scripts
+pkgver=20220913
+pkgrel=2
+pkgdesc="Scripts and wrappers for manjaro-i3"
+arch=('any')
+url="https://github.com/oberon-manjaro/i3-scripts"
+license=('GPL-3.0-or-later')
+makedepends=('git')
+_commit=ccce4375641da3936f435948828ce838fb2b67ad
+source=("git+https://github.com/oberon-manjaro/i3-scripts.git#commit=${_commit}")
+sha256sums=('1142ac4097d5db3ad0f0911b8c9e6bc29ade14209f560467d978b979c22dcd20')
+
+pkgver() {
+  cd "$pkgname"
+	printf "$(git show -s --format=%cd --date=format:%Y%m%d HEAD)"
+}
+
+package() {
+  cd "$pkgname"
+  install -Dm755 bin/* -t "$pkgdir/usr/bin/"
+  install -Dm755 local/* -t "$pkgdir/usr/local/bin/"
+  ln -s /usr/bin/setcursor "$pkgdir/usr/bin/fix_xcursor"
+}

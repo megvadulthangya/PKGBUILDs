@@ -1,0 +1,48 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=ruby-kwalify
+_gemname=${pkgname#ruby-}
+pkgver=0.7.2
+pkgrel=5
+pkgdesc='A parser, schema validator, and data binding tool for YAML and JSON.'
+arch=('any')
+#url="http://www.kuwata-lab.com/kwalify" (server error)
+url="https://github.com/mgallego/kwalify"
+license=('MIT')
+depends=('ruby')
+options=('!emptydirs')
+source=("https://rubygems.org/downloads/${_gemname}-$pkgver.gem")
+sha256sums=('4eee60e7dc2c4f182af30e1a64639bc1787a985462b4615bba7117acfd78fdd9')
+
+build() {
+  local _gemdir="$(ruby -e'puts Gem.default_dir')"
+
+  gem install \
+    --verbose \
+    --ignore-dependencies \
+    --no-document \
+    --no-user-install \
+    --install-dir "tmp_install${_gemdir}" \
+    --bindir "tmp_install/usr/bin" \
+    "$_gemname-$pkgver.gem"
+
+  # delete unnecessary files & folders
+  cd "tmp_install/$_gemdir"
+  find . -type f -name 'gem_make.out' -delete -o -name 'mkmf.log' -delete
+  rm -vrf cache
+  cd "gems/$_gemname-$pkgver"
+  rm -vrf setup.rb
+
+  # move documentation
+  install -vd "$srcdir/tmp_install/usr/share/doc/$pkgname"
+  mv -v doc doc-api examples CHANGES.txt README.txt "$srcdir/tmp_install/usr/share/doc/$pkgname"
+
+  # move license
+  install -vd "$srcdir/tmp_install/usr/share/licenses/$pkgname"
+  mv -v MIT-LICENSE "$srcdir/tmp_install/usr/share/licenses/$pkgname/LICENSE"
+}
+
+package() {
+  cp --archive --verbose tmp_install/* "${pkgdir}"
+}

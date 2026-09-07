@@ -1,0 +1,3 @@
+[ruby-kwalify]
+source = "gems"
+gems = "kwalify"

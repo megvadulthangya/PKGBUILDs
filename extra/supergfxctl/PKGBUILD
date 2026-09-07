@@ -1,0 +1,39 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=supergfxctl
+pkgver=5.2.7
+pkgrel=4
+pkgdesc="Super graphics mode controller for laptops with hybrid NVIDIA (deprecated)"
+arch=('x86_64')
+url="https://asus-linux.org"
+license=('MPL-2.0')
+depends=(
+  'libgcc'
+  'lsof'
+  'systemd-libs'
+)
+makedepends=('rust')
+conflicts=(
+  'bbswitch'
+  'cardwire'
+  'envycontrol'
+  'optimus-manager'
+)
+install="$pkgname.install"
+source=("https://gitlab.com/asus-linux/supergfxctl/-/archive/$pkgver/$pkgname-$pkgver.tar.gz")
+sha256sums=('bdd82f19094e11ede209830f62a2b408585b3994de800720ca23fb0a3dcd84a2')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  cargo fetch --locked --target host-tuple
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  ARGS+=" --frozen" make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

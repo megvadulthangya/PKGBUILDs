@@ -1,0 +1,11 @@
+post_install() {
+  systemctl enable --now supergfxd
+}
+
+post_upgrade() {
+  systemctl restart supergfxd
+}
+
+pre_remove() {
+  systemctl disable --now supergfxd
+}

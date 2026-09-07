@@ -1,0 +1,9 @@
+post_upgrade() {
+
+  # Update Inherits due to theme name change
+  if grep -wq "xcursor-breeze" /usr/share/icons/default/index.theme; then
+    sed -i 's/xcursor-breeze/breeze-icons/g' /usr/share/icons/default/index.theme
+  elif grep -wq "xcursor-breeze-snow" /usr/share/icons/default/index.theme; then
+    sed -i 's/xcursor-breeze-snow/breeze-icons-snow/g' /usr/share/icons/default/index.theme
+  fi
+}

@@ -1,0 +1,4 @@
+[wmutils]
+source = "git"
+git = "https://github.com/wmutils/core.git"
+prefix = "v"

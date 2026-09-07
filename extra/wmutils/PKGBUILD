@@ -1,0 +1,79 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+# Contributor: Camille <onodera@rizon>
+# Contributor: Alad <alad@archlinux.info>
+# Contributor: aksr <aksr at t-com dot me>
+
+pkgname=wmutils
+pkgver=1.7
+_optver=1.0
+pkgrel=2
+epoch=1
+pkgdesc="A set of tools for X windows manipulation."
+arch=('x86_64')
+url="https://github.com/wmutils"
+license=('ISC')
+depends=(
+  'libxcb'
+  'xcb-util'
+  'xcb-util-cursor'
+  'xcb-util-wm'
+)
+provides=(
+  'wmutils-contrib'
+  'wmutils-core'
+  'wmutils-opt'
+)
+makedepends=('git')
+_commit=863a97bef8c2b766390e736de8c7937d9bdb92da
+source=("$pkgname-core-$pkgver.tar.gz::https://github.com/wmutils/core/archive/v$pkgver.tar.gz"
+        "$pkgname-opt-${_optver}.tar.gz::https://github.com/wmutils/opt/archive/v${_optver}.tar.gz"
+        "git+https://github.com/wmutils/contrib.git#commit=${_commit}")
+sha256sums=('f57da66f7da7752b1b76030b1dfdfcc0b5483f6e6d9b6ff52c6a5bb3c2af1659'
+            'f30bb409bdcfa6720015dbca5356e04d4359cca3800a39948822152a94bcd055'
+            '7abc003ee32032b209b18efe8151b7866973c29f1115443539c0a4af13fa74db')
+
+prepare() {
+
+  # Fix LDFLAGS
+  for repo in "core-$pkgver" "opt-${_optver}" contrib/killwa; do
+    pushd "${repo}"
+    sed -i 's/@echo "LD $@"/@echo "LD $@ -o $@ $(LDFLAGS)"/g' Makefile
+    popd
+  done
+}
+
+build() {
+  pushd "core-$pkgver"
+  make
+  popd
+
+  pushd "opt-${_optver}"
+  make
+  popd
+
+  pushd contrib/killwa
+  make
+  popd
+}
+
+package() {
+  pushd "core-$pkgver"
+  make PREFIX='/usr' MANPREFIX=/usr/share/man DESTDIR="$pkgdir" install
+
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE-core"
+  popd
+
+  pushd "opt-${_optver}"
+  make PREFIX='/usr' DESTDIR="$pkgdir" install
+
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE-opt"
+  popd
+
+  pushd contrib/killwa
+  make PREFIX='/usr' DESTDIR="$pkgdir" install
+
+  install -Dm644 ../*.sh -t "$pkgdir/usr/share/doc/$pkgname/examples/"
+  install -Dm644 ../LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE-contrib"
+  popd
+}

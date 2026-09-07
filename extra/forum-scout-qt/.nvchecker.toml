@@ -1,0 +1,4 @@
+[forum-scout-qt]
+source = "git"
+git = "https://github.com/musqz/forum-scout-qt.git"
+prefix = "v"

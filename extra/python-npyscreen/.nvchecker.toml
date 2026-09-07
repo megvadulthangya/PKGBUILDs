@@ -1,0 +1,4 @@
+[python-npyscreen]
+source = "git"
+git = "https://github.com/npcole/npyscreen.git"
+prefix = "v"

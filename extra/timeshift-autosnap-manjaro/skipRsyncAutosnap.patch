@@ -1,0 +1,28 @@
+diff --unified --recursive --text a/timeshift-autosnap b/timeshift-autosnap
+--- a/timeshift-autosnap	2025-11-03 12:27:19.302109287 -0700
++++ b/timeshift-autosnap	2025-11-03 12:28:45.535831904 -0700
+@@ -45,6 +45,10 @@
+     echo "==> skipping timeshift-autosnap due skipAutosnap in $CONF_FILE set to TRUE." >&2; exit 0;
+ fi
+ 
++if $(get_property "skipRsyncAutosnap" "boolean" "false") && ! [ $(findmnt / -no fstype) == "btrfs" ] ; then
++    echo "==> skipping timeshift-autosnap due skipRsyncAutosnap in $CONF_FILE set to TRUE." >&2; exit 0;
++fi
++
+ readonly SNAPSHOT_DESCRIPTION=$(get_property "snapshotDescription" "string" "{timeshift-autosnap} {created before upgrade}")
+ readonly MIN_HOURS_BETWEEN_SNAPSHOTS=$(get_property "minHoursBetweenSnapshots" "non-negative-integer" "18")
+ 
+diff --unified --recursive --text a/timeshift-autosnap.conf b/timeshift-autosnap.conf
+--- a/timeshift-autosnap.conf	2025-11-03 12:27:19.302109287 -0700
++++ b/timeshift-autosnap.conf	2025-11-03 12:29:26.803217045 -0700
+@@ -6,6 +6,10 @@
+ # Default value is false.
+ skipAutosnap=false
+ 
++# skipRsyncAutosnap defines if timeshift-autosnap execution should be skipped on filesystems other than btrfs.
++# Default value is true.
++skipRsyncAutosnap=true
++
+ # deleteSnapshots defines if old snapshots should be deleted.
+ # Default value is true.
+ deleteSnapshots=true

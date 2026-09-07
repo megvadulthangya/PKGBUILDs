@@ -1,0 +1,38 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Matti Hyttinen <matti@manjaro.org>
+# Contributor: gobonja <gobonja@gmail.com>
+
+pkgname=timeshift-autosnap-manjaro
+_pkgname=timeshift-autosnap
+pkgver=0.10.0
+pkgrel=1
+pkgdesc="Timeshift auto-snapshot script which runs before package upgrade using Pacman hook."
+arch=('any')
+url="https://codeberg.org/racehd/timeshift-autosnap"
+license=('MIT')
+depends=('timeshift')
+makedepends=('git')
+optdepends=('grub-btrfs: For BTRFS snapshots in GRUB')
+provides=("${_pkgname}")
+conflicts=("${_pkgname}")
+backup=("etc/${_pkgname}.conf")
+source=("git+https://codeberg.org/racehd/timeshift-autosnap.git#tag=$pkgver"
+        'skipRsyncAutosnap.patch')
+sha256sums=('9aad4e6439567680b9535e21ce230eb1a7fbd3d1b9022a8c74e66249d1bbf862'
+            '9ea5e327bdb165cc5d646decb8397b02c931e30564d0cf5ff14754ec31e5b410')
+
+prepare() {
+  cd "${_pkgname}"
+
+  # Based on 
+  # https://gitlab.manjaro.org/Chrysostomus/timeshift-autosnap/-/commit/ab06ec8cbc5ec724567e74cb744ce01c6733fec8
+  patch -Np1 -i ../skipRsyncAutosnap.patch
+}
+
+package() {
+  cd "${_pkgname}"
+  install -Dm644 "00-${_pkgname}.hook" -t "${pkgdir}/usr/share/libalpm/hooks/"
+  install -Dm644 "${_pkgname}.conf" -t "${pkgdir}/etc/"
+  install -Dm755 "${_pkgname}" -t "${pkgdir}/usr/bin/"
+  install -Dm644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}/"
+}

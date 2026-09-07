@@ -1,0 +1,3 @@
+[timeshift-autosnap-manjaro]
+source = "git"
+git = "https://gitlab.manjaro.org/Chrysostomus/timeshift-autosnap.git"

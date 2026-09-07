@@ -1,0 +1,5 @@
+[plasma6-applets-optimus-gpu-switcher]
+source = "git"
+git = "https://github.com/enielrodriguez/optimus-gpu-switcher.git"
+prefix = "v"
+include_regex = "v*.*.*-kde6"

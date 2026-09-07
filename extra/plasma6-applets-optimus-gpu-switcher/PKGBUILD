@@ -1,0 +1,23 @@
+# Maintainer: Mark Wagie <mark dot wagie at manjaro dot org>
+
+pkgname=plasma6-applets-optimus-gpu-switcher
+pkgver=1.0.2
+pkgrel=1
+pkgdesc="KDE Plasma widget to change the GPU mode using the EnvyControl command line tool."
+arch=('any')
+url="https://github.com/enielrodriguez/optimus-gpu-switcher"
+license=('GPL-3.0-or-later')
+depends=('envycontrol' 'plasma-workspace')
+optdepends=('libnotify: desktop notifications'
+            'zenity: display GTK+ dialogs')
+conflicts=('plasma5-applets-optimus-gpu-switcher')
+replaces=('plasma5-applets-optimus-gpu-switcher')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver-kde6.tar.gz")
+sha256sums=('0e6f2f2341d0775742d3589c82814752a8dcca6aa351d6b383e1f2418a48eac3')
+
+package() {
+  cd "optimus-gpu-switcher-$pkgver-kde6"
+  install -Dm644 metadata.json -t \
+    "$pkgdir/usr/share/plasma/plasmoids/optimus-gpu-switcher/"
+  cp -r contents "$pkgdir/usr/share/plasma/plasmoids/optimus-gpu-switcher"
+}

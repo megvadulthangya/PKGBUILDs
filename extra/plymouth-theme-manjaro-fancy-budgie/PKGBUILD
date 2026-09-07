@@ -1,0 +1,27 @@
+# Contributor: Stefano Capitani <stefanoatmanjarodotorg>
+
+# based on original theme elementaryOSblueNature
+
+pkgname=plymouth-theme-manjaro-fancy-budgie
+pkgver=1.1.r2.gca022e7
+pkgrel=4
+pkgdesc="Manjaro Plymouth theme for Budgie Desktop."
+arch=('any')
+url="https://github.com/Ste74/plymouth-theme-manjaro-fancy-budgie"
+license=('GPL-3.0-or-later')
+depends=('plymouth')
+makedepends=('git')
+install='plymouth.install'
+_commit=ca022e7073953db4661d70cfe656fd0288d990d3
+source=("git+https://github.com/Ste74/plymouth-theme-manjaro-fancy-budgie.git#commit=${_commit}")
+sha256sums=('d26942bbf5352dd7dd2509537cb8dbaf62113027c49f74ce58f223786b8d7fdb')
+
+pkgver() {
+  cd "$pkgname"
+  git describe --long --tags --abbrev=7 | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+package() {
+  cd "$pkgname"
+  install -Dm644 *.png *.plymouth *.script -t "$pkgdir"/usr/share/plymouth/themes/manjaro-fancy-budgie/
+}

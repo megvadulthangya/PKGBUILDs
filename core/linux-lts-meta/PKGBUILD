@@ -1,0 +1,52 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgbase=linux-lts-meta
+pkgname=('linux-lts-meta' 'linux-lts-headers-meta')
+pkgdesc="Manjaro LTS kernel meta package"
+pkgver=6.1
+_pkgver="${pkgver//./}"
+pkgrel=1
+arch=('any')
+url="https://manjaro.org"
+license=('LicenseRef-None')
+
+_eol=(
+  '49'
+  '414'
+  '419'
+  '54'
+  '510' ## Dec 2026 Note: doesn't compile zfs-module
+  '515' ## Dec 2026 Note: doesn't compile with GCC16
+#  '61' ## Dec 2027
+#  '66' ## Dec 2027
+#  '612 ## Dec 2028
+#  '618 ## Dec 2028
+)
+
+_array() {
+  _array=''
+  for k in ${_eol[@]}; do
+    _array+=" linux${k}${_suffix}"
+  done
+  _array=(${_array})
+}
+
+_package() {
+  depends+=("linux${_pkgver}${_suffix}")
+  conflicts+=("${_array[@]}")
+  replaces+=("${_array[@]}")
+}
+
+package_linux-lts-meta() {
+  _array
+  _package
+}
+
+package_linux-lts-headers-meta() {
+  pkgdesc="Manjaro LTS kernel header files meta package"
+  replaces=('linux-lts-meta-headers')
+  _suffix="-headers"
+  _array
+  _package
+}

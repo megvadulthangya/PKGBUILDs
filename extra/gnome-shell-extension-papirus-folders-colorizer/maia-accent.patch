@@ -1,0 +1,18 @@
+diff --unified --recursive --text a/gnome-extensions/extension/shared/constants/constantTheme.js b/gnome-extensions/extension/shared/constants/constantTheme.js
+--- a/gnome-extensions/extension/shared/constants/constantTheme.js	2026-02-10 13:09:37.707172852 -0700
++++ b/gnome-extensions/extension/shared/constants/constantTheme.js	2026-02-10 13:10:21.790455331 -0700
+@@ -7,7 +7,7 @@
+  * Mapping from GNOME accent colors to Papirus folder colors.
+  */
+ export const AccentToPapirus = {
+-    blue: 'blue',
++    blue: 'adwaita',
+     teal: 'darkcyan',
+     green: 'green',
+     yellow: 'yellow',
+@@ -16,4 +16,5 @@
+     pink: 'pink',
+     purple: 'magenta',
+     slate: 'bluegrey',
++    maia: 'teal',
+ };

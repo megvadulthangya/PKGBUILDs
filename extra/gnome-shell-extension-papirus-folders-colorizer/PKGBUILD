@@ -1,0 +1,49 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=gnome-shell-extension-papirus-folders-colorizer
+pkgver=5
+pkgrel=1
+pkgdesc="A GNOME shell extension that automatically syncs your Papirus folder icons with your GNOME Accent Color."
+arch=('any')
+url="https://github.com/NiffirgkcaJ/papirus-folders-colorizer"
+license=('GPL-3.0-or-later')
+depends=(
+  'gnome-shell'
+  'papirus-folders'
+)
+makedepends=(
+  'git'
+  'jq'
+)
+source=("git+https://github.com/NiffirgkcaJ/papirus-folders-colorizer.git#tag=v$pkgver"
+        'maia-accent.patch')
+sha256sums=('484f1bf6cbafb36b3c6502601912aa7139324db77d6796877b1a2099ca32caab'
+            '39b14fe36be5d6e1c8236cd9c2a294c6d5a0760e2a5070c491b9920076d250b1')
+
+prepare() {
+  cd papirus-folders-colorizer
+
+  # GNOME blue > Papirus adwaita
+  # Manjaro Maia > Papirus teal
+  patch -Np1 -i ../maia-accent.patch
+}
+
+build() {
+  cd papirus-folders-colorizer
+  gnome-extensions pack gnome-extensions/extension \
+    --extra-source=shared/ \
+    --force
+}
+
+package() {
+  cd papirus-folders-colorizer
+  _uuid=$(jq -r .uuid gnome-extensions/extension/metadata.json)
+
+  install -d "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}"
+  bsdtar -xvf "${_uuid}.shell-extension.zip" -C \
+    "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}/" --no-same-owner
+
+  install -Dvm644 gnome-extensions/extension/schemas/*.gschema.xml -t \
+    "$pkgdir/usr/share/glib-2.0/schemas/"
+  rm -rfv "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}/schemas"
+}

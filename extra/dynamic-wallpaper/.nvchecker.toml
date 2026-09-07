@@ -1,0 +1,3 @@
+[dynamic-wallpaper]
+source = "git"
+git = "https://github.com/dusansimic/dynamic-wallpaper.git"

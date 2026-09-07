@@ -1,0 +1,54 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dog]org>
+# Contributor: artoo
+
+_mt_pkgver=0.15.9
+
+pkgname=('manjaro-iso-profiles-base'
+#         'manjaro-iso-profiles-official'
+#         'manjaro-iso-profiles-community'
+         )
+pkgbase=iso-profiles
+pkgver=17.1.12
+pkgrel=2
+arch=('any')
+url="https://gitlab.manjaro.org/profiles-and-settings/iso-profiles"
+license=('GPL-3.0-or-later')
+_commit=d186a76967841a6d50e94f4e0a87a1d1a8e69c2b  # branch/v17.1
+source=("git+${url}.git#commit=${_commit}")
+sha256sums=('3445b3443b3be4f7e30ed6f595c956da85140579900f859062a405b08bf1d073')
+
+_inst_dir(){
+    install -d "${pkgdir}/usr/share/manjaro-tools/${pkgbase}"
+    cp -a "${srcdir}/${pkgbase}/${1}" "${pkgdir}/usr/share/manjaro-tools/${pkgbase}/"
+}
+
+package_manjaro-iso-profiles-base() {
+    pkgdesc="Manjaro Linux iso profiles base"
+    provides=("${pkgbase}-base")
+    conflicts=("manjaro-tools-${pkgbase}" "manjaro-${pkgbase}" "manjaro-${pkgbase}-openrc")
+    replaces=("manjaro-tools-${pkgbase}" "manjaro-${pkgbase}" "manjaro-${pkgbase}-openrc")
+    optdepends=("manjaro-${pkgbase}-official: Manjaro Linux ISO-Image official profiles"
+                "manjaro-${pkgbase}-community: Manjaro Linux ISO-Image community profiles")
+
+    _inst_dir 'shared'
+
+    cp "$srcdir/${pkgbase}/repo_info" "${pkgdir}/usr/share/manjaro-tools/${pkgbase}/"
+}
+
+#package_manjaro-iso-profiles-official() {
+#    pkgdesc="Manjaro Linux official iso profiles"
+#    groups=('manjaro-tools')
+#    depends=("manjaro-tools-yaml>=${_mt_pkgver}")
+#    replaces=("manjaro-${pkgbase}-minimal")
+
+#    _inst_dir 'manjaro'
+#}
+
+#package_manjaro-iso-profiles-community() {
+#    pkgdesc='Manjaro Linux community iso profiles'
+#    groups=('manjaro-tools')
+#    depends=("manjaro-tools-yaml>=${_mt_pkgver}")
+
+#    _inst_dir 'community'
+#}
+

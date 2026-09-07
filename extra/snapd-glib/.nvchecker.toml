@@ -1,0 +1,3 @@
+[snapd-glib]
+source = "git"
+git = "https://github.com/canonical/snapd-glib.git"

@@ -1,0 +1,17 @@
+pkgname=os-installer-config-arkdep
+pkgver='1.0'
+pkgrel=7
+_commit=a9e2d4b8a949846cd400b378d5a785f91ad719c0
+pkgdesc='Default Manjaro Linux configuration files for the os-installer utilizing arkdep'
+url='https://github.com/manjaro/os-installer-config-arkdep'
+arch=('any')
+license=('BSD')
+provides=('os-installer-config')
+conflicts=('os-installer-config')
+source=("git+$url.git#commit=$_commit")
+sha256sums=('c2332b92db31b2691ee8a8b1f15611f7daf2de4246f3adbe97b9244d46db79fc')
+
+package() {
+	install -d $pkgdir/etc/os-installer
+	cp -r $srcdir/$pkgname/* $pkgdir/etc/os-installer
+}

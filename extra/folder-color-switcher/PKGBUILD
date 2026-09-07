@@ -1,0 +1,35 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Contributor: Helmut Stult
+# Contributor: twa022 <twa022 at gmail dot com>
+
+pkgname=folder-color-switcher
+pkgver=1.7.1
+pkgrel=1
+pkgdesc="Folder color switcher for Nemo and Caja"
+arch=('any')
+url="https://github.com/linuxmint/folder-color-switcher"
+license=('GPL-3.0-or-later')
+depends=('python')
+optdepends=(
+  'nemo-python: Nemo extension'
+  'python-caja: Caja extension'
+)
+source=("http://packages.linuxmint.com/pool/main/f/$pkgname/${pkgname}_${pkgver}.tar.xz")
+noextract=("${pkgname}_${pkgver}.tar.xz")
+sha256sums=('5b8b3e6a3450257e86b4025b26145bf21d18b97856ad755200089dd61815b8ee')
+
+prepare() {
+  mkdir -p "$pkgname-$pkgver"
+  bsdtar xf "${pkgname}_${pkgver}.tar.xz" --strip-components 1 -C "$pkgname-$pkgver"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  cp -r usr "$pkgdir"
+}

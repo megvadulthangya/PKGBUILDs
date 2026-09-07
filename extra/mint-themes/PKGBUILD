@@ -1,0 +1,40 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Contributor: Helmut Stult
+# Contributor: Sam Burgos < sam dot burgos1089 at gmail dot com >
+
+pkgname=mint-themes
+pkgver=2.3.9
+pkgrel=1
+epoch=1
+pkgdesc="A collection of Mint themes."
+arch=('any')
+url="https://github.com/linuxmint/mint-themes"
+license=('GPL-3.0-or-later')
+makedepends=('python-libsass')
+optdepends=(
+  'mint-x-icons'
+  'mint-y-icons'
+)
+options=('!strip')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+#source=("http://packages.linuxmint.com/pool/main/m/$pkgname/${pkgname}_${pkgver}.tar.xz")
+noextract=("${pkgname}_${pkgver}.tar.xz")
+sha256sums=('313c10ec5cb776eb10068079e9ff384fb1de4351f23a13ee2452592957bc01de')
+
+prepare() {
+#  mkdir -p "$pkgname-$pkgver"
+#  bsdtar xf "${pkgname}_${pkgver}.tar.xz" --strip-components 1 -C "$pkgname-$pkgver"
+
+  return 0
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  cp -r usr "$pkgdir/"
+}

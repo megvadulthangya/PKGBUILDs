@@ -1,0 +1,6 @@
+[os-prober]
+source = "archpkg"
+#source = 'regex'
+#url = 'http://ftp.debian.org/debian/pool/main/o/os-prober/'
+#regex = 'os-prober_([\d.]+).tar'
+

@@ -1,0 +1,48 @@
+msg() {
+  ALL_OFF="\e[1;0m"
+  BOLD="\e[1;1m"
+  GREEN="${BOLD}\e[1;32m"
+  local mesg=$1; shift
+  printf "${GREEN}==>${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}\n" "$@" >&2
+}
+
+restore_conf() {
+  PAMAC_NEW="$(date +%m%d%M%S)"
+  if [ -f "/etc/pamac.conf.pacsave" ]; then
+    msg "You had an old /etc/pamac.conf.pacsave file. We restore it for you."
+    msg "You can find your new pamac.conf saved as \`/etc/pamac-new-${PAMAC_NEW}.conf\`"
+    mv /etc/pamac.conf /etc/pamac-new-${PAMAC_NEW}.conf
+    mv /etc/pamac.conf.pacsave /etc/pamac.conf
+  fi
+}
+
+
+post_install() {
+  # enable systemd timers
+  systemctl enable pamac-cleancache.timer pamac-mirrorlist.timer
+}
+
+post_upgrade() {
+  # remove file (#28, #29)
+  [[ -e /var/tmp/pamac/dbs/sync/refresh_timestamp ]] && rm -f /var/tmp/pamac/dbs/sync/refresh_timestamp
+
+  # restore old conf
+  if [ "$(vercmp $2 7.3.5-3)" -lt 0 ]; then
+    restore_conf
+  fi
+
+  if [ "$(vercmp $2 8.0.3-5)" -lt 0 ]; then
+    # remove wrong placed symlinks
+    msg "Updating timer symlinks"
+    [[ -e /etc/systemd/system/multi-user.target.wants/pamac-cleancache.timer ]] && rm -f /etc/systemd/system/multi-user.target.wants/pamac-cleancache.timer
+    [[ -e /etc/systemd/system/multi-user.target.wants/pamac-mirrorlist.timer ]] && rm -f /etc/systemd/system/multi-user.target.wants/pamac-mirrorlist.timer
+
+    # enable systemd timers
+    systemctl enable pamac-cleancache.timer pamac-mirrorlist.timer
+  fi
+}
+
+pre_remove() {
+  # disable systemd timers
+  systemctl disable pamac-cleancache.timer pamac-mirrorlist.timer
+}

@@ -1,0 +1,193 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Maintainer: Philip Müller <philm@manjaro.org>
+# Contributor: Helmut Stult
+
+pkgbase=libpamac
+pkgname=(
+  'libpamac'
+  'libpamac-snap-plugin'
+  'libpamac-flatpak-plugin'
+#  'libpamac-aur-plugin'
+#  'libpamac-appstream-plugin'
+)
+pkgver=11.7.4
+pkgrel=7
+_sover=11.7
+pkgdesc="Library for Pamac package manager based on libalpm"
+arch=('x86_64' 'aarch64')
+url="https://github.com/manjaro/libpamac"
+license=('GPL-3.0-or-later')
+depends=(
+  'appstream'
+  'dbus-glib'  ## deprecated, is this still needed?
+  'git'
+  'glib2'
+  'glibc'
+  'json-glib'
+  'libalpm.so=16'
+  'libsoup3'
+  'pacman'
+  'pacman-mirrors'
+  'polkit'
+)
+makedepends=(
+  'asciidoc'
+  'flatpak'
+  'git'
+  'gobject-introspection'
+  'meson'
+  'snapd'
+  'snapd-glib'
+  'vala'
+)
+options=('debug')
+source=("git+https://github.com/manjaro/libpamac.git#tag=$pkgver")
+sha256sums=('13f531db76921740e7d5b2478cc774d29757313ff4a85befe5c683c6b0cd0d47')
+
+_backports=(
+  add94a888180ddbe04acae082e9db5cfb34c2fcd
+  c7efe923f980a3f5966f376bd6d6e6146539a970
+)
+
+_reverts=(
+)
+
+_create_links() {
+  # create soname links
+  find "$pkgdir" -type f -name '*.so*' ! -path '*xorg/*' -print0 | while read -d $'\0' _lib; do
+      _soname=$(dirname "${_lib}")/$(readelf -d "${_lib}" | grep -Po 'SONAME.*: \[\K[^]]*' || true)
+      _base=$(echo ${_soname} | sed -r 's/(.*)\.so.*/\1.so/')
+      [[ -e "${_soname}" ]] || ln -s $(basename "${_lib}") "${_soname}"
+      [[ -e "${_base}" ]] || ln -s $(basename "${_soname}") "${_base}"
+  done
+}
+
+prepare() {
+  cd "$pkgbase"
+
+  local _c _l
+  for _c in "${_backports[@]}"; do
+    if [[ "${_c}" == *..* ]]; then _l='--reverse'; else _l='--max-count=1'; fi
+    git --no-pager log --oneline "${_l}" "${_c}"
+    git cherry-pick --mainline 1 --no-commit "${_c}"
+  done
+  for _c in "${_reverts[@]}"; do
+    if [[ "${_c}" == *..* ]]; then _l='--reverse'; else _l='--max-count=1'; fi
+    git log --oneline "${_l}" "${_c}"
+    git revert --mainline 1 --no-commit "${_c}"
+  done
+
+  # /etc/dbus-1/system.d/org.manjaro.pamac.daemon.conf should be in /usr/share/dbus-1/system.d/
+  sed -i "s/sysconfdir'), 'dbus-1/datadir'), 'dbus-1/g" data/dbus/meson.build
+}
+
+build() {
+  arch-meson "$pkgbase" build \
+    -Denable-snap=true \
+    -Denable-flatpak=true
+  meson compile -C build
+}
+
+package_libpamac() {
+  provides=(
+    "libpamac.so.${pkgver//.*/}"
+    'pamac-common'
+    "libpamac-appstream.so.${pkgver//.*/}"
+    'libpamac-appstream-plugin'
+    "libpamac-aur.so.${pkgver//.*/}"
+    'libpamac-aur-plugin'
+  )
+  conflicts=(
+    'libpamac-aur-plugin'
+    'libpamac-appstream-plugin'
+  )
+  replaces=(
+    'pamac-common'
+  )
+  backup=('etc/pamac.conf')
+  install="$pkgname.install"
+
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+
+  cd "$pkgbase"
+
+  # remove libpamac-snap
+  rm "$pkgdir/usr/lib/$pkgbase-snap".{so,so.*}
+
+  # remove libpamac-flatpak
+  rm "$pkgdir/usr/lib/$pkgbase-flatpak".{so,so.*}
+
+  # remove libpamac-appstream
+  #rm "$pkgdir/usr/lib/$pkgbase-appstream".{so,so.*}
+
+  # remove libpamac-aur
+  #rm "$pkgdir/usr/lib/$pkgbase-aur".{so,so.*}
+}
+
+package_libpamac-snap-plugin() {
+  pkgdesc="Snap plugin for Pamac"
+  depends=(
+    'libpamac'
+    'snapd'
+    'snapd-glib'
+  )
+  provides=(
+    "libpamac-snap.so.${pkgver//.*/}"
+    'pamac-snap-plugin'
+  )
+  replaces=('pamac-snap-plugin')
+
+  install -Dm755 "build/src/$pkgbase-snap.so.${_sover}" -t "$pkgdir/usr/lib/"
+
+  _create_links
+}
+
+package_libpamac-flatpak-plugin() {
+  pkgdesc="Flatpak plugin for Pamac"
+  depends=(
+    'flatpak'
+    'libpamac'
+  )
+  provides=(
+    "libpamac-flatpak.so.${pkgver//.*/}"
+    'pamac-flatpak-plugin'
+  )
+  replaces=(
+    'pamac-flatpak-plugin'
+  )
+  install="$pkgname.install"
+
+  install -Dm755 "build/src/$pkgbase-flatpak.so.${_sover}" -t "$pkgdir/usr/lib/"
+
+  _create_links
+}
+
+package_libpamac-appstream-plugin() {
+  pkgdesc="Appstream plugin for Pamac"
+  depends=(
+    'appstream'
+    'libpamac'
+  )
+  provides=(
+    "libpamac-appstream.so.${pkgver//.*/}"
+  )
+
+  install -Dm755 "build/src/$pkgbase-appstream.so.${_sover}" -t "$pkgdir/usr/lib/"
+
+  _create_links
+}
+
+package_libpamac-aur-plugin() {
+  pkgdesc="AUR plugin for Pamac"
+  depends=(
+    'git'
+    'libpamac'
+  )
+  provides=(
+    "libpamac-aur.so.${pkgver//.*/}"
+  )
+
+  install -Dm755 "build/src/$pkgbase-aur.so.${_sover}" -t "$pkgdir/usr/lib/"
+
+  _create_links
+}

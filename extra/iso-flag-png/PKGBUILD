@@ -1,0 +1,16 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=iso-flag-png
+pkgver=1.0.4
+pkgrel=2
+pkgdesc="ISO country flags in PNG format"
+arch=('any')
+url="https://github.com/linuxmint/flags"
+license=('GPL-3.0-or-later')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/linuxmint/flags/archive/refs/tags/$pkgver.tar.gz")
+sha256sums=('0df77567804cb3e6f000a0590a445dfa96b69ef7d9f46381ddc8d5c22e602616')
+
+package() {
+  cd "flags-$pkgver"
+  install -Dm644 "usr/share/$pkgname"/*.png -t "$pkgdir/usr/share/$pkgname/"
+}

@@ -1,0 +1,64 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Luke Featherston <lukefeatherston1223 at gmail dot com>
+
+pkgname=gearlever
+pkgver=4.6.2
+pkgrel=1
+pkgdesc="Manage AppImages with ease"
+arch=('x86_64')
+url="https://gearlever.mijorus.it"
+license=('GPL-3.0-or-later')
+depends=(
+  '7zip'
+  'binutils'
+  'dwarfs'
+  'fuse2'
+  'gtk4'
+  'libadwaita'
+  'python-dbus'
+  'python-desktop-entry-lib'
+  'python-ftputil'
+  'python-gobject'
+  'python-pyxdg'
+  'python-requests'
+  'squashfs-tools'
+  'which'
+)
+makedepends=('meson')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/mijorus/gearlever/archive/refs/tags/$pkgver.tar.gz")
+sha256sums=('9f8f7a43d51e8ddcb66ee1d9aa5e6d1b9f5948c70e51be89e5bac045a01bd9ca')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+
+  # Use 7z instead of 7zz
+  sed -i 's/7zz/7z/g' src/providers/AppImageProvider.py
+
+  # Set path to get_appimage_offset script
+  sed -i "s/get_appimage_offset/\/usr\/share\/$pkgname\/get_appimage_offset/g" \
+    src/providers/AppImageProvider.py
+
+  # Correct CLI usage dialog
+  sed -i "s/flatpak run {APP_ID}/$pkgname/g" src/Cli.py
+}
+
+build() {
+  arch-meson "$pkgname-$pkgver" build
+  meson compile -C build
+}
+
+check() {
+  meson test -C build --no-rebuild --print-errorlogs
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+
+  cd "$pkgname-$pkgver"
+  install -Dvm755 build-aux/get_appimage_offset.sh \
+    "$pkgdir/usr/share/$pkgname/get_appimage_offset"
+
+  # remove stray meson.build files
+  rm -v "$pkgdir/usr/share/$pkgname/$pkgname/meson.build"
+  rm -v "$pkgdir/usr/share/icons/hicolor/scalable/actions/meson.build"
+}

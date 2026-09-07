@@ -1,0 +1,43 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=gnome-shell-extension-supergfxctl
+pkgver=5.2.7
+pkgrel=1
+pkgdesc="GNOME Shell Extension for visualizing supergfxctl settings and status."
+arch=('any')
+url="https://gitlab.com/asus-linux/supergfxctl-gex"
+license=('MPL-2.0')
+depends=(
+  'gnome-shell'
+  'supergfxctl'
+)
+makedepends=(
+  'jq'
+  'npm'
+)
+source=("$url/-/archive/v$pkgver/supergfxctl-gex-v$pkgver.tar.gz")
+sha256sums=('6220732d0d31613ad908b4505ae1a726a1c2509ee0689ffb0999484d5bc0b58f')
+
+build() {
+  cd "supergfxctl-gex-v$pkgver"
+  export npm_config_cache="$srcdir/npm_cache"
+  npm install
+  npm run build
+
+  pushd _build
+  gnome-extensions pack \
+    --extra-source=helpers/ \
+    --extra-source=modules/ \
+    --extra-source=resources/ \
+    --force
+  popd
+}
+
+package() {
+  cd "supergfxctl-gex-v$pkgver"
+  _uuid=$(jq -r .uuid metadata.json)
+
+  install -d "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}"
+  bsdtar -xvf "_build/${_uuid}.shell-extension.zip" -C \
+    "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}/" --no-same-owner
+}

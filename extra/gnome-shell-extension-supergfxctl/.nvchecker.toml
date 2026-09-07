@@ -1,0 +1,4 @@
+[gnome-shell-extension-supergfxctl]
+source = "git"
+git = "https://gitlab.com/asus-linux/supergfxctl-gex.git"
+prefix = "v"

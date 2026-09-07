@@ -1,0 +1,21 @@
+diff --unified --recursive --text a/bin/downgrade b/bin/downgrade
+--- a/bin/downgrade	2026-03-03 08:00:01.000000000 -0700
++++ b/bin/downgrade	2026-03-03 08:30:55.489934816 -0700
+@@ -636,7 +636,16 @@
+ PACMAN_CONF="/etc/pacman.conf"
+ DOWNGRADE_ARCH="$(pacman-conf Architecture | head -n 1)"
+ DOWNGRADE_ALA_URL="https://archive.archlinux.org"
+-DOWNGRADE_FROM_ALA=1
++# Disable A.L.A. only in stable branch
++if [ ! "$(pacman-mirrors -aG)" == stable ] || [ "$DOWNGRADE_FROM_ALA" = "1" ] ; then
++  DOWNGRADE_FROM_ALA=1
++else
++  echo
++  echo "Downgrading from A.L.A. is disabled on the stable branch. To override this behavior, set DOWNGRADE_FROM_ALA to 1."
++  echo "See https://wiki.manjaro.org/index.php/Downgrading_packages  for more details."
++  echo
++  DOWNGRADE_FROM_ALA=0
++fi
+ DOWNGRADE_FROM_CACHE=1
+ DOWNGRADE_MAXDEPTH=2
+ DOWNGRADE_CONF="/etc/xdg/downgrade/downgrade.conf"

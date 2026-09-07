@@ -1,0 +1,83 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: KokaKiwi <kokakiwi+aur@kokakiwi.net>
+
+pkgname=dwarfs
+pkgver=0.15.7
+pkgrel=1
+pkgdesc="A fast high compression read-only file system"
+arch=('x86_64' 'aarch64')
+url="https://github.com/mhx/dwarfs"
+license=('GPL-3.0-or-later AND MIT')
+depends=(
+  'boost-libs'
+  'brotli'
+  'flac'
+  'fmt'
+  'fuse3'
+  'jemalloc'
+  'libarchive'
+  'lz4'
+  'openssl'
+  'xxhash'
+  'xz'
+  'zstd'
+)
+makedepends=(
+  'boost'
+  'cmake'
+  'chrono-date'
+  'gtest'
+  'libdwarf'
+  'nlohmann-json'
+  'parallel-hashmap'
+#  'python'            # only required when building from git
+#  'python-mistletoe'  # only required when building from git
+  'range-v3'
+#  'ruby-ronn'         # only required when building from git
+  'utf8cpp'
+)
+source=("https://github.com/mhx/dwarfs/releases/download/v$pkgver/$pkgname-$pkgver.tar.xz")
+sha256sums=('363c7fdbf7bad490a6b8d63186da8643c1aeb17ca54cce1193d7b0ebc57bc6bd')
+
+build() {
+  local cmake_options=(
+    -B build
+    -S "$pkgname-$pkgver"
+    -W no-author
+    -D CMAKE_BUILD_TYPE='RelWithDebInfo'
+    -D CMAKE_INSTALL_PREFIX='/usr'
+    -D CMAKE_INSTALL_SBINDIR='bin'
+    -D WITH_TESTS='ON'
+    -D PREFER_SYSTEM_GTEST='ON'
+    -D DISABLE_CCACHE='ON'
+    -D DISABLE_MOLD='ON'
+    -D FETCHCONTENT_QUIET='OFF'
+    -D DWARFS_OPTIMIZE='2'
+  )
+  cmake "${cmake_options[@]}"
+  cmake --build build
+}
+
+check() {
+  # Sparse file tests fail in build environments where the filesystem does not
+  # support holes (e.g. tmpfs), so exclude them.
+  local excluded_tests="sparse|os_access_generic\.symlink_info"
+  local ctest_flags=(
+    --test-dir build
+    --output-on-failure
+    --parallel $(nproc)
+    --exclude-regex "$excluded_tests"
+  )
+  ctest "${ctest_flags[@]}"
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build
+
+  # Symlink (usr/bin/mount.dwarfs) points to non-existing /dwarfs
+  rm "$pkgdir/usr/bin/mount.$pkgname"
+  ln -s "/usr/bin/$pkgname" "$pkgdir/usr/bin/mount.$pkgname"
+
+  cd "$pkgname-$pkgver"
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

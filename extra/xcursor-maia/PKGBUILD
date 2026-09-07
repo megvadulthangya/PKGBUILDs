@@ -1,0 +1,29 @@
+# Maintainer: Philip Müller <philm@manjaro.org>
+# Contributor: Lane Wiscombe <assassin.anex@gmail.com>
+
+pkgname=xcursor-maia
+pkgver=20160417
+pkgrel=3
+pkgdesc="Manjaro Maia cursor theme"
+arch=('any')
+url="https://github.com/manjaro/maia-cursor"
+license=('GPL-3.0-or-later')
+makedepends=('git')
+_commit=45be28a035dfb282879f9ca97a31a7bc2c52e6cd
+source=("git+https://github.com/manjaro/maia-cursor.git#commit=${_commit}"
+        'thumbnail.png')
+sha256sums=('f15686e77e3275f1afe9fc7c3a423445592a8563a86985a86b057c364b47e2fd'
+            'd3fa8ee6b6da9f5f5c09aaa421fc28c54f2183c9e0e69c65d79b1c7a2e319333')
+
+pkgver() {
+  cd maia-cursor
+  printf "$(git show -s --format=%cd --date=format:%Y%m%d HEAD)"
+}
+
+package() {
+  cd maia-cursor
+  install -Dm644 "$srcdir/thumbnail.png" -t \
+    "$pkgdir/usr/share/icons/Maia-Cursor/cursors/"
+  cp -a Maia-Cursor/ $pkgdir/usr/share/icons/
+}
+

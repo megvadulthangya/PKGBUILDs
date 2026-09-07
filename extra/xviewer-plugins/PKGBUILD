@@ -1,0 +1,36 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Contributor: Nate Simon <aurpkg (at natesimon.net)>
+
+pkgname=xviewer-plugins
+pkgver=3.4.4
+pkgrel=1
+pkgdesc="Plugins for xviewer. X-Apps Project."
+arch=('x86_64')
+url="https://github.com/linuxmint/xviewer-plugins"
+license=('GPL-2.0-or-later')
+groups=('x-apps')
+depends=(
+  'cinnamon-desktop'
+  'lcms2'
+  'libexif'
+  'libpeas'
+  'librsvg'
+  'osm-gps-map'
+  'xviewer'
+)
+makedepends=(
+  'gobject-introspection'
+  'meson'
+)
+source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/${pkgver}.tar.gz")
+sha256sums=('b2429693d12ed0d5389fd8f5a714d58dde57faf2ddbcc86ec653824ce8858e0e')
+
+build() {
+  arch-meson "${pkgname}-${pkgver}" build
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+}

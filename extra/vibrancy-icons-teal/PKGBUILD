@@ -1,0 +1,43 @@
+# Maintainer:
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=vibrancy-icons-teal
+pkgver=2.7
+pkgrel=3
+pkgdesc="Regular and Teal versions of the Vibrancy Colors icon theme"
+arch=('any')
+url="https://www.ravefinity.com/p/vibrancy-colors-gtk-icon-theme.html"
+license=('CC-BY-SA-3.0 AND GPL-2.0-or-later AND GPL-3.0-or-later')
+conflicts=('vibracy-colors')
+options=('!strip')
+source=("https://launchpad.net/~ravefinity-project/+archive/ubuntu/ppa/+sourcefiles/vibrancy-colors/${pkgver}~xenial~Noobslab.com/vibrancy-colors_${pkgver}~xenial~Noobslab.com.tar.gz")
+noextract=("vibrancy-colors_${pkgver}~xenial~Noobslab.com.tar.gz")
+sha256sums=('f2837ca60a65af6a50448cc3ca70aae78719c11882a40dcf8e376b907d80d60b')
+
+prepare() {
+  mkdir -p "vibrancy-colors-$pkgver"
+  bsdtar xf "vibrancy-colors_${pkgver}~xenial~Noobslab.com.tar.gz" --strip-components 1 -C \
+    "vibrancy-colors-$pkgver"
+}
+
+package() {
+  cd "vibrancy-colors-$pkgver/Vibrancy-Colors"
+
+  _themes=(
+    Vibrancy-Colors
+    Vibrancy-Colors-Dark
+    Vibrancy-Colors-Full-Dark
+    Vibrancy-Colors-NonMono-Dark
+    Vibrancy-Colors-NonMono-Light
+    Vibrancy-Dark-Teal
+    Vibrancy-Full-Dark-Teal
+    Vibrancy-Light-Teal
+    Vibrancy-NonMono-Dark-Teal
+    Vibrancy-NonMono-Light-Teal
+  )
+
+  install -d "$pkgdir/usr/share/icons"
+  for theme in ${_themes[@]}; do
+    cp -r "${theme}" "$pkgdir/usr/share/icons"
+  done
+}

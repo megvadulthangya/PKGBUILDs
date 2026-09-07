@@ -1,0 +1,21 @@
+# Maintainer: Stefano Capitani <stefanoatmanjarodotorg>
+
+pkgname='manjaro-downloader-images'
+pkgver=0.2
+pkgrel=3
+_commit=745c7462d38b9ae4e8920c6aefb1b38eddefa791
+pkgdesc='Obtain the last testing ISO for the Manjaro Official images'
+arch=('any')
+url='https://gitlab.manjaro.org/ste74/manjaro-downloader-images'
+license=('GPL3')
+depends=('yad' 'manjaro-icons' 'curl' 'wget' 'jq' 'p7zip')
+source=("$pkgname-$_commit.tar.gz::$url/-/archive/$_commit/$pkgname-$_commit.tar.gz")
+sha256sums=('a2179babc4f1436e45e86496fcc35614fdf396140f843c72ef779aa107bafb43')
+
+package() {
+	
+	cd $pkgname-$_commit
+	install -Dm755 $pkgname.sh $pkgdir/usr/bin/$pkgname
+	install -Dm644 $pkgname.desktop $pkgdir/usr/share/applications/$pkgname.desktop    
+
+}

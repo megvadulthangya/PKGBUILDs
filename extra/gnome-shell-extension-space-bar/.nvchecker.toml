@@ -1,0 +1,4 @@
+[gnome-shell-extension-space-bar]
+source = "git"
+git = "https://github.com/christopher-l/space-bar.git"
+prefix = "v"

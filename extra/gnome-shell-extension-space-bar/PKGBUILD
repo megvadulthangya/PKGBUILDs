@@ -1,0 +1,43 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=gnome-shell-extension-space-bar
+pkgver=38
+pkgrel=1
+pkgdesc="GNOME Shell extension that shows workspaces buttons in top panel"
+arch=('any')
+url="https://github.com/christopher-l/space-bar"
+license=('LicenseRef-unknown')
+depends=('gnome-shell')
+makedepends=(
+  'git'
+  'jq'
+  'pnpm'
+  'typescript'
+  'zip'
+)
+source=("git+https://github.com/christopher-l/space-bar.git#tag=v$pkgver")
+sha256sums=('3897be8f82022e9139f6a0650907d8407b08df71beb4d102147777499801b998')
+
+prepare() {
+  cd space-bar
+  export PNPM_HOME="$srcdir/pnpm-home"
+  pnpm install --frozen-lockfile
+}
+
+build() {
+  cd space-bar
+  export PNPM_HOME="$srcdir/pnpm-home"
+  sh scripts/build.sh
+}
+
+package() {
+  cd space-bar
+  _uuid=$(jq -r .uuid metadata.json)
+
+  install -d "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}"
+  bsdtar -xvf "${_uuid}.zip" -C \
+    "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}/" --no-same-owner
+
+  install -Dvm644 dist/schemas/*.gschema.xml -t "$pkgdir/usr/share/glib-2.0/schemas/"
+  rm -rfv "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}/schemas"
+}

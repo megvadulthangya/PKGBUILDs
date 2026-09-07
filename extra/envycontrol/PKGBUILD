@@ -1,0 +1,43 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=envycontrol
+pkgver=3.5.2
+pkgrel=4
+pkgdesc="Easy GPU switching for Nvidia Optimus laptops"
+arch=('any')
+url="https://github.com/bayasdev/envycontrol"
+license=('MIT')
+depends=(
+  'mkinitcpio'
+  'python'
+  'xorg-xrandr'
+)
+makedepends=(
+  'python-build'
+  'python-installer'
+  'python-setuptools'
+  'python-wheel'
+)
+optdepends=(
+  'gnome-shell-extension-gpu-profile-selector: GNOME extension'
+  'plasma6-applets-optimus-gpu-switcher: KDE Widget'
+)
+conflicts=(
+  'cardwire'
+  'optimus-manager'
+  'supergfxctl'
+)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('c0a4127ab967ab99308b157de864bd1957d4ad2ac13bc4197e9cda5f381f5a41')
+
+build() {
+  cd "$pkgname-$pkgver"
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

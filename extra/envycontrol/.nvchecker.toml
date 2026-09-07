@@ -1,0 +1,4 @@
+[envycontrol]
+source = "git"
+git = "https://github.com/bayasdev/envycontrol.git"
+prefix = "v"

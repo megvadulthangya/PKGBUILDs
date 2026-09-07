@@ -1,0 +1,89 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Contributor: Helmut Stult
+# Contributor: Balló György <ballogyor+arch at gmail dot com>
+# Contributor: Nate Simon <njsimon10@gmail.com>
+
+pkgname=xviewer
+pkgver=3.4.16
+pkgrel=3
+pkgdesc="Simple image viewer"
+arch=('x86_64')
+url="https://github.com/linuxmint/xviewer"
+license=('GPL-2.0-or-later')
+groups=('x-apps')
+depends=(
+  'at-spi2-core'
+  'cairo'
+  'cinnamon-desktop'
+  'dconf'
+  'exempi'
+  'gdk-pixbuf2'
+  'glib2'
+  'glibc'
+  'gsettings-desktop-schemas'
+  'gtk3'
+  'hicolor-icon-theme'
+  'lcms2'
+  'libexif'
+  'libjpeg-turbo'
+  'libpeas'
+  'librsvg'
+  'libx11'
+  'shared-mime-info'
+  'xapp'
+  'zlib'
+)
+makedepends=(
+  'git'
+  'glib2-devel'
+  'gobject-introspection'
+  'gtk-doc'
+  'itstool'
+  'librsvg'
+  'meson'
+)
+checkdepends=(
+  'appstream'
+  'desktop-file-utils'
+)
+optdepends=(
+  'libavif: AVIF support'
+  'libheif: HEIF support'
+  'librsvg: for scaling svg images'
+  'webp-pixbuf-loader: webp support'
+  'xviewer-plugins: Extra plugins'
+  'yelp: for viewing the help manual'
+)
+source=("git+https://github.com/linuxmint/xviewer.git#tag=$pkgver"
+        '0001-libpeas-1.38.patch')
+sha256sums=('391f5e5033c1356b006682bfd5c68d22c32f3a6d3645befa7d5cab176effa9fc'
+            'c6dd5fc2d9cdc75786b814d57ea0254b64f8f4e7c13891b54c1ee9b0438b6bfb')
+
+prepare() {
+  cd "$pkgname"
+
+  # Fix build with libpeas 1.38
+  git apply -3 ../0001-libpeas-1.38.patch
+
+  # Update state after opening images
+  # https://github.com/linuxmint/xviewer/pull/238
+  sed -i '/xviewer_window_display_image (window, job->image);/a\		update_action_groups_state (window);' src/xviewer-window.c
+}
+
+build() {
+  arch-meson "$pkgname" build
+  meson compile -C build
+}
+
+check() {
+  desktop-file-validate "build/data/${pkgname}.desktop"
+  appstreamcli validate --no-net "build/data/${pkgname}.appdata.xml" || :
+}
+
+package(){
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+
+  cd "$pkgname"
+  install -Dm644 "debian/$pkgname.1" -t "$pkgdir/usr/share/man/man1/"
+}

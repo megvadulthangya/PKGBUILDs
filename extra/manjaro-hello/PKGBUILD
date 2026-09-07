@@ -1,0 +1,50 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <oberon@manjaro.org>
+# Contributor: Stefano Capitani <stefano@manjaro.org>
+
+pkgname=manjaro-hello
+pkgver=0.8.1
+pkgrel=3
+pkgdesc="A tool providing access to documentation and support for new Manjaro users."
+url="https://gitlab.manjaro.org/applications/manjaro-hello"
+arch=('any')
+license=('GPL-3.0-or-later')
+depends=(
+  'gtk3'
+  'manjaro-icons'
+  'python-gobject'
+)
+optdepends=(
+  'gnome-layout-switcher: enable easy desktop layout switching'
+  'manjaro-application-utility: enable easy application installations'
+  'manjaro-rescue: enable recovery option'
+  'timeshift: System restore utility'
+)
+makedepends=('git')
+source=("git+https://gitlab.manjaro.org/applications/manjaro-hello.git#tag=$pkgver")
+sha256sums=('5524e01f3d52d398937efd8f7b4bf7e604cb33659800da6965f934faca29ca1e')
+
+prepare() {
+  cd "$pkgname"
+  # Update Release Notes 25.0
+  git cherry-pick --mainline 1 --no-commit d06f5921b5f8919d682958af34b66421d6bd93ba
+  git cherry-pick --mainline 1 --no-commit a10bffe047c4fc0d767aef829ce4ecf0d8ade199
+  git cherry-pick --mainline 1 --no-commit f2a5dbcbea4e26dbd47551d9fb78f8c7cfef719c
+}
+
+package() {
+  cd "$pkgname"
+  install -d "$pkgdir/usr/share/manjaro/$pkgname"
+  cp -r data/* ui/* "$pkgdir/usr/share/manjaro/$pkgname/"
+  install -Dm644 "$pkgname.desktop" -t "$pkgdir/etc/skel/.config/autostart/"
+  install -Dm644 "$pkgname.desktop" -t "$pkgdir/usr/share/applications/"
+  install -Dm755 src/manjaro_hello.py "$pkgdir/usr/bin/$pkgname"
+
+  pushd po
+  for lang in $(ls *.po); do
+    lang=${lang::-3}
+    install -d "$pkgdir/usr/share/locale/${lang//_/-}/LC_MESSAGES"
+    msgfmt ${lang} -o "$pkgdir/usr/share/locale/${lang//_/-}/LC_MESSAGES/$pkgname.mo"
+  done
+  popd
+}

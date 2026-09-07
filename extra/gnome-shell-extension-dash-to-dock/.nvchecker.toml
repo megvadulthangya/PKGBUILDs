@@ -1,0 +1,5 @@
+[gnome-shell-extension-dash-to-dock]
+source = "git"
+git = "https://github.com/micheleg/dash-to-dock.git"
+prefix= "extensions.gnome.org-v"
+exclude_regex = "0.*|gnome-shell.*|rm.*|ubuntu.*"

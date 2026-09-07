@@ -1,0 +1,40 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Stefano Capitani <stefano@manjaro.org>
+# Contributor: drakkan <nicola dot murino at gmail dot com>
+# Contributor: XZS <d dot f dot fischer at web dot de>
+# Contributor: Carl George < arch at cgtx dot us >
+# Contributor: Janne Haapsaari <haaja@iki.fi>
+# Contributor: Christopher Krooß <didi2002 at web.de>
+
+pkgname=gnome-shell-extension-dash-to-dock
+pkgver=106
+pkgrel=1
+pkgdesc="A dock for the GNOME Shell"
+arch=('any')
+url="https://micheleg.github.io/dash-to-dock/"
+license=('GPL-2.0-or-later')
+depends=('gnome-shell')
+makedepends=(
+  'git'
+  'sassc'
+)
+checkdepends=('eslint') ## Tests not compatible with 10.x
+install='dash-to-dock.install'
+source=("git+https://github.com/micheleg/dash-to-dock.git#tag=extensions.gnome.org-v$pkgver?signed")
+sha256sums=('769a400216d535db65ecf61eb55fe069f6c862ca5e736e6bb3ef2faa9012c422')
+validpgpkeys=('D4C501DA48EB797A081750939449C2F50996635F') # Marco Trevisan <marco@trevi.me>
+
+build() {
+  cd dash-to-dock
+  make
+}
+
+# check() {
+#   cd dash-to-dock
+#   make check
+# }
+
+package() {
+  cd dash-to-dock
+  make VERSION="$pkgver" DESTDIR="$pkgdir" install
+}

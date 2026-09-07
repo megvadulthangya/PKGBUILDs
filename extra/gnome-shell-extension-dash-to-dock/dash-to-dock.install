@@ -1,0 +1,19 @@
+_uuid=dash-to-dock@micxgx.gmail.com
+
+post_upgrade() {
+
+  # fix for #1475 and get rid of untracked files once and for all
+  # https://github.com/micheleg/dash-to-dock/issues/1475#issuecomment-880138403
+  if [[ -d /usr/share/gnome-shell/extensions/${_uuid}/schemas/ ]]; then
+    rm -rf /usr/share/gnome-shell/extensions/${_uuid}/schemas/
+  fi
+}
+
+post_remove() {
+
+  # remove untracked files created by rebuilding schemas after installation
+
+  if [[ -d "/usr/share/gnome-shell/extensions/${_uuid}/" ]]; then
+    rm -rf /usr/share/gnome-shell/extensions/${_uuid}/
+  fi
+}

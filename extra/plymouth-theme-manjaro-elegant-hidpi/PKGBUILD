@@ -1,0 +1,30 @@
+# Contributor: Guinux <nuxgui@gmail.com>
+
+# Based on Arch-Logo Plymouth Theme by Carlos Molines (karlinux)
+# http://karlinux.deviantart.com/#/d3grgbm
+
+pkgname=plymouth-theme-manjaro-elegant-hidpi
+pkgver=2.0
+pkgrel=5
+pkgdesc="Elegant Manjaro theme for plymouth (HiDPI)"
+arch=('any')
+url="https://gitlab.manjaro.org/packages/extra/plymouth-theme-manjaro-elegant-hidpi"
+license=('GPL')
+depends=('plymouth')
+install='plymouth.install'
+source=('manjaro-elegant.png'
+        'password_field.png'
+        'progress_dot_on.png'
+        'progress_dot_off.png'
+        'manjaro-elegant-hidpi.plymouth'
+        'manjaro-elegant-hidpi.script')
+sha256sums=('51a322c70f36b5b0d4cc221f6090150c484f0c36323dbb872d80796b7ca3e396'
+            '021cf7b565fd18a5641727fdbb59b58f0fb4115d14ee62473566d1a8c0937845'
+            'ce072b6b97e4e2936c853e000f7f72bac53ab9001e436ce27b1dbf5fd522d1a1'
+            '139e49979616fc3c919f489e7796285d6040de8d9fcb977b8b3e04559769ff89'
+            '87e34cf6535b4a8c7eeb4934fc77e12fd1742ece04dbfdf6efa787fd217d251b'
+            '6278df853932bd4f9f4e8dd7854f1a7c98d2aead8a1872597396248321fd8707')
+
+package() {
+    install -Dm644 *.png *.plymouth *.script -t "$pkgdir/usr/share/plymouth/themes/manjaro-elegant-hidpi/"
+}

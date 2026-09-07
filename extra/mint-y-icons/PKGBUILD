@@ -1,0 +1,34 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Contributor: Helmut Stult
+# Contributor: Sam Burgos <santiago.burgos1089@gmail.com>
+
+pkgname=mint-y-icons
+pkgver=1.9.3
+pkgrel=1
+pkgdesc="A flat, colorful, and modern theme based on Paper and Moka."
+arch=('any')
+url="https://github.com/linuxmint/mint-y-icons"
+license=('GPL-3.0-or-later AND CC-BY-SA-4.0')
+depends=(
+  'gtk-update-icon-cache'
+  'xapp-symbolic-icons'
+)
+optdepends=('mint-x-icons: enable additional icons to inheritage')
+options=('!strip')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+#source=("http://packages.linuxmint.com/pool/main/m/$pkgname/${pkgname}_${pkgver}.tar.xz")
+#noextract=("${pkgname}_${pkgver}.tar.xz")
+sha256sums=('a427fec389dcf5d0571fa066056c9c8c605c798edc1692596d31893909ffb954')
+
+prepare() {
+  return 0
+
+#  mkdir -p "$pkgname-$pkgver"
+#  bsdtar xf "${pkgname}_${pkgver}.tar.xz" --strip-components 1 -C "$pkgname-$pkgver"
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  cp -r usr "$pkgdir"
+}

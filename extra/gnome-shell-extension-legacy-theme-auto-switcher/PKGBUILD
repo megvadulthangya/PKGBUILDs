@@ -1,0 +1,30 @@
+# Maintainter: Mark Wagie <mark at manjaro dot org>
+
+pkgname=gnome-shell-extension-legacy-theme-auto-switcher
+pkgver=r31.345eafd
+pkgrel=1
+pkgdesc="Change the GTK3 theme to light/dark variant based on the system color scheme"
+arch=('any')
+url="https://github.com/mukul29/legacy-theme-auto-switcher-gnome-extension"
+license=('AGPL-3.0-or-later')
+depends=('gnome-shell')
+makedepends=(
+  'git'
+  'jq'
+)
+_commit=345eafdf67dc927751b3631534c10b7fc6a0cf51
+source=("git+https://github.com/mukul29/legacy-theme-auto-switcher-gnome-extension.git#commit=${_commit}")
+sha256sums=('0a323ff099aa9a25afa8b0e29596d15444a839a1205e0d812006ff6442338a03')
+
+pkgver() {
+  cd legacy-theme-auto-switcher-gnome-extension
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+}
+
+package() {
+  cd legacy-theme-auto-switcher-gnome-extension
+  _uuid=$(jq -r .uuid metadata.json)
+
+  install -Dm644 extension.js metadata.json -t \
+    "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}/"
+}

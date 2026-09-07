@@ -1,0 +1,92 @@
+Only in b/.git: FETCH_HEAD
+diff --unified --recursive --text a/.git/logs/HEAD b/.git/logs/HEAD
+--- a/.git/logs/HEAD	2026-02-10 13:12:56.127315455 -0700
++++ b/.git/logs/HEAD	2026-02-10 13:13:12.168063098 -0700
+@@ -1,2 +1,4 @@
+ 0000000000000000000000000000000000000000 c761c8430c15152922cc3884f3380a8ad656efb7 Mark Wagie <yochanan@gazelle.(none)> 1770754376 -0700	clone: from /mnt/storage/Manjaro/extra/accent-color-change/adw-colors
+ c761c8430c15152922cc3884f3380a8ad656efb7 c761c8430c15152922cc3884f3380a8ad656efb7 Mark Wagie <yochanan@gazelle.(none)> 1770754376 -0700	checkout: moving from main to makepkg
++c761c8430c15152922cc3884f3380a8ad656efb7 c761c8430c15152922cc3884f3380a8ad656efb7 Mark Wagie <yochanan@gazelle.(none)> 1770754392 -0700	branch: Reset to c761c8430c15152922cc3884f3380a8ad656efb7
++c761c8430c15152922cc3884f3380a8ad656efb7 c761c8430c15152922cc3884f3380a8ad656efb7 Mark Wagie <yochanan@gazelle.(none)> 1770754392 -0700	checkout: moving from makepkg to makepkg
+diff --unified --recursive --text a/scripts/accent-color-change/accent-color-change.sh b/scripts/accent-color-change/accent-color-change.sh
+--- a/scripts/accent-color-change/accent-color-change.sh	2026-02-10 13:12:56.113483713 -0700
++++ b/scripts/accent-color-change/accent-color-change.sh	2026-02-10 13:15:20.886442697 -0700
+@@ -19,8 +19,8 @@
+ command -v gsettings >/dev/null || { echo "Error: gsettings not found."; exit 1; }
+ 
+ # List available colors
+-colors="blue teal green yellow orange red pink purple slate"
+-color_codes="\e[34m \e[36m \e[32m \e[33m \e[38;5;208m \e[31m \e[38;5;213m \e[35m \e[38;5;245m"
++colors="blue teal green yellow orange red pink purple slate maia"
++color_codes="\e[34m \e[36m \e[32m \e[33m \e[38;5;208m \e[31m \e[38;5;213m \e[35m \e[38;5;245m \e[32;1;24;144;200m"
+ RESET="\e[0m"
+ 
+ i=1
+@@ -30,10 +30,10 @@
+   i=$((i + 1))
+ done
+ 
+-echo "Choose a color (1-9):"
++echo "Choose a color (1-10):"
+ read -r choice
+ 
+-if [ "$choice" -ge 1 ] && [ "$choice" -le 9 ]; then
++if [ "$choice" -ge 1 ] && [ "$choice" -le 10 ]; then
+   selected_color=$(echo "$colors" | cut -d' ' -f"$choice")
+ 
+   # Map color names to escape codes using a case statement
+@@ -47,6 +47,7 @@
+     pink) COLOR="\e[38;5;213m" ;;
+     purple) COLOR="\e[35m" ;;
+     slate) COLOR="\e[38;5;245m" ;;
++    maia) COLOR="\e[32;1;24;144;200m" ;;
+     *) echo "Invalid color selection"; exit 1 ;;
+   esac
+ 
+@@ -81,9 +82,47 @@
+ @define-color accent_pink #d56199;
+ @define-color accent_purple #9141ac;
+ @define-color accent_slate #6f8396;
++@define-color accent_maia #16a085;
+ @define-color accent_bg_color @accent_$selected_color;
+ EOF
+ 
++  # Ensure papirus-folders command exists
++  command -v papirus-folders >/dev/null || { echo "Error: papirus-folders not found."; exit 1; }
++
++  # Define Papirus folder colors
++  if [ "$selected_color" = "blue" ]; then
++    papirus_color=adwaita
++  elif [ "$selected_color" = "teal" ]; then
++    papirus_color=darkcyan
++  elif [ "$selected_color" = "orange" ]; then
++    papirus_color=deeporange
++  elif [ "$selected_color" = "purple" ]; then
++    papirus_color=magenta
++  elif [ "$selected_color" = "slate" ]; then
++    papirus_color=bluegrey
++  elif [ "$selected_color" = "maia" ]; then
++    papirus_color=teal
++  else
++    papirus_color="$selected_color"
++  fi
++
++  # Get current icon theme
++  icon_theme=$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")
++
++  # Apply accent color to folder icons with papirus-folders if Papirus Icon theme is set
++  if [ "$icon_theme" = "Papirus-Dark" ]; then
++      papirus-folders -C "$papirus_color" --theme Papirus-Dark
++  elif [ "$icon_theme" = "Papirus-Light" ]; then
++      papirus-folders -C "$papirus_color" --theme Papirus-Light
++  else
++    echo "Set your icon theme to Papirus-Dark or Papirus-Light "
++    echo "and run the script again for matching folder colors!"
++  fi
++
++  # Set the accent color with gsettings for gdm via gdm user
++  # Currently not working: 'failed to commit changes to dconf: Cannot autolaunch D-Bus without X11 $DISPLAY'
++#  machinectl shell gdm@ /usr/bin/gsettings set org.gnome.desktop.interface accent-color "$selected_color"
++
+   echo "Accent color updated! Restart apps for changes to take effect."
+ 
+ else

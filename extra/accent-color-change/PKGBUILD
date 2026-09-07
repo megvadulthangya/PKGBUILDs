@@ -1,0 +1,42 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=accent-color-change
+pkgver=r172.c761c84
+pkgrel=3
+pkgdesc="Change your accent color globally on GNOME 47+"
+arch=('any')
+url="https://github.com/lassekongo83/adw-colors/tree/main/accent-color-change"
+license=('GPL-3.0-or-later')
+depends=(
+  'adw-gtk-theme'
+  'coreutils'
+  'glib2'
+  'papirus-folders'
+  'polkit'
+  'systemd'
+)
+makedepends=('git')
+_commit=c761c8430c15152922cc3884f3380a8ad656efb7
+source=("git+https://github.com/lassekongo83/adw-colors.git#commit=${_commit}"
+        'maia-accent-color.patch')
+sha256sums=('9046729f83fe852538590f33032c8d9919f07bb2a3da9cfe52302b62a0bc2a8d'
+            '08bee6563866bf6a33ef61ea2939b2f8c7e685fbcb32079234906d416372fe81')
+
+pkgver() {
+  cd adw-colors
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+}
+
+prepare() {
+  cd adw-colors
+
+  ##NOTE: Remove .git folder before running diff or patch
+
+  # maia accent color
+  patch -Np1 -i ../maia-accent-color.patch
+}
+
+package() {
+  cd adw-colors
+  install -Dm755 "scripts/$pkgname/$pkgname.sh" "$pkgdir/usr/bin/$pkgname"
+}

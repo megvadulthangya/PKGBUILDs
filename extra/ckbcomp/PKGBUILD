@@ -1,0 +1,23 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+# Contributor: Ramon Buldó
+
+# Only bother updating if Keyboard/ckbcomp has actually been updated
+
+pkgname=ckbcomp
+_pkgname=console-setup
+pkgver=1.245
+pkgrel=1
+pkgdesc="Compile a XKB keyboard description to a keymap suitable for loadkeys or kbdcontrol"
+arch=('any')
+url="https://salsa.debian.org/installer-team/console-setup"
+license=('GPL-2.0-or-later')
+depends=('perl')
+source=("$url/-/archive/$pkgver/$_pkgname-$pkgver.tar.gz")
+sha256sums=('4472abe9f89740e031f088b93081faf13023e2bc37b734b60df630a2c06d8a52')
+
+package() {
+  cd "$_pkgname-$pkgver"
+  install -Dm755 "Keyboard/$pkgname" -t "$pkgdir/usr/bin/"
+  install -Dm644 "man/$pkgname.1" -t "$pkgdir/usr/share/man/man1/"
+}

@@ -1,0 +1,3 @@
+[pix]
+source = "git"
+git = "https://github.com/linuxmint/pix.git"

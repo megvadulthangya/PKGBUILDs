@@ -1,0 +1,73 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Contributor: Nate Simon <njsimon10@gmail.com>
+
+pkgname=pix
+pkgver=3.4.10
+pkgrel=4
+pkgdesc="Image viewer and browser utility."
+arch=('x86_64')
+url="https://github.com/linuxmint/pix"
+license=('GPL-2.0-or-later')
+groups=('x-apps')
+depends=(
+  'exiv2'
+  'gsettings-desktop-schemas'
+  'gst-plugin-gtk'
+  'gst-plugins-base'
+  'gstreamer'
+  'gtk3'
+  'hicolor-icon-theme'
+  'lcms2'
+  'libcolord'
+  'libheif'
+  'libjpeg-turbo'
+  'libjxl'
+  'libpng'
+  'librsvg'
+  'libtiff'
+  'libwebp'
+  'libx11'
+  'xapp'
+  'xapp-symbolic-icons'
+  'zlib'
+)
+makedepends=(
+  'brasero'
+  'glib2-devel'
+  'itstool'
+  'libraw'
+  'meson'
+  'yelp-tools'
+)
+optdepends=(
+  'brasero: Burn discs'
+  'libgphoto2: Digital camera support'
+  'libraw: Some support for RAW photos'
+  'yelp: View help'
+)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz")
+sha256sums=('d765e779ee6e7d8220fe556c010c181ae69be059d53192d628f5bec5fdc9082b')
+
+build() {
+
+  # libsoup 2 EOL
+  # https://archlinux.org/todo/libsoup-2-eol/
+  # https://webkitgtk.org/2025/10/07/webkitgtk-soup2-deprecation.html
+  local meson_options=(
+    -Dwebservices=false
+  )
+
+  arch-meson "$pkgname-$pkgver" build "${meson_options[@]}"
+  meson compile -C build
+}
+
+check() {
+  meson test -C build --no-rebuild --print-errorlogs
+
+  desktop-file-validate build/data/*.desktop
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+}

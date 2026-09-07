@@ -1,0 +1,34 @@
+# Maintainer: Bernhard Landauer <bernhard@manjaro.org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+# Check and see if there were any new commits since the last release:
+#
+# Releases:
+# https://coreboot.org/downloads.html
+#
+# nvramtool commits:
+# https://github.com/coreboot/coreboot/tree/main/util/nvramtool
+
+pkgname=nvramtool
+pkgver=24.05
+pkgrel=1
+pkgdesc="Reads and writes coreboot parameters and displays information from the coreboot table in CMOS/NVRAM."
+arch=('x86_64')
+url="https://www.coreboot.org"
+license=('GPL-2.0-or-later')
+depends=('glibc')
+source=("https://coreboot.org/releases/coreboot-$pkgver.tar.xz"{,.sig})
+sha256sums=('e22afdbac40068ba687fd975f03f6b958599a32e70f539d9d0c74d16a63d7cea'
+            'SKIP')
+validpgpkeys=('574CE6F6855CFDEB7D368E9D19796C2B3E4F7DF7') # Martin Roth (coreboot developer) <martin@coreboot.org>
+
+build() {
+  cd "coreboot-$pkgver"
+  make -C "util/$pkgname"
+}
+
+package() {
+  cd "coreboot-$pkgver"
+  install -Dm755 "util/$pkgname/$pkgname" -t "$pkgdir/usr/bin/"
+  install -Dm644 "util/$pkgname/cli/$pkgname.8" -t "$pkgdir/usr/share/man/man8/"
+}

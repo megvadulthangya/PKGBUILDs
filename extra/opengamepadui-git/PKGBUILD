@@ -1,0 +1,76 @@
+# Maintainer: Derek J. Clark <derekjohn.clark@gmail.com>
+pkgname=opengamepadui-git
+_pkgbase=OpenGamepadUI
+pkgver=0.45.0.r0.gd0b4ab85
+_commit=d0b4ab8514ec54b4c1904455af766d358e5bcf82
+pkgrel=1
+pkgdesc="Open source game launcher"
+arch=('x86_64')
+url="https://github.com/ShadowBlip/OpenGamepadUI"
+license=('GPL')
+groups=()
+depends=('glibc' 'gcc-libs' 'libx11' 'libxres' 'libxcb' 'libxext' 'libxau'
+  'libxdmcp' 'gamescope' 'vulkan-tools' 'mesa-utils'
+)
+optdepends=('firejail' 'bubblewrap' 'wireplumber' 'networkmanager' 'bluez' 'dbus' 'powerstation' 'brightnessctl' 'inputplumber')
+makedepends=('godot<4.7' 'rust' 'pkgconf' 'make' 'unzip' 'wget' 'git' 'less')
+provides=('opengamepadui')
+conflicts=('opengamepadui-bin')
+#options=('!makeflags')
+source=("${_pkgbase}::git+https://github.com/ShadowBlip/${_pkgbase}.git#commit=$_commit"
+        manjaro.patch
+        fix-guide-non-inputplumber.patch)
+sha256sums=('72800bb22b89aa4437bd59cd83289d2c17b92b24bcaaa70ab0e878959bffc8cc'
+            '723f6dbdf65c6005ad870b1e57a50fe4f39677b0c7b581ab9748a72bbb0360a8'
+            '944d80a93ceafc631443ed7900461dc600b30dce0fb944e87473757035f86696')
+
+pkgver() {
+  cd "$srcdir/${_pkgbase}"
+  git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g' | cut -c 2-
+}
+
+_backports=(
+)
+
+_reverts=(
+)
+
+prepare() {
+  cd "$srcdir/${_pkgbase}"
+	
+  # Apply Changes
+  local _c _l
+  for _c in "${_backports[@]}"; do
+    if [[ "${_c}" == *..* ]]; then _l='--reverse'; else _l='--max-count=1'; fi
+    git log --oneline "${_l}" "${_c}"
+    git cherry-pick --mainline 1 --no-commit "${_c}"
+  done
+  # Revert Changes
+  for _c in "${_reverts[@]}"; do
+    if [[ "${_c}" == *..* ]]; then _l='--reverse'; else _l='--max-count=1'; fi
+    git log --oneline "${_l}" "${_c}"
+    git revert --mainline 1 --no-commit "${_c}"
+  done
+  local src
+  for src in "${source[@]}"; do
+    src="${src%%::*}"
+    src="${src##*/}"
+    src="${src%.zst}"
+    [[ $src = *.patch ]] || continue
+    echo "Applying patch $src..."
+    patch -Np1 < "../$src"
+  done
+}
+
+build() {
+  cd "$srcdir/${_pkgbase}"
+  export MAKEFLAGS=-j1
+  make build
+}
+
+package() {
+  options=('!strip')
+  cd "$srcdir/${_pkgbase}"
+
+  make install PREFIX="${pkgdir}/usr"
+}

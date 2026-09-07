@@ -1,0 +1,92 @@
+diff --unified --recursive --text a/src/adw-accent-color.c b/src/adw-accent-color.c
+--- a/src/adw-accent-color.c	2025-03-22 09:41:01.328394484 -0600
++++ b/src/adw-accent-color.c	2025-03-22 09:52:57.009086779 -0600
+@@ -46,7 +46,7 @@
+   const char *hex = NULL;
+ 
+   g_return_if_fail (self >= ADW_ACCENT_COLOR_BLUE);
+-  g_return_if_fail (self <= ADW_ACCENT_COLOR_SLATE);
++  g_return_if_fail (self <= ADW_ACCENT_COLOR_SLATE || self == ADW_ACCENT_COLOR_MAIA);
+   g_return_if_fail (rgba != NULL);
+ 
+   switch (self) {
+@@ -77,6 +77,9 @@
+   case ADW_ACCENT_COLOR_SLATE:
+     hex = "#6f8396";
+     break;
++  case ADW_ACCENT_COLOR_MAIA:
++    hex = "#16a085";
++    break;
+   default:
+     g_assert_not_reached ();
+   }
+@@ -104,7 +107,7 @@
+                                      GdkRGBA        *rgba)
+ {
+   g_return_if_fail (self >= ADW_ACCENT_COLOR_BLUE);
+-  g_return_if_fail (self <= ADW_ACCENT_COLOR_SLATE);
++  g_return_if_fail (self <= ADW_ACCENT_COLOR_SLATE || self == ADW_ACCENT_COLOR_MAIA);
+   g_return_if_fail (rgba != NULL);
+ 
+   dark = !!dark;
+@@ -186,6 +189,9 @@
+   if (h > 130)
+     return ADW_ACCENT_COLOR_GREEN;
+ 
++  if (h > 55 && c < 0.1)
++    return ADW_ACCENT_COLOR_MAIA;
++
+   if (h > 75.5)
+     return ADW_ACCENT_COLOR_YELLOW;
+ 
+diff --unified --recursive --text a/src/adw-accent-color.h b/src/adw-accent-color.h
+--- a/src/adw-accent-color.h	2025-03-22 09:41:01.328394484 -0600
++++ b/src/adw-accent-color.h	2025-03-22 09:56:03.462108371 -0600
+@@ -26,6 +26,8 @@
+   ADW_ACCENT_COLOR_PINK,
+   ADW_ACCENT_COLOR_PURPLE,
+   ADW_ACCENT_COLOR_SLATE,
++
++  ADW_ACCENT_COLOR_MAIA = ADW_ACCENT_COLOR_SLATE + 100,
+ } AdwAccentColor;
+ 
+ ADW_AVAILABLE_IN_1_6
+diff --unified --recursive --text a/src/adw-inspector-page.c b/src/adw-inspector-page.c
+--- a/src/adw-inspector-page.c	2025-03-22 09:41:01.333140461 -0600
++++ b/src/adw-inspector-page.c	2025-03-22 09:56:57.103289924 -0600
+@@ -160,6 +160,8 @@
+     return g_strdup (_("Purple"));
+   case ADW_ACCENT_COLOR_SLATE:
+     return g_strdup (_("Slate"));
++  case ADW_ACCENT_COLOR_MAIA:
++    return g_strdup (_("Maia"));
+   default:
+     g_assert_not_reached ();
+   }
+diff --unified --recursive --text a/src/adw-settings.c b/src/adw-settings.c
+--- a/src/adw-settings.c	2025-03-22 09:41:01.336140386 -0600
++++ b/src/adw-settings.c	2025-03-22 09:58:19.579398939 -0600
+@@ -174,9 +174,11 @@
+       self->accent_color = ADW_ACCENT_COLOR_PURPLE;
+     } else if (!g_strcmp0 (env, "slate")) {
+       self->accent_color = ADW_ACCENT_COLOR_SLATE;
++    } else if (!g_strcmp0 (env, "maia")) {
++      self->accent_color = ADW_ACCENT_COLOR_MAIA;
+     } else {
+       g_warning ("Invalid accent color %s (Expected one of: blue, teal, green,"
+-                 "yellow, orange, red, pink, purple, slate)", env);
++                 "yellow, orange, red, pink, purple, slate, maia)", env);
+     }
+   }
+ }
+diff --unified --recursive --text a/src/stylesheet/_colors.scss b/src/stylesheet/_colors.scss
+--- a/src/stylesheet/_colors.scss	2025-03-22 09:41:01.343450596 -0600
++++ b/src/stylesheet/_colors.scss	2025-03-22 09:59:21.859129627 -0600
+@@ -13,6 +13,7 @@
+   --accent-pink: #d56199;
+   --accent-purple: #9141ac;
+   --accent-slate: #6f8396;
++  --accent-maia: #16a085;
+ 
+   --accent-bg-color: @accent_bg_color;
+   --accent-fg-color: @accent_fg_color;

@@ -1,0 +1,56 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Maintainer: Philip Müller <philm@manjaro.org>
+# Contributor: Guillaume Benoit <guillaume@manjaro.org>
+
+pkgname=pamac-cli
+pkgver=11.7.4
+pkgrel=2
+pkgdesc="A CLI Package Manager based on libalpm with AUR support"
+arch=('x86_64' 'aarch64')
+url="https://github.com/manjaro/pamac-cli"
+license=('GPL-3.0-or-later')
+depends=(
+  'libpamac>=11.7.4'
+)
+optdepends=(
+  'plymouth: offline upgrade support'
+#  'libpamac-aur-plugin: for AUR support'
+)
+makedepends=(
+  'asciidoc'
+  'git'
+  'meson'
+  'vala'
+)
+conflicts=('pamac<=7.3.4-2')
+options=('debug')
+source=("git+https://github.com/manjaro/pamac-cli.git#tag=$pkgver")
+sha256sums=('a347066c47a3e6ad8d32f6b947f4568592bd1bf038ea9b72a387b6f81a95c0ee')
+
+_backports=(
+)
+
+prepare() {
+  cd "$pkgname"
+
+  local _c _l
+  for _c in "${_backports[@]}"; do
+    if [[ "${_c}" == *..* ]]; then _l='--reverse'; else _l='--max-count=1'; fi
+    git --no-pager log --oneline "${_l}" "${_c}"
+    git cherry-pick --mainline 1 --no-commit "${_c}"
+  done
+  for _c in "${_reverts[@]}"; do
+    if [[ "${_c}" == *..* ]]; then _l='--reverse'; else _l='--max-count=1'; fi
+    git --no-pager log --oneline "${_l}" "${_c}"
+    git revert --mainline 1 --no-commit "${_c}"
+  done
+}
+
+build() {
+  arch-meson "$pkgname" build
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+}

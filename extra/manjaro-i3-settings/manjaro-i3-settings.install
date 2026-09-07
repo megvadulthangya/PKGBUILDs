@@ -1,0 +1,3 @@
+post_upgrade() {
+    xset +fp /usr/share/fonts/misc/
+}

@@ -1,0 +1,25 @@
+msg() {
+    ALL_OFF="\e[1;0m"
+    BOLD="\e[1;1m"
+    GREEN="${BOLD}\e[1;32m"
+    local mesg=$1; shift
+    printf "${GREEN}==>${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}\n" "$@" >&2
+}
+
+post_install() {
+  # Grab the steam bootstrap for first boot
+  URL="https://steamdeck-packages.steamos.cloud/misc/steam-snapshots/steam_jupiter_stable_bootstrapped_20251031.0.tar.xz"
+  OUTPUT_FILE="/tmp/bootstraplinux_ubuntu12_32.tar.xz"
+  TARGET_FILE="/usr/lib/steam/bootstraplinux_ubuntu12_32.tar.xz"
+  msg "Downloading steam/bootstraplinux_ubuntu12_32.tar.xz ..."
+  curl -o "$OUTPUT_FILE" "$URL"
+   XZ_CHECKSUM=a013473d28a9d10a865b543ee1c42fa514c4af383b63f7dbf8e38d18e358ebdbc247caff1e39cc372a71b05fdd506f2356e1af0c5404a95f6615191d994e0fbf
+  BS_CHECKSUM=$(sha512sum ${OUTPUT_FILE} | cut -d " " -f1)
+  if [[ "$XZ_CHECKSUM" == "$BS_CHECKSUM" ]]; then
+     msg "moving $OUTPUT_FILE to $TARGET_FILE"
+     mv "$OUTPUT_FILE" "$TARGET_FILE"
+  else
+     msg "Extraction of steam/bootstraplinux_ubuntu12_32.tar.xz failed!"
+  fi
+  [[ -e "$OUTPUT_FILE" ]] && rm "$OUTPUT_FILE"
+}

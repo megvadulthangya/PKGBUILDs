@@ -1,0 +1,18 @@
+# Maintainer: Philip Müller <philm@manjaro.org>
+
+pkgname=decklike
+pkgver=20251031.0
+pkgrel=2
+pkgdesc="Steam BigPicture OOBE (Jupiter Stable bootstrapped)"
+arch=('any')
+url='https://steamdeck-packages.steamos.cloud/misc/steam-snapshots/?C=M&O=D'
+license=('GPL')
+package_decklike() {
+    depends=(steam gamescope-session-git curl tar os-session-select manjaro-handheld)
+    optdepends=('os-session-select-steam: For standard Steam BigPicture Mode by default'
+                'os-session-select-steamplus: For Steam-Plus OGUI Overlay Mode by default')
+    provides=(steam-deckify)
+    replaces=(steam-deckify)
+    conflicts=(steam-deckify)
+    install=install
+}

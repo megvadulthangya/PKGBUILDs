@@ -1,0 +1,41 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+# Maintainer: Bernhard Landauer <bernhard@manjaro.org>
+# Contributor: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+# Contributor: Ray Rashif <schiv@archlinux.org>
+# Contributor: Mateusz Herych <heniekk@gmail.com>
+# Contributor: Charles Lindsay <charles@chaoslizard.org>
+
+_linuxprefix=linux510
+
+_module=vhba-module
+pkgname="${_linuxprefix}-${_module}"
+pkgver=20260313
+pkgrel=5
+pkgdesc="Virtual SCSI adapter - Linux modules"
+arch=('x86_64')
+url="https://cdemu.sourceforge.io/"
+license=('GPL-2.0-or-later')
+depends=("${_linuxprefix}")
+makedepends=("${_linuxprefix}-headers")
+provides=("${_module}=$pkgver" "VHBA-MODULE")
+groups=("${_linuxprefix}-extramodules")
+source=("http://downloads.sourceforge.net/cdemu/${_module}-$pkgver.tar.xz")
+sha256sums=('293003bf5d9dc2b386db0d05f595c5548355a535d6dfc06fd379fd98bb190174')
+
+build() {
+  _kernver="$(cat /usr/src/${_linuxprefix}/version)"
+
+  cd "${_module}-$pkgver"
+  make KERNELRELEASE="${_kernver}"
+}
+
+package() {
+  _kernver="$(cat /usr/src/${_linuxprefix}/version)"
+
+  cd "${_module}-$pkgver"
+  install -Dm644 *.ko -t "$pkgdir/usr/lib/modules/${_kernver}/extramodules/"
+
+  # compress kernel modules
+  find "$pkgdir" -name '*.ko' -exec strip --strip-debug {} +
+  find "$pkgdir" -name '*.ko' -exec xz {} +
+}

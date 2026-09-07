@@ -1,0 +1,3 @@
+[legendary]
+source = "git"
+git = "https://github.com/legendary-gl/legendary.git"

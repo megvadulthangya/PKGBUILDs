@@ -1,0 +1,43 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Otreblan <otreblain@gmail.com>
+
+pkgname=legendary
+pkgver=0.21.0
+pkgrel=1
+pkgdesc="A free and open-source replacement for the Epic Games Launcher"
+arch=('any')
+url="https://github.com/legendary-gl/legendary"
+license=('GPL-3.0-or-later')
+depends=(
+  'python-filelock'
+  'python-pycryptodomex'
+  'python-requests'
+)
+makedepends=(
+  'python-build'
+  'python-installer'
+  'python-uv-build'
+  'python-wheel'
+)
+optdepends=(
+  'python-pywebview: Webview-based login support'
+)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz")
+sha256sums=('fffe135163c5033c72f02c176df2d75d31a3a5bb588b81440b0c46a42fcb40aa')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+
+  # Relax uv_build dependency
+  sed -i 's/uv_build>=0.11.4,<0.12/uv_build>=0.11.4/g' pyproject.toml
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+}

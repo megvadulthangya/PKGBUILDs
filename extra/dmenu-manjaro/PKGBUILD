@@ -1,0 +1,86 @@
+# Maintainer:
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+# Contributor: Chrysostomus <forum.manjaro.org/u/Chrysostomus>
+# Contributor: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Contributor: T.J. Townsend <blakkheim@archlinux.org>
+# Contributor: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Thorsten Töpper <atsutane-tu@freethoughts.de>
+# Contributor: Thayer Williams <thayer@archlinux.org>
+# Contributor: Jeff 'codemac' Mickey <jeff@archlinux.org>
+# Contributor: Jonathon Fernyhough
+# Contributor: Indian Sunset @idnsusnet
+
+pkgname=dmenu-manjaro
+_pkgname=dmenu
+pkgver=5.4
+pkgrel=1
+pkgdesc="Customized recency-aware dmenu for manjaro-i3 with xft- and mouse-support"
+arch=('x86_64' 'aarch64')
+url="https://tools.suckless.org/dmenu"
+license=('MIT')
+groups=('i3-manjaro')
+depends=(
+  'coreutils'
+  'fontconfig'
+  'freetype2'
+  'glibc'
+  'libfontconfig.so'
+  'libx11'
+  'libxinerama'
+  'libxft'
+  'noto-fonts'
+  'sh'
+)
+provides=("${_pkgname}" "${_pkgname}-xft")
+conflicts=("${_pkgname}" "${_pkgname}-xft")
+install="$pkgname.install"
+source=("https://dl.suckless.org/tools/${_pkgname}-$pkgver.tar.gz"
+        'dmenu-mousesupport-5.3.diff'
+        'dmenu-lineheight-5.2.diff'
+        'dmenu-xyw-5.2.diff'
+        'dmenu_recency'
+        'dmenurc')
+sha256sums=('8fbace2a0847aa80fe861066b118252dcc7b4ca0a0a8f3a93af02da8fb6cd453'
+            '1adecf4863a3667234ec8ed8e1e7350c946329c6f0fee56a001fa298f4d4e2cd'
+            'c563509830902b996c734ef1fd4d969c15adbc3d3b8b2626e07d58c7bc584b49'
+            'b4c8cf4f6527c537f8f20fd87685a6eee519eedb342cea4f72d1f21f1a6b28a1'
+            '6dc85c9245a8372ae4a6e4f5f95b8f9431dad67b53961857571b2226feacaafc'
+            'c0b773af5a1458036d242b19f2e45ed444e6e86d2cf15bedbfb996e8c2fd05b6')
+
+prepare() {
+  cd "${_pkgname}-$pkgver"
+  echo "CPPFLAGS+=${CPPFLAGS}" >> config.mk
+  echo "CFLAGS+=${CFLAGS}" >> config.mk
+  echo "LDFLAGS+=${LDFLAGS}" >> config.mk
+
+  # https://tools.suckless.org/dmenu/patches/mouse-support/
+  echo "add mouse support"
+  patch -p1 < ../dmenu-mousesupport-5.3.diff
+
+  # https://tools.suckless.org/dmenu/patches/line-height/
+  echo "lineheight patch"
+  patch -p1 < ../dmenu-lineheight-5.2.diff
+
+  # https://tools.suckless.org/dmenu/patches/xyw/
+  # modified to apply with lineheight patch
+  echo "xyw patch"
+  patch -p1 < ../dmenu-xyw-5.2.diff
+}
+
+build() {
+	cd "${_pkgname}-$pkgver"
+	make \
+	  X11INC=/usr/include/X11 \
+	  X11LIB=/usr/lib/X11 \
+	  FREETYPEINC=/usr/include/freetype2
+}
+
+package() {
+	cd "${_pkgname}-$pkgver"
+	make PREFIX=/usr DESTDIR="$pkgdir" install
+
+	install -Dm755 "$srcdir/${_pkgname}_recency" -t "$pkgdir/usr/bin/"
+	install -Dm755 "$srcdir/${_pkgname}rc" -t "$pkgdir/usr/share/${_pkgname}/"
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

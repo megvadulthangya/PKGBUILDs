@@ -1,0 +1,7 @@
+[lib32-systemd]
+source="archpkg"
+#source = "git"
+#git = "https://github.com/systemd/systemd.git"
+#prefix = "v"
+#exclude_regex = ".*rc.*"
+

@@ -1,0 +1,3 @@
+[rare]
+source = "git"
+git = "https://github.com/RareDevs/Rare.git"

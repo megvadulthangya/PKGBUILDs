@@ -1,0 +1,20 @@
+# Contributor: Stefano Capitani <stefanoatmanjarodotorg>
+
+pkgname=plymouth-theme-manjaro-gnome-17.0
+pkgver=1.0
+pkgrel=7
+pkgdesc="Plymouth theme for Manjaro GNOME with Maia theme incursion"
+arch=('any')
+url="https://github.com/Ste74/plymouth-theme-manjaro-gnome-17.0"
+license=('GPL-3.0-or-later')
+depends=('plymouth')
+install='plymouth.install'
+makedepends=('git')
+_commit=6750dfd3d050721e4fc9d51856ca4f108edc1028
+source=("git+https://github.com/Ste74/plymouth-theme-manjaro-gnome-17.0.git#commit=${_commit}")
+sha256sums=('2a1e385a2e3d4765bdd23fc1e95f1d59db5372db1f474bf4c9ad6261f2e1fbb7')
+
+package() {
+  cd "$pkgname"
+  install -Dm644 *.png *.plymouth *.script -t "$pkgdir"/usr/share/plymouth/themes/manjaro-gnome-17.0/
+}

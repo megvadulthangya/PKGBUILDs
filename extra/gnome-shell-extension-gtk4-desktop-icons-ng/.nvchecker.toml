@@ -1,0 +1,5 @@
+[gnome-shell-extension-gtk4-desktop-icons-ng]
+source = "git"
+git = "https://gitlab.com/smedius/desktop-icons-ng.git"
+prefix = "Gtk4-"
+exclude_regex= "Version.*|0.*|1.*|2.*|3.*|4.*|7.*|8.*|9.*"

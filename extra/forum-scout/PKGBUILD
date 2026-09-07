@@ -1,0 +1,40 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=forum-scout
+pkgver=0.6.6
+pkgrel=1
+pkgdesc="Arch focused forum search tool"
+arch=('any')
+url="https://github.com/musqz/forum-scout"
+license=('MIT')
+depends=(
+  'gtk4'
+  'python-gobject'
+  'python-requests'
+)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('d18356ecfd220af1e286e4e090eb33a19624c22c47e052858650b4788bcc12c1')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+  sed -i "s/__VERSION__/$pkgver/" "$pkgname.py"
+
+  # Correct StartupWMClass & remove unrelated category
+  desktop-file-edit --set-key=StartupWMClass --set-value "org.musqz.$pkgname" \
+    --remove-category=Network \
+    "$pkgname.desktop"
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  desktop-file-validate "$pkgname.desktop"
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  install -Dm755 "$pkgname.py" "$pkgdir/usr/bin/$pkgname"
+  install -Dm644 "$pkgname.desktop" -t "$pkgdir/usr/share/applications/"
+  install -Dm644 forums.conf -t "$pkgdir/usr/share/$pkgname/"
+  install -Dm644 translations/*.json -t "$pkgdir/usr/share/$pkgname/translations/"
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

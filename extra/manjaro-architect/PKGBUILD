@@ -1,0 +1,57 @@
+# Maintainer:
+# Contributor: Chrysostomus <forum.manjaro.org/u/Chrysostomus>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgbase=manjaro-architect
+pkgname=('manjaro-architect' 'manjaro-architect-launcher')
+pkgver=0.9.39
+pkgrel=1
+pkgdesc="Manjaro CLI net-installer, forked from the Archlinux Architect"
+arch=('any')
+url="https://gitlab.manjaro.org/applications/manjaro-architect"
+license=('GPL-2.0-or-later')
+depends=(
+  'bash'
+  'dialog'
+  'fzf'
+  'git'
+  'manjaro-tools-base'
+)
+optdepends=(
+  'maia-console'
+  'terminus-font'
+)
+source=("$url/-/archive/$pkgver/$pkgbase-$pkgver.tar.gz")
+sha256sums=('5ad796d98e7ceac70228dce73be2bbabd7b4a9bfd335da8e8d5feb65e44c2d32')
+
+prepare() {
+  cd "$pkgbase-$pkgver"
+  sed -i "s/Version .*/Version = $pkgver/" Makefile
+}
+
+build() {
+  cd "$pkgbase-$pkgver"
+  make
+}
+
+package_manjaro-architect() {
+  depends+=(
+    'btrfs-progs'
+    'f2fs-tools'
+    'gptfdisk'
+    'manjaro-architect-launcher'
+    'mhwd'
+    'nilfs-utils'
+    'pacman-mirrorlist'
+    'parted'
+    'profile-validate'
+  )
+
+  cd "$pkgbase-$pkgver"
+  make DESTDIR="$pkgdir" install
+}
+
+package_manjaro-architect-launcher() {
+  cd "$pkgbase-$pkgver"
+  install -Dm755 bin/setup "$pkgdir"/usr/bin/setup
+}

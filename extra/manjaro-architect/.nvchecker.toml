@@ -1,0 +1,3 @@
+[manjaro-architect]
+source = "git"
+git = "https://gitlab.manjaro.org/applications/manjaro-architect.git"

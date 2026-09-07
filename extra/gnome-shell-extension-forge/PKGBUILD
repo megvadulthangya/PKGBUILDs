@@ -1,0 +1,49 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=gnome-shell-extension-forge
+pkgver=89+8+ge5e1705
+_gnome_ver=49
+pkgrel=2
+pkgdesc="Tiling and Window Manager for Gnome-Shell"
+arch=('any')
+url="https://github.com/forge-ext/forge"
+license=('GPL-3.0-or-later')
+depends=('gnome-shell')
+makedepends=(
+  'git'
+  'jq'
+  'less'
+)
+_commit=e5e1705d3e646f82127a1ce649928cb75db25832
+source=("git+https://github.com/forge-ext/forge.git#commit=${_commit}")
+#source=("git+https://github.com/forge-ext/forge.git#tag=v${_gnome_ver}-$pkgver")
+sha256sums=('f113b41f9ce5f0ae231545a448edb26e658eb07c9b9c880ace876ac4d37bdf7b')
+
+pkgver() {
+  cd forge
+  git describe --tags --abbrev=7 | sed "s/^v${_gnome_ver}-//;s/-/+/g"
+}
+
+prepare() {
+  cd forge
+
+  # Fix Makefile metadata generation
+  git cherry-pick -n 0319a7125db1088556b159a69bbec77e111afca7
+}
+
+build() {
+  cd forge
+  make build
+}
+
+package() {
+  cd forge
+  _uuid=$(jq -r .uuid metadata.json)
+
+  make INSTALL_PATH="$pkgdir/usr/share/gnome-shell/extensions/${_uuid}" install
+
+  mv -v "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}/locale" "$pkgdir/usr/share/"
+
+  install -Dvm644 schemas/*.gschema.xml -t "$pkgdir/usr/share/glib-2.0/schemas/"
+  rm -rfv "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}/schemas"
+}

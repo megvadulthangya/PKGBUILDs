@@ -1,0 +1,17 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=ffmpeg-audio-thumbnailer
+pkgver=1.2.0
+pkgrel=1
+pkgdesc="Minimal thumbnailer for audio files using ffmpeg that can be used by file managers to create thumbnails for audio files"
+arch=('any')
+license=('GPL-3.0-or-later')
+url="https://github.com/saltedcoffii/ffmpeg-audio-thumbnailer"
+depends=('ffmpeg')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz")
+sha256sums=('a83949bfc8d546eff48a0197b1b1c19869f630235252ab8f9616a4cbc4b574ff')
+
+package() {
+  cd "$pkgname-$pkgver"
+  make PREFIX='/usr' DESTDIR="$pkgdir" install
+}

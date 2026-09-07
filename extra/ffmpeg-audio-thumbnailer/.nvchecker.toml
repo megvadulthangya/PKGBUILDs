@@ -1,0 +1,3 @@
+[ffmpeg-audio-thumbnailer]
+source = "git"
+git = "https://github.com/saltedcoffii/ffmpeg-audio-thumbnailer.git"

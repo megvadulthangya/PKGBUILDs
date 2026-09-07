@@ -1,0 +1,4 @@
+*.gz
+*.patch
+*.log
+touchpadrc

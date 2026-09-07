@@ -1,0 +1,35 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Artem Grinev <agrinev@manjaro.org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=manjaro-kde-settings
+pkgver=20240501
+pkgrel=1
+epoch=1
+pkgdesc="Manjaro Linux KDE settings"
+arch=('any')
+url="https://gitlab.manjaro.org/profiles-and-settings/manjaro-kde-settings"
+license=('GPL-3.0-or-later')
+makedepends=('git')
+depends=(
+  'manjaro-base-skel'
+  'manjaro-icons'
+  'plasma6-themes-breath'
+  'ttf-hack-nerd'
+  'zsh'
+)
+optdepends=('sddm-breath-theme')
+install="$pkgname.install"
+_commit=365a0a8978fb33a1da46b22d618f1d7ba9b8b98b
+source=("git+https://gitlab.manjaro.org/profiles-and-settings/manjaro-kde-settings.git#commit=${_commit}")
+sha256sums=('908911ece3251684317a371092770e0c60c9b7987507fb687621bc8645a7aeaf')
+
+pkgver() {
+  cd "$pkgname"
+  printf "$(git show -s --format=%cd --date=format:%Y%m%d HEAD)"
+}
+
+package() {
+  cd "$pkgname"
+  cp -r etc usr "$pkgdir/"
+}

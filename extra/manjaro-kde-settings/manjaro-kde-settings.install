@@ -1,0 +1,15 @@
+post_install() {
+  if [ ! -e /var/lib/sddm/.config/kdeglobals ]; then
+      install -d -o sddm -g sddm /var/lib/sddm/.config/
+      install -D -o sddm -g sddm /etc/skel/.config/kdeglobals /var/lib/sddm/.config/kdeglobals
+  fi
+  if [ -e /etc/sddm.conf ]; then
+      sed -i -e 's/Current=breath2/Current=breath/g' /etc/sddm.conf
+  fi
+}
+
+post_upgrade() {
+  post_install
+}
+
+# vim:set ts=2 sw=2 et:

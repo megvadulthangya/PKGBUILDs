@@ -1,0 +1,4 @@
+[menulibre]
+source = "git"
+git = "https://github.com/bluesabre/menulibre.git"
+prefix = "menulibre-"

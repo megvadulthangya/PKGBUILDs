@@ -1,0 +1,60 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Stefano Capitani <stefanoatmanjarodotorg>
+# Contributor: Jonian Guveli <jonian@hardpixel.eu>
+# Contributor: Evan Anderson <evananderson@thelinuxman.us>
+# Contributor: Ner0
+
+pkgname=menulibre
+pkgver=2.4.0
+pkgrel=4
+pkgdesc="An advanced menu editor that provides modern features in a clean, easy-to-use interface."
+arch=('any')
+url="https://bluesabre.org/projects/menulibre"
+license=('GPL-3.0-or-later')
+depends=(
+  'gnome-menus'
+  'gsettings-desktop-schemas'
+  'gtk3'
+  'gtksourceview3'
+  'python-gobject'
+  'python-psutil'
+  'python-xdg'
+  'xdg-utils'
+)
+makedepends=(
+  'python-build'
+  'python-distutils-extra'
+  'python-installer'
+  'python-setuptools'
+  'python-wheel'
+)
+checkdepends=('appstream')
+source=("https://github.com/bluesabre/menulibre/releases/download/$pkgname-$pkgver/$pkgname-$pkgver.tar.gz"{,.asc})
+sha256sums=('d906acf9cc13b0e15b8e342ae9aab8b0680db336a382d0c42f5d5f465f593c9f'
+            'SKIP')
+validpgpkeys=('21D00B5001E804E5DE6E4BF876E6FEEC95FC5E22') # Sean Davis <smd.seandavis@gmail.com>
+
+build() {
+  cd "$pkgname-$pkgver"
+  python -m build --wheel --no-isolation
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  appstreamcli validate --no-net "data/metainfo/$pkgname.appdata.xml" || :
+  desktop-file-validate "build/share/applications/$pkgname.desktop"
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+
+  local site_packages=$(python -c "import site; print(site.getsitepackages()[0])")
+
+  # Remove hashbang line from non-executable library files
+  for lib in "${pkgdir}"${site_packages}/${pkgname}{,_lib}/*.py; do
+    sed '1{\@^#!/usr/bin/python3@d}' $lib > $lib.new &&
+    touch -r $lib $lib.new &&
+    mv $lib.new $lib
+  done
+}

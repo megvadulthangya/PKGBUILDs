@@ -1,0 +1,116 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Maintainer: Philip Müller <philm@manjaro.org>
+# Contributor: Bernhard Landauder <bernhard@manjaro.org>
+# Contributor: Niklas Pulina <pulina@softmaker.de>
+# Author of base PKGBUILD: Muflone http://www.muflone.com/contacts/english/
+
+## Service Packs
+## https://www.freeoffice.com/download/servicepacks
+
+pkgname=freeoffice
+_revision=1234
+pkgver=2024.${_revision}
+pkgrel=1
+pkgdesc="A complete, reliable, lightning-fast and Microsoft Office-compatible office suite with a word processor, spreadsheet, and presentation graphics software."
+arch=('x86_64')
+url="https://www.freeoffice.com/"
+license=('LicenseRef-custom')
+depends=(
+  'curl'
+  'hicolor-icon-theme'
+  'libglvnd'
+  'libxmu'
+  'libxrandr'
+)
+makedepends=(
+  'chrpath'
+  'xz'
+)
+install="${pkgname}.install"
+source=("https://www.softmaker.net/down/softmaker-${pkgname}-2024-${_revision}-amd64.tgz"
+        "${pkgname}-textmaker"
+        "${pkgname}-planmaker"
+        "${pkgname}-presentations"
+        "${pkgname}-textmaker.desktop"
+        "${pkgname}-planmaker.desktop"
+        "${pkgname}-presentations.desktop")
+sha256sums=('ab94147af912c5d87adb664c8706cee381cb268c29834bf0bfd75eee174e5104'
+            '491577d73d1dad9e9b5b2e0e067881d8d291baf5f9825482996e9309c5ade422'
+            'db9cb24a40d3025c89ae4b952b5ebf537661f731716f09099d915793406548c4'
+            '81b29a332975a5b96da00d14627dbaafc1c7d1beefacce5e77bdb68f98c1a3c6'
+            'e4b3bbe1e57140cafaab42a5ecd1986e0f2c9eb57f640190cc7789e911a0b743'
+            '88afbad3aba31a589ab25bfa127a0eaf6cb6c03eba976992cab6e438d7a44818'
+            '544bd17f0f2306d570c59e2a295493e3e53742fccaf46ce7d9c9daf0f04141b5')
+
+prepare() {
+  xz -df "freeoffice2024.tar.lzma"
+
+  mkdir -p "${pkgname}-2024_${_revision}"
+  bsdtar xvf "freeoffice2024.tar" -C "${pkgname}-2024_${_revision}"
+
+  cd "${pkgname}-2024_${_revision}"
+
+  # Remove insecure RPATH
+  chrpath --delete "textmaker"
+  chrpath --delete "planmaker"
+  chrpath --delete "presentations"
+}
+
+package() {
+  cd "${pkgname}-2024_${_revision}"
+
+  # Install package files
+  install -d "${pkgdir}/usr/share/${pkgname}"
+  cp -r * "${pkgdir}/usr/share/${pkgname}"
+
+  # Install copyright & LICENSE
+  install -Dm 644 -t "${pkgdir}/usr/share/licenses/${pkgname}/" \
+    "${pkgdir}/usr/share/${pkgname}/mime/copyright" \
+    "${pkgdir}/usr/share/${pkgname}/mime/xdg-utils/LICENSE"
+
+  # Symlink affiliate link
+  install -d "${pkgdir}/usr/share/doc/${pkgname}"
+  echo "freeoffice-2024-l-manjaro" > "${pkgdir}/usr/share/${pkgname}/affiliate.txt"
+  ln -s "/usr/share/${pkgname}/affiliate.txt" "$pkgdir/usr/share/doc/${pkgname}/"
+
+  # Symlink user manuals
+  find "$pkgdir/usr/share/${pkgname}"/ -type f -name "*.pdf" \
+    -exec cp -s {} "$pkgdir/usr/share/doc/${pkgname}/" \;
+
+  # Install program executables
+  install -Dm 755 -t "${pkgdir}/usr/bin" \
+    "${srcdir}/${pkgname}"-{planmaker,presentations,textmaker}
+
+  # Symlink icons
+  for size in 16 24 32 48 64 128 256 512 1024
+  do
+    install -d "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps"
+    ln -s "/usr/share/${pkgname}/icons/pml_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/${pkgname}-planmaker.png"
+    ln -s "/usr/share/${pkgname}/icons/prl_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/${pkgname}-presentations.png"
+    ln -s "/usr/share/${pkgname}/icons/tml_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/${pkgname}-textmaker.png"
+
+    install -d "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/mimetypes"
+    ln -s "/usr/share/${pkgname}/icons/pmd_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/mimetypes/application-x-pmd.png"
+    ln -s "/usr/share/${pkgname}/icons/prd_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/mimetypes/application-x-prd.png"
+    ln -s "/usr/share/${pkgname}/icons/tmd_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/mimetypes/application-x-tmd.png"
+  done
+
+  # Install desktop files
+  install -Dm 644 -t "${pkgdir}/usr/share/applications" \
+    "${srcdir}/${pkgname}"-{planmaker,presentations,textmaker}.desktop
+
+  # Install mime files
+  install -Dm 644 -t "${pkgdir}/usr/share/mime/packages/" \
+    "${pkgdir}/usr/share/${pkgname}/mime/softmaker-freeoffice24.xml"
+  install -Dm 644 "${pkgdir}/usr/share/${pkgname}/mime/softmaker-freeoffice24.mime" \
+    "${pkgdir}/usr/lib/mime/packages/softmaker-freeoffice24"
+
+  # Cleanup
+  rm -rfv "${pkgdir}/usr/share/${pkgname}/mime/"
+}

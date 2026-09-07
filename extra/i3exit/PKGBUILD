@@ -1,0 +1,30 @@
+# Maintainer:
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+# Contributor: Sebastian Sipos <gitlab.manjaro.org/ssipos90>
+
+pkgname=i3exit
+pkgver=20201126
+pkgrel=2
+pkgdesc="Systemd/OpenRC-compatible exit-script for i3, including 'blurlock'"
+arch=('any')
+license=('GPL-3.0-or-later')
+groups=('i3-manjaro')
+depends=(
+  'i3-wm'
+  'i3lock'
+  'imagemagick'
+  'xorg-xrandr'
+)
+optdepends=('lightdm-gtk-greeter: switch user with lightdm')
+source=("$pkgname"
+        'blurlock')
+sha256sums=('9d602e80d2bfc7377a87a03220ba5ba36d26baa30883a8201ed093c01612561e'
+            'c49c96747edec3b3275b1254d620413dc8e8681879b2434935503a9f7fb5416c')
+
+pkgver() {
+  date +'%Y%m%d'
+}
+
+package() {
+  install -Dm755 "$pkgname" blurlock -t "$pkgdir/usr/bin/"
+}

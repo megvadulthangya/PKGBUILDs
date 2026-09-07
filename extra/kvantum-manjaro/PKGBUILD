@@ -1,0 +1,29 @@
+# Maintainer: Stefano Capitani <stefano@manjaro.org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <berhard@manjaro.org>
+# Contributor: ceyhunnabiyev
+
+pkgname=kvantum-manjaro
+pkgver=0.13.5+5+g0179d45
+pkgrel=5
+pkgdesc="Maia and Breath themes for Kvantum"
+arch=('any')
+url="https://gitlab.manjaro.org/artwork/themes/kvantum-manjaro"
+license=('GPL-3.0-or-later')
+depends=('kvantum')
+makedepends=('git')
+optdepends=('kvantum-qt5: Qt5 support')
+_commit=0179d452d1d9c8de26192fa173cdd597101e393b
+source=("git+https://gitlab.manjaro.org/artwork/themes/kvantum-manjaro.git#commit=${_commit}")
+sha256sums=('b4a7d6c3b728b1b7002f7d11d061cada7db3c93c70d129ac5316afb18eded8c4')
+
+pkgver() {
+  cd "$pkgname"
+  git describe --tags | sed 's/-/+/g'
+}
+
+package() {
+  cd "$pkgname"
+  install -d "$pkgdir/usr/share"
+  cp -r color-schemes Kvantum "$pkgdir/usr/share"
+}

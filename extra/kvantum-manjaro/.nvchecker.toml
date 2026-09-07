@@ -1,0 +1,3 @@
+[kvantum-manjaro]
+source = "git"
+git = "https://gitlab.manjaro.org/artwork/themes/kvantum-manjaro.git"

@@ -1,0 +1,104 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=tuxedo-control-center
+pkgver=3.0.9
+pkgrel=1
+_nodeversion=24
+pkgdesc="A tool to help you control performance, energy, fan and comfort settings on TUXEDO laptops."
+arch=('x86_64')
+url="https://github.com/tuxedocomputers/tuxedo-control-center"
+license=('GPL-3.0-or-later')
+depends=(
+  'alsa-lib'
+  'gtk3'
+  'libxss'
+  'nss'
+  'python'
+  'systemd'
+  'tuxedo-drivers-dkms'
+  'upower'
+)
+makedepends=(
+  'git'
+  'libxcrypt-compat'
+  'nvm'
+)
+checkdepends=('appstream')
+optdepends=('libayatana-appindicator: tray icon')
+options=('!strip')
+install="${pkgname}.install"
+source=("${pkgname}-${pkgver}.tar.gz::$url/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=('ba15d2d1f991f1b4ff88d18883b7f0e8f8961ea8d68f3c9f3d72234488f40cf2')
+
+_ensure_local_nvm() {
+  # let's be sure we are starting clean
+  which nvm >/dev/null 2>&1 && nvm deactivate && nvm unload
+  export NVM_DIR="$srcdir/.nvm"
+
+  # The init script returns 3 if version specified
+  # in ./.nvrc is not (yet) installed in $NVM_DIR
+  # but nvm itself still gets loaded ok
+  source /usr/share/nvm/init-nvm.sh || [[ $? != 1 ]]
+}
+
+prepare() {
+  _ensure_local_nvm
+  nvm install "${_nodeversion}"
+
+  cd "${pkgname}-${pkgver}"
+  export npm_config_cache="${srcdir}/npm_cache"
+  npm install
+}
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  export npm_config_cache="${srcdir}/npm_cache"
+  _ensure_local_nvm
+
+  # Disable Angular analytics prompt
+  export NG_CLI_ANALYTICS=false
+
+  npm run pack-prod deb
+}
+
+check() {
+  cd "${pkgname}-${pkgver}"
+  export npm_config_cache="${srcdir}/npm_cache"
+  _ensure_local_nvm
+  npm run tests
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  _dist_data="dist/packages/linux-unpacked/resources/dist/${pkgname}/data/dist-data"
+
+  install -d "${pkgdir}"/{opt/"${pkgname}",usr/bin}
+  cp -av dist/packages/linux-unpacked/* "${pkgdir}/opt/${pkgname}/"
+  chmod 4755 "${pkgdir}/opt/${pkgname}/chrome-sandbox"
+  ln -sv "/opt/${pkgname}/${pkgname}" "${pkgdir}/usr/bin/"
+
+  install -Dm644 "${_dist_data}/${pkgname}.desktop" -t \
+    "${pkgdir}/usr/share/applications/"
+
+#  install -Dm644 "${_dist_data}/${pkgname}-tray.desktop" -t \
+#    "${pkgdir}/etc/skel/.config/autostart/"
+
+  install -Dm644 "${_dist_data}"/com.tuxedocomputers.{tccd,tomte}.policy -t \
+    "${pkgdir}/usr/share/polkit-1/actions/"
+
+  install -Dm644 "${_dist_data}/com.tuxedocomputers.tccd.conf" -t \
+    "${pkgdir}/usr/share/dbus-1/system.d/"
+
+  install -Dm644 "${_dist_data}/tccd.service" -t \
+    "${pkgdir}/usr/lib/systemd/system/"
+  install -Dm644 "${_dist_data}/tccd-sleep.service" -t \
+    "${pkgdir}/usr/lib/systemd/system/"
+
+  install -Dm644 "${_dist_data}/99-webcam.rules" -t "$pkgdir/usr/lib/udev/rules.d/"
+
+  install -Dm644 "dist/${pkgname}/data/dist-data/com.tuxedocomputers.tcc.metainfo.xml" -t \
+    "${pkgdir}/usr/share/metainfo/"
+
+  install -Dm644 "${_dist_data}/${pkgname}_256.svg" \
+    "${pkgdir}/usr/share/icons/hicolor/scalable/apps/${pkgname}.svg"
+}

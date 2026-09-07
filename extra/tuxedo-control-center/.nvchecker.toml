@@ -1,0 +1,4 @@
+[tuxedo-control-center]
+source = "git"
+git = "https://github.com/tuxedocomputers/tuxedo-control-center.git"
+prefix = "v"

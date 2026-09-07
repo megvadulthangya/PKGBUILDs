@@ -1,0 +1,19 @@
+post_install() {
+  echo "Enabling and starting services..."
+  systemctl enable --now tccd tccd-sleep
+
+  udevadm control --reload-rules && udevadm trigger
+}
+
+post_upgrade() {
+  echo "Restarting services..."
+  systemctl daemon-reload
+  systemctl restart tccd tccd-sleep
+
+  udevadm control --reload-rules && udevadm trigger
+}
+
+pre_remove() {
+  echo "Disabling and stopping services..."
+  systemctl disable --now tccd tccd-sleep
+}

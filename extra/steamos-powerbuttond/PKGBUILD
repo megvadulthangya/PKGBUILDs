@@ -1,0 +1,36 @@
+# Maintainer: Peter Jung <admin@ptr1337.dev>
+# Maintainer: Eric Naim <dnaim@cachyos.org>
+
+pkgname=steamos-powerbuttond
+_pkgname=powerbuttond
+pkgver=3.4
+pkgrel=1
+arch=('x86_64')
+url="https://gitlab.steamos.cloud/holo/powerbuttond"
+pkgdesc="Power button daemon"
+license=('BSD-2-Clause')
+depends=('glibc' 'libevdev' 'systemd-libs')
+makedepends=('git')
+source=("git+$url.git#tag=v${pkgver}"
+        "support-gamescope-session-plus.patch")
+sha512sums=('c1d3b6dd45af518d106cfae99717d6d0321e2c120494d4cfef81849fd171ff8cffd8cf26cb8eeb44704ab6d601a73c370422c573dae34befa94ea6634c98cf3f'
+            '829cbb88f5d1ff508923e64bf8973be7cfd1de722290c3cc1ac3028a39168a42dda5a2ebb348c3aed6022065bbeba9d102a91eee64b84e97bb5c365eb3cf475b')
+provides=('powerbuttond')
+conflicts=('powerbuttond')
+replaces=('powerbuttond')
+
+prepare() {
+    cd "${_pkgname}"
+    patch -Np1 -i ../support-gamescope-session-plus.patch
+}
+
+build() {
+    make -C "$srcdir/$_pkgname"
+}
+
+package() {
+    make -C "$srcdir/$_pkgname" install DESTDIR="$pkgdir"
+    #Symlink for gamescope-session
+    install -dm755 "$pkgdir/usr/bin"
+    ln -s "/usr/lib/hwsupport/steamos-powerbuttond" "$pkgdir/usr/bin/powerbuttond"
+}

@@ -1,0 +1,80 @@
+# Maintainer: Philip Mueller <philm[at]manjaro[dot]org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Helmut Stult
+# Contributor: Daniel Bermond <dbermond@archlinux.org>
+# Contributor: Robin Candau <antiz@archlinux.org>
+# Contributor: Mikalai Ramanovich < narod.ru: nikolay.romanovich >
+
+pkgname=onlyoffice-desktopeditors
+pkgver=9.4.0
+pkgrel=1
+pkgdesc="Open-source office suite that combines text, spreadsheet and presentation editors."
+arch=('x86_64' 'aarch64')
+url="https://www.onlyoffice.com/"
+license=('AGPL-3.0-or-later')
+depends=(
+  'alsa-lib'
+  'curl'
+  'desktop-file-utils'
+  'gst-plugins-base-libs'
+  'gst-plugins-ugly'
+  'gstreamer'
+  'gtk3'
+  'hicolor-icon-theme'
+  'libnotify'
+  'libpulse'
+  'libxss'
+  'nspr'
+  'nss'
+  'ttf-carlito'
+  'ttf-dejavu'
+  'ttf-liberation'
+  'xdg-utils'
+)
+optdepends=(
+  'gst-libav: for playing embedded video files'
+  'gst-plugins-good: for playing embedded video files'
+  'libreoffice: for OpenSymbol fonts'
+#  'otf-takao: for Japanese Takao fonts' # Only available in the AUR
+#  'ttf-ms-fonts: for Microsoft fonts' # Only available in the AUR
+)
+provides=('onlyoffice')
+conflicts=('onlyoffice')
+source=('010-fix-document-opening.patch')
+source_x86_64=("${pkgname}-${pkgver}_amd64.deb::https://github.com/ONLYOFFICE/DesktopEditors/releases/download/v${pkgver}/${pkgname}_amd64.deb")
+source_aarch64=("${pkgname}-${pkgver}_arm64.deb::https://github.com/ONLYOFFICE/DesktopEditors/releases/download/v${pkgver}/${pkgname}_arm64.deb")
+noextract=("${source[@]%%::*}")
+sha256sums=('670de5f8b72679a54ff41a96ba1bdba9231a93260d1a8eaf304f66c8e40efdb7')
+sha256sums_x86_64=('4271434e81be42b1559fd989d24bf6d413482f278dc6a5e328202a4fc1a18649')
+sha256sums_aarch64=('ce141a103051e220a89839dd5dc8511172ae5b989e8de9bda0e07c34b0b7702c')
+
+prepare() {
+  mkdir -p "onlyoffice-${pkgver}/pkg"
+
+  case "${CARCH}" in
+    x86_64)
+      bsdtar -xf "${pkgname}-${pkgver}_amd64.deb" -C "onlyoffice-${pkgver}"
+      ;;
+    aarch64)
+      bsdtar -xf "${pkgname}-${pkgver}_arm64.deb" -C "onlyoffice-${pkgver}"
+      ;;
+  esac
+
+  bsdtar -xf "onlyoffice-${pkgver}/data.tar.xz" -C "onlyoffice-${pkgver}/pkg"
+  patch -d "onlyoffice-${pkgver}/pkg" -Np1 -i "${srcdir}/010-fix-document-opening.patch"
+}
+
+package() {
+  cp -dr --no-preserve='ownership' "onlyoffice-${pkgver}"/pkg/* "$pkgdir"
+
+  # icons
+  local _file
+  local _res
+  while read -r -d '' _file
+  do
+    _res="$(sed 's/\.png$//;s/^.*-//' <<< "$_file")"
+    install -d -m755 "${pkgdir}/usr/share/icons/hicolor/${_res}x${_res}/apps"
+    ln -s "../../../../../../opt/onlyoffice/desktopeditors/asc-de-${_res}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${_res}x${_res}/apps/${pkgname}.png"
+  done < <(find "${pkgdir}/opt/onlyoffice/desktopeditors" -maxdepth 1 -type f -name 'asc-de-*.png' -print0)
+}

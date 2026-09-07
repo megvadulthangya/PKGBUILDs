@@ -1,0 +1,26 @@
+# Maintainer:
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=manjaro-backgrounds
+pkgver=20161208
+pkgrel=2
+pkgdesc="Manjaro Wallpapers"
+arch=('any')
+url="https://github.com/oberon-manjaro/manjaro-backgrounds"
+license=('GPL-3.0-or-later')
+makedepends=('git')
+options=('!strip')
+_commit=8a98463e4aa83a1d6b959affc6d4ed4a8bc9ca9a
+source=("git+https://github.com/oberon-manjaro/manjaro-backgrounds.git#commit=${_commit}")
+sha256sums=('c6cebb7e94a7785e6178cc49a08ed04757cde55bccb8bc76085ee9f556385733')
+
+pkgver() {
+  cd "$pkgname"
+  git show -s --date=format:'%Y%m%d' --format=%cd
+}
+
+package() {
+  cd "$pkgname"
+  install -d "$pkgdir"/usr/share
+  cp -r backgrounds "$pkgdir"/usr/share
+}

@@ -1,0 +1,119 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Maintainer: Philip Müller <philm@manjaro.org>
+# Contributor: Guillaume Benoit <guillaume@manjaro.org>
+# Contributor: Helmut Stult
+
+pkgbase=pamac
+pkgname=('pamac-gtk' 'pamac-gnome-integration')
+pkgver=11.7.5
+pkgrel=2
+pkgdesc="A Package Manager based on libalpm with AUR and Appstream support (GTK4)"
+arch=('x86_64' 'aarch64')
+url="https://github.com/manjaro/pamac"
+license=('GPL-3.0-or-later')
+depends=(
+  'archlinux-appstream-data'
+  'gtk3'
+  'gtk4'
+#  'jemalloc' ## causes glib error & coredump
+  'libadwaita'
+  'libnotify'
+  'libpamac>=11.7.4'
+  'pamac-cli>=11.7.4'
+)
+makedepends=(
+  'asciidoc'
+  'git'
+  'gobject-introspection'
+  'meson'
+  'vala'
+)
+options=('debug')
+source=("git+https://github.com/manjaro/pamac.git#tag=v$pkgver")
+sha256sums=('a1e82520739403d1b769c87731355ac5f5710b5626fbf77dce8eabea8506c4c1')
+
+_backports=(
+  f94121cf99a4b1e10eb5ccd83098a08ba029c40e
+)
+
+_reverts=(
+)
+
+prepare() {
+  cd "$pkgbase"
+  local src
+  for src in "${source[@]}"; do
+      src="${src%%::*}"
+      src="${src##*/}"
+      [[ $src = *.patch ]] || continue
+      echo "Applying patch $src..."
+      patch -Np1 < "../$src"
+  done
+
+  # adjust version string
+  sed -i -e "s|\"$pkgver\"|\"$pkgver-$pkgrel\"|g" src/version.vala
+
+  local _c _l
+  for _c in "${_backports[@]}"; do
+    if [[ "${_c}" == *..* ]]; then _l='--reverse'; else _l='--max-count=1'; fi
+    git --no-pager log --oneline "${_l}" "${_c}"
+    git cherry-pick --mainline 1 --no-commit "${_c}"
+  done
+  for _c in "${_reverts[@]}"; do
+    if [[ "${_c}" == *..* ]]; then _l='--reverse'; else _l='--max-count=1'; fi
+    git --no-pager log --oneline "${_l}" "${_c}"
+    git revert --mainline 1 --no-commit "${_c}"
+  done
+}
+
+build() {
+  arch-meson "$pkgbase" build \
+    -Denable-fake-gnome-software=true
+  meson compile -C build
+}
+
+check() {
+  cd "$pkgbase"
+  desktop-file-validate data/applications/*.desktop || :
+}
+
+package_pamac-gtk() {
+  optdepends=(
+    'pamac-gnome-integration: for integration into GNOME'
+    'libpamac-flatpak-plugin: for Flatpak support'
+    'libpamac-snap-plugin: for Snap support'
+#  'libpamac-aur-plugin: for AUR support'
+#  'libpamac-appstream-plugin: for Appstream support'
+  )
+  provides=(
+    'pamac'
+    'libpamac-gtk.so'
+  )
+  conflicts=(
+    'pamac-gtk3'
+  )
+  install="$pkgname.install"
+
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+
+  cd "$pkgbase"
+
+  # remove pamac-gnome-integration
+  rm "$pkgdir/usr/bin/gnome-software"
+  rm "$pkgdir/usr/share/applications/org.gnome.Software.desktop"
+  rm "$pkgdir/usr/share/dbus-1/services/org.gnome.Software.service"
+}
+
+package_pamac-gnome-integration() {
+  pkgdesc="Pamac GNOME integration"
+  depends=('pamac-gtk')
+  conflicts=('gnome-software')
+
+  install -Dm644 "build/data/dbus/org.gnome.Software.service" \
+    "$pkgdir/usr/share/dbus-1/services/org.gnome.Software.service"
+  install -Dm755 "build/src/gnome-software" "$pkgdir/usr/bin/gnome-software"
+
+  cd "$srcdir/$pkgbase"
+  install -Dm644 "data/applications/org.gnome.Software.desktop" \
+    "$pkgdir/usr/share/applications/org.gnome.Software.desktop"
+}

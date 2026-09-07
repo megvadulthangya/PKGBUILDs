@@ -1,0 +1,28 @@
+pkgname=gamescope-dbus
+_pkgbase=gamescope-dbus
+pkgver=1.10.4
+pkgrel=1
+pkgdesc="Daemon for interacting with Gamescope over DBus"
+arch=('x86_64')
+options=(!lto)
+url="https://github.com/ShadowBlip/gamescope-dbus"
+license=('GPL')
+depends=('dbus')
+makedepends=('rust' 'make' 'cmake' 'clang')
+source=("gamescope-dbus-$pkgver.tar.gz::https://github.com/ShadowBlip/gamescope-dbus/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('944c24de58ad1fffa060e18a155f504679af2e413241b0cf472b0dd3d0e8cffa')
+
+prepare() {
+	cd "$srcdir/gamescope-dbus-$pkgver"
+	#cargo update
+}
+
+build() {
+	cd "$srcdir/gamescope-dbus-$pkgver"
+	make build
+}
+
+package() {
+	cd "$srcdir/gamescope-dbus-$pkgver"
+	make install PREFIX=${pkgdir}/usr NO_RELOAD=true
+}

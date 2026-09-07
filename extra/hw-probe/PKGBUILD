@@ -1,0 +1,70 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=hw-probe
+pkgver=1.6.6
+pkgrel=4
+pkgdesc="Tool to probe for hardware, check operability and find drivers with the help of Linux hardware database"
+arch=('any')
+url="https://linux-hardware.org"
+license=('LGPL-2.1-or-later OR BSD-4-Clause')
+depends=(
+  'alsa-utils'
+  'coreutils'
+  'cpupower'
+  'curl'
+  'ddcutil'  # display data channel (ddc) information
+  'dmidecode'
+  'efibootmgr'  # read information from the EFI Boot Manager
+  'hwinfo'
+  'inxi'  # additional hardware and system information detected by inxi
+  'iw'
+  'kmod'
+  'libva-utils'
+  'lm_sensors'
+  'mesa-utils'  # GPU information provided by MESA
+  'net-tools'
+  'pciutils'
+  'perl'
+  'perl-digest-sha1'
+  'smartmontools'  # monitor S.M.A.R.T. enabled ATA and SCSI Hard Drives
+  'systemd'  # systemd boot process information
+  'upower'
+  'usbutils'
+  'util-linux'  # status about rfkill switches on communication devices
+  'vdpauinfo'
+  'vulkan-tools'  # Vulkan GPU hardware information
+)
+optdepends=(
+  '7zip: used for benchmarking in -check-extended (and -check-7z)'
+  'acpica: ACPI statistics and tables'
+  'avahi: zeroconf statistics'
+#  'cpuid: additional CPU capabilities'  # AUR, better output than msr-tools
+#  'drm_info'  # AUR
+  'hdparm: read IDE drive/driver parameters'
+  'hplip: HP printer statistics'
+  'i2c-tools: available I2C sensors'
+#  'mcelog: Machine Check Exceptions'  # AUR, Not collected
+  'memtester: information about tested memory for faults'
+#  'msr-tools: additional CPU capabilities'
+  'networkmanager: nmcli output'
+  'numactl: information about NUMA'
+  'opensc: smart card (reader) information'
+  'perl-json-xs: JSON-formatted /root/HW_PROBE/LATEST/hw.info/devices.json'
+#  'perl-libwww: to use instead of curl'
+#  "pnputils: 'Plug & Play' devices"  # AUR: pnputils-git
+  'sane: information of attached scanners'
+  'sysstat: additional I/O statistics'
+  'v4l-utils: collect EDID'
+  'xorg-xdpyinfo: xdpyinfo output'
+  'xorg-xinput: available Xinput devices'
+  'xorg-xrandr: xrandr output'
+)
+source=("$pkgname-$pkgver.tar.gz::https://github.com/linuxhw/hw-probe/archive/$pkgver.tar.gz")
+sha256sums=('d8d31ed978095d0bd2ca7af51cfee8b97c97f7168ddb48a479a1632e1af84c7b')
+
+package() {
+  cd "$pkgname-$pkgver"
+  make prefix=/usr DESTDIR="$pkgdir" install
+
+  install -Dm644 LICENSES/BSD-4-Clause "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

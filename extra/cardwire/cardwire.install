@@ -1,0 +1,21 @@
+post_install() {
+  echo -e "\033[0;34m"
+  echo "-> Starting cardwired service"
+  echo -e "\033[0m"
+  systemctl enable --now cardwired.service
+}
+
+post_upgrade() {
+  if systemctl is-active cardwired.service --quiet; then
+    echo -e "\033[0;34m"
+    echo "-> Restarting cardwired service"
+    echo -e "\033[0m"
+    systemctl restart cardwired.service
+  fi
+}
+
+pre_remove() {
+  if systemctl is-active cardwired.service --quiet; then
+    systemctl disable --now cardwired.service
+  fi
+}

@@ -1,0 +1,4 @@
+[cardwire]
+source = "git"
+git = "https://github.com/OpenGamingCollective/cardwire.git"
+prefix = "v"

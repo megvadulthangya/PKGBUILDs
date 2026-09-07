@@ -1,0 +1,99 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: luytan <luytan@khora.me>
+
+pkgname=(
+  'cardwire'
+  'cardwire-gui'
+)
+pkgbase=cardwire
+_app_id="org.opengamingcollective.$pkgbase"
+pkgver=0.12.2
+pkgrel=1
+_toolchain=nightly-2026-08-12
+pkgdesc="GPU manager for Linux using eBPF LSM hooks to block GPUs"
+arch=('x86_64')
+url="https://opengamingcollective.github.io/cardwire"
+license=('GPL-3.0-or-later')
+depends=(
+  'dbus'
+  'hwdata'
+  'sqlite'
+  'systemd'
+  'upower'
+)
+makedepends=(
+  # 'bpf-linker'
+  'cargo-binstall'
+  'libxcb'
+  'rustup'
+)
+checkdepends=(
+  'appstream'
+  'desktop-file-utils'
+)
+source=("$pkgbase-$pkgver.tar.gz::https://github.com/OpenGamingCollective/cardwire/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('3b96e8bba14c9bcd4e104954244a7403f7dda6e3b336bbf6f0a079d589d11ddb')
+
+prepare() {
+  cd "$pkgbase-$pkgver"
+
+  # This is a workaround to get cardwire-ebpf building
+  # bpf-linker linked to llvm 22 or built with llvm 22 cannot compile the crate
+  # The official binstall ships an llvm 23 static linked bpf-linker
+  rustup toolchain install "${_toolchain}" --component rust-src
+  export RUSTUP_TOOLCHAIN="${_toolchain}"
+  export BINSTALL_DISABLE_TELEMETRY=true
+  cargo binstall bpf-linker --no-confirm
+  cargo fetch --locked --target host-tuple
+}
+
+build() {
+  cd "$pkgbase-$pkgver"
+  export RUSTUP_TOOLCHAIN="${_toolchain}"
+  export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
+  export CARGO_TARGET_DIR=target
+  export CARGO_PROFILE_RELEASE_LTO=true
+  export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
+  cargo build --frozen --release --bins
+}
+
+check() {
+  cd "$pkgbase-$pkgver"
+  appstreamcli validate --no-net "assets/${_app_id}.metainfo.xml" || :
+  desktop-file-validate "assets/$pkgname-gui.desktop"
+}
+
+package_cardwire() {
+  pkgdesc+=" (CLI & daemon)"
+  optdepends=(
+    'cardwire-gui: GUI and tray icon'
+    'gnome-shell-extension-cardwire-toggle: Quick Settings toggle'
+  )
+  conflicts=(
+    'bbswitch'
+    'envycontrol'
+    'optimus-manager'
+    'supergfxctl'
+  )
+  install="$pkgname.install"
+
+  cd "$pkgbase-$pkgver"
+  install -Dm755 target/release/{"$pkgname","${pkgname}d"} -t "$pkgdir/usr/bin/"
+  install -Dm644 "assets/${pkgname}d.service" -t "$pkgdir/usr/lib/systemd/system/"
+  install -Dm644 "assets/99-${pkgname}d.preset" -t "$pkgdir/usr/lib/systemd/system-preset/"
+  install -Dm644 assets/${_app_id}.conf -t "$pkgdir/usr/share/dbus-1/system.d/"
+}
+
+package_cardwire-gui() {
+  pkgdesc+=" (GUI)"
+  depends=(
+    'cardwire'
+    'hicolor-icon-theme'
+  )
+
+  cd "$pkgbase-$pkgver"
+  install -Dm755 target/release/"$pkgname" -t "$pkgdir/usr/bin/"
+  install -Dm644 "assets/$pkgname.desktop" -t "$pkgdir/usr/share/applications/"
+  install -Dm644 "assets/${_app_id}.metainfo.xml" -t "$pkgdir/usr/share/metainfo/"
+  install -Dm644 assets/icons/*.svg -t "$pkgdir/usr/share/icons/hicolor/scalable/apps/"
+}

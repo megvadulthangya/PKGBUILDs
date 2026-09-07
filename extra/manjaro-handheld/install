@@ -1,0 +1,41 @@
+msg() {
+    ALL_OFF="\e[1;0m"
+    BOLD="\e[1;1m"
+    GREEN="${BOLD}\e[1;32m"
+    local mesg=$1; shift
+    printf "${GREEN}==>${ALL_OFF}${BOLD} ${mesg}${ALL_OFF}\n" "$@" >&2
+}
+
+update_user() {
+  # edit user name
+  export LANG=C
+  if VAR=$(id -nu 1000) && [[ ! -z ${VAR} ]]; then
+     msg "Setting User=${VAR} in /etc/sddm.conf.d/manjaro-handheld.conf"
+  elif VAR=$(id -nu 1001) && [[ ! -z ${VAR} ]]; then
+     msg "Setting User=${VAR} in /etc/sddm.conf.d/manjaro-handheld.conf"
+  else
+     msg "No user found: setting 'User=' in /etc/sddm.conf.d/manjaro-handheld.conf"
+  fi
+  sed -ri "s|^(User=).*|User=${VAR}|" /etc/sddm.conf.d/manjaro-handheld.conf
+}
+
+update_skel() {
+  getent passwd |
+    while IFS=: read -r username x uid gid gecos home shell
+    do
+        if [ ! -d "$home" ] || [ "$username" == 'root' ] ## || [ "$uid" -lt 1000 ]
+        then
+            continue
+        fi
+        tar -cf - -C /etc/skel . | sudo -Hu "$username" tar --skip-old-files -xf -
+    done
+}
+
+post_install() {
+  update_user
+}
+
+post_upgrade() {
+  update_user
+  #update_skel
+}

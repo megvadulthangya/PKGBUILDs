@@ -1,0 +1,210 @@
+# Maintainer: Philip Müller <philm@manjaro.org>
+
+pkgbase=manjaro-handheld
+pkgname=(manjaro-handheld
+         os-session-select-steam 
+         os-session-select-steamplus
+         os-session-select-opengamepadui
+         os-session-select-gnome
+         os-session-select-lightdm)
+pkgver=20$(date +%y%m%d)
+pkgrel=1
+pkgdesc="Files for Valve's GamepadUI"
+arch=('any')
+url='https://gitlab.manjaro.org/packages'
+license=('GPL')
+
+source=(gamescope-wayland-teardown-workaround
+	org.manjaro.host.policy
+	org.manjaro.priv.write.policy
+	org.manjaro.session.select.policy
+	os-session-select
+	os-session-select-gnome
+	os-session-select-lightdm
+	50rotate-screen
+	gnome-session-oneshot
+	gnome-session-oneshot.desktop
+	plasma-manjaro-oneshot.desktop
+	plasma-manjaro-oneshot-wayland.desktop
+	startplasma-manjaro-oneshot
+	startplasma-manjaro-oneshot-wayland
+	org.shadowblip.Logout.desktop
+	com.steampowered.Logout.desktop
+	com.steampowered.Logout.nonplus.desktop
+	deck-return.svg
+	manjaro-priv-write
+	manjaro-set-hostname
+	manjaro-set-timezone
+	xterm.desktop
+	uxterm.desktop
+	org.kde.kuserfeedback-console.desktop
+	qvidcap.desktop
+	qv4l2.desktop
+	qdbusviewer.desktop
+	org.freedesktop.IBus.Setup.desktop
+	linguist.desktop
+	lstopo.desktop
+	htop.desktop
+	designer.desktop
+	bvnc.desktop
+	bssh.desktop
+	avahi-discover.desktop
+	assistant.desktop
+)
+
+sha256sums=('6d105e52da5f74eebb77d27f73285bfccf4f4ed828c3826b279bc9526b725aea'
+            'e8c2676a9f7e1cae2d5cf7e250fb1605b1d44f0419d1bb735d5258dcee990e9a'
+            '5c65ad6fa4cbc44bd23ab685785efe97ff48a6a8ffbec9c822ca3f3e08516809'
+            'a52c6c8a75922148f25f872fe570c955c37ac2dc6fecdb681db67fb15e6491e6'
+            '08430603f4f8d00bb26f1803b23c70b6281183c4f6e16fb3a8c5cafa5b466d2b'
+            '9d4ea908c97dc6bb07935de15fe1745904b308c8ac34fda542aae83ce80012c8'
+            '2266ae618dd4c402a02cd4c8576b6428825966c9120a8056f365e0a384ce0541'
+            '00d68832d15620bb09f915f3d7d4f0357d1063d9f5959f06e2e1f40293f039dd'
+            '4123b24a4dc553bd655615ab882aa0986b52154c2875283a9cd88fc81b1a6285'
+            'fefd98f0550d607d66b2453046f182859c662747ff299b7beee9a0a47d0baccf'
+            '489b3f11ab3cafbcbd59fc2868d90ab8a34fe90fcdb909625d55dca6015981d4'
+            '01f777f230ef8ce7b4f1c87a19a5c391cc151fa3aa5e063e26810ce5bbdf8ece'
+            '1535eca0f0be6d608003d683a8a68549a8d3c1c65c1737c1d61ad857cfbe2059'
+            '2391b823084fc352def238e45882286e57b921f1633c42077be6b13f3277d992'
+            '225b1b51e4b7bcfec51f9f9bf4f351d4c7734639dd77f67ff9a997ed81165339'
+            '7bc3062fed44c944f32bd38ad62e045d5e3458713bf651a308957452a531aaf0'
+            '7dc32552c83e3f23719af52c37394e080ab65e00de4a1f6ba9c632e613a80e14'
+            '2978da7d8cf0bfa4ffaef30a288f6f94222822880cc9f48105b5fb71207fe183'
+            'ff71a6579dfff91e710bbaf8c49fd96bd08f2605b4ae9918a924b2bea234be1d'
+            '39c500ecf8f73e431de3d267b307036b8a629bff85456814f1b9b08350540472'
+            '1ba609fc15019b0938210b8f3cc409f36a37fd07fe63fef32b8d0d1fa03595bb'
+            'f231b0b07b69cedfc15c3c10e8e659357082ded4d848a63988912c43cd73b27f'
+            'b0ad7fd9efc447edd0a11567d64bcacfe6277cfc9135884d1447b74ce92879a3'
+            'b06524a2507b5bec24c3b11fec422c2a844cbf872bbf942d3ce1c979f03ee6a7'
+            '91b584c062e11d44620803bd06ad67e5cf33b214f28a8998b6a51ab0e08cc0b6'
+            '69933cc943f0e5b257da0b62d4b2eb5116e0e210af4ac8d9dc0a246879c6206f'
+            'b26395fc5f24b4f405d2df4071c5d99d5a15e95760714813c565cd6618f9ecf6'
+            'aa29cdca67e99d3f2a3187f74109f61a7b1a7db541f3b641c4f1e5f38d04612a'
+            'ba5aa18f4eb1f70938e4f6274ea90d9b22b6fa8e66749d828d1dd661589ad1cf'
+            '88eb814217380023be57cdb8dbacd908c4ed37b8371c6bfc851139b3bc324b72'
+            '4999c98b5fd1164e52869f80864f83355052b023e62fc9f5e1fe6fa744f3bafc'
+            '691bdaf0f367af908c5e53478ff1be9f7613612069e15ede4aa51079a4470f3d'
+            'f8554e9c68338e94e15cee9de48b35281cb08be2ddf517548a65b485006af3cc'
+            '959d5fc49c3b6d3b18dc87083f300d34824e027cb7b11cc63061b80088abfe04'
+            'ace41d2fc2969fdee0d6e820ff5ed863c5977aaa60c0eeb072ff46b5ea26a3ea'
+            '88827f67268c6ea5728d6a6edab841a39017c8710991f9d744a0acd840ee6f87')
+
+package_manjaro-handheld() {
+depends=(mangohud jq dmidecode glew glfw-x11 glxinfo)
+optdepends=("os-session-select-opengamepadui: OS-Session defaulting to OpenGampadUI with InputPlumber"
+            "steam: Steam support")
+install=install
+	mkdir -p ${pkgdir}/etc/sddm.conf.d
+	echo "[General]" >> ${pkgdir}/etc/sddm.conf.d/manjaro-handheld.conf
+	echo "DisplayServer=wayland" >> ${pkgdir}/etc/sddm.conf.d/manjaro-handheld.conf
+	echo "[Autologin]" >> ${pkgdir}/etc/sddm.conf.d/manjaro-handheld.conf
+	echo "Relogin=true" >> ${pkgdir}/etc/sddm.conf.d/manjaro-handheld.conf
+	echo "Session=opengamepadui-session.desktop" >> ${pkgdir}/etc/sddm.conf.d/manjaro-handheld.conf
+	echo "User=gamer" >> ${pkgdir}/etc/sddm.conf.d/manjaro-handheld.conf
+	echo "[X11]" >> ${pkgdir}/etc/sddm.conf.d/manjaro-handheld.conf
+	echo "# Janky workaround for wayland sessions not stopping in sddm, kills" >> ${pkgdir}/etc/sddm.conf.d/manjaro-handheld.conf
+	echo "# all active sddm-helper sessions on teardown" >> ${pkgdir}/etc/sddm.conf.d/manjaro-handheld.conf
+	echo "DisplayStopCommand=/usr/bin/gamescope-wayland-teardown-workaround" >> ${pkgdir}/etc/sddm.conf.d/manjaro-handheld.conf
+	echo "# rotate screen as needed" >> ${pkgdir}/etc/sddm.conf.d/manjaro-handheld.conf
+	echo "DisplayCommand=/etc/X11/Xsession.d/50rotate-screen" >> ${pkgdir}/etc/sddm.conf.d/manjaro-handheld.conf
+
+	mkdir -p ${pkgdir}/etc/systemd/logind.conf.d
+	echo "[Login]" > ${pkgdir}/etc/systemd/logind.conf.d/manjaro-handheld.conf
+	echo "HandlePowerKey=suspend" >> ${pkgdir}/etc/systemd/logind.conf.d/manjaro-handheld.conf
+	echo "HandleSuspendKey=suspend" >> ${pkgdir}/etc/systemd/logind.conf.d/manjaro-handheld.conf
+
+	echo "[General]" > ${pkgdir}/etc/sddm.conf.d/virtualkbd.conf
+	echo "InputMethod=qtvirtualkeyboard" >> ${pkgdir}/etc/sddm.conf.d/virtualkbd.conf
+
+	install -Dm755 ${srcdir}/50rotate-screen -t ${pkgdir}/etc/X11/Xsession.d
+	install -Dm755 ${srcdir}/com.steampowered.Logout.desktop -t ${pkgdir}/etc/skel/Desktop
+	install -Dm755 ${srcdir}/com.steampowered.Logout.nonplus.desktop -t ${pkgdir}/etc/skel/Desktop
+	install -Dm755 ${srcdir}/org.shadowblip.Logout.desktop -t ${pkgdir}/etc/skel/Desktop
+	install -Dm644 ${srcdir}/deck-return.svg -t ${pkgdir}/usr/share/icons/hicolor/64x64/apps
+	install -Dm644 ${srcdir}/org.manjaro.host.policy -t ${pkgdir}/usr/share/polkit-1/actions
+	install -Dm644 ${srcdir}/org.manjaro.priv.write.policy -t ${pkgdir}/usr/share/polkit-1/actions
+	install -Dm644 ${srcdir}/org.manjaro.session.select.policy -t ${pkgdir}/usr/share/polkit-1/actions
+	install -Dm755 ${srcdir}/manjaro-priv-write -t ${pkgdir}/usr/bin/manjaro-polkit-helpers
+	install -Dm755 ${srcdir}/manjaro-set-hostname -t ${pkgdir}/usr/bin/manjaro-polkit-helpers
+	install -Dm755 ${srcdir}/manjaro-set-timezone -t ${pkgdir}/usr/bin/manjaro-polkit-helpers
+	install -Dm755 ${srcdir}/gamescope-wayland-teardown-workaround -t ${pkgdir}/usr/bin
+	install -Dm755 ${srcdir}/xterm.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/uxterm.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/org.kde.kuserfeedback-console.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/qvidcap.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/qv4l2.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/qdbusviewer.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/org.freedesktop.IBus.Setup.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/linguist.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/lstopo.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/htop.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/designer.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/bvnc.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/bssh.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/avahi-discover.desktop -t ${pkgdir}/usr/local/share/applications
+	install -Dm755 ${srcdir}/assistant.desktop -t ${pkgdir}/usr/local/share/applications
+}
+
+package_os-session-select-steam() {
+pkgdesc="OS-Session defaulting to Steam"
+depends=(gamescope-session-steam-git)
+provides=('os-session-select')
+conflicts=(os-session-select-hhd os-session-select os-session-select-ogui)
+	install -Dm755 ${srcdir}/os-session-select -t ${pkgdir}/usr/lib
+	sed -i -e 's/gamescope|opengamepadui|/opengamepadui|/' \
+	${pkgdir}/usr/lib/os-session-select
+	sed -i -e 's/steam|/gamescope|steam|/' \
+	${pkgdir}/usr/lib/os-session-select
+	install -Dm755 ${srcdir}/startplasma-manjaro-oneshot -t ${pkgdir}/usr/bin
+	install -Dm755 ${srcdir}/startplasma-manjaro-oneshot-wayland -t ${pkgdir}/usr/bin
+	install -Dm755 ${srcdir}/plasma-manjaro-oneshot.desktop -t ${pkgdir}/usr/share/xsessions
+	install -Dm755 ${srcdir}/plasma-manjaro-oneshot-wayland.desktop -t ${pkgdir}/usr/share/wayland-sessions
+}
+
+package_os-session-select-steamplus() {
+pkgdesc="OS-Session defaulting to Steam-Plus with OpenGampadUI and InputPlumber"
+depends=(powerstation opengamepadui opengamepadui-session-git gamescope-session-steam-plus-git)
+provides=('os-session-select')
+conflicts=(os-session-select-hhd os-session-select os-session-select-ogui)
+	install -Dm755 ${srcdir}/os-session-select -t ${pkgdir}/usr/lib
+	sed -i -e 's/gamescope|opengamepadui|/opengamepadui|/' \
+	${pkgdir}/usr/lib/os-session-select
+	sed -i -e 's/steam-plus|/gamescope|steam-plus|/' \
+	${pkgdir}/usr/lib/os-session-select
+	install -Dm755 ${srcdir}/startplasma-manjaro-oneshot -t ${pkgdir}/usr/bin
+	install -Dm755 ${srcdir}/startplasma-manjaro-oneshot-wayland -t ${pkgdir}/usr/bin
+	install -Dm755 ${srcdir}/plasma-manjaro-oneshot.desktop -t ${pkgdir}/usr/share/xsessions
+	install -Dm755 ${srcdir}/plasma-manjaro-oneshot-wayland.desktop -t ${pkgdir}/usr/share/wayland-sessions
+}
+
+package_os-session-select-opengamepadui() {
+pkgdesc="OS-Session defaulting to OpenGampadUI with InputPlumber"
+depends=(powerstation opengamepadui opengamepadui-session-git)
+provides=('os-session-select')
+conflicts=(os-session-select-hhd os-session-select os-session-select-ogui)
+	install -Dm755 ${srcdir}/os-session-select -t ${pkgdir}/usr/lib
+	install -Dm755 ${srcdir}/startplasma-manjaro-oneshot -t ${pkgdir}/usr/bin
+	install -Dm755 ${srcdir}/startplasma-manjaro-oneshot-wayland -t ${pkgdir}/usr/bin
+	install -Dm755 ${srcdir}/plasma-manjaro-oneshot.desktop -t ${pkgdir}/usr/share/xsessions
+	install -Dm755 ${srcdir}/plasma-manjaro-oneshot-wayland.desktop -t ${pkgdir}/usr/share/wayland-sessions
+}
+
+package_os-session-select-gnome() {
+pkgdesc="OS-Session defaulting to OpenGampadUI with InputPlumber and GNOME"
+depends=(powerstation opengamepadui opengamepadui-session-git)
+provides=('os-session-select')
+conflicts=(os-session-select-hhd os-session-select os-session-select-ogui os-session-select-opengamepadui os-session-select-lightdm)
+	install -Dm755 ${srcdir}/os-session-select-gnome ${pkgdir}/usr/lib/os-session-select
+	install -Dm755 ${srcdir}/gnome-session-oneshot -t ${pkgdir}/usr/bin
+	install -Dm755 ${srcdir}/gnome-session-oneshot.desktop -t ${pkgdir}/usr/share/wayland-sessions
+}
+
+package_os-session-select-lightdm() {
+pkgdesc="OS-Session defaulting to OpenGampadUI with InputPlumber and LightDM"
+depends=(powerstation opengamepadui opengamepadui-session-git)
+provides=('os-session-select')
+conflicts=(os-session-select-hhd os-session-select os-session-select-ogui os-session-select-opengamepadui os-session-select-gnome)
+	install -Dm755 ${srcdir}/os-session-select-lightdm ${pkgdir}/usr/lib/os-session-select
+	install -Dm755 ${srcdir}/gnome-session-oneshot -t ${pkgdir}/usr/bin
+	install -Dm755 ${srcdir}/gnome-session-oneshot.desktop -t ${pkgdir}/usr/share/wayland-sessions
+}

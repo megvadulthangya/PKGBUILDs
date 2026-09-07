@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Steam Gaming Mode
+Comment=Switch to Steam Gaming Mode (Non Plus)
+Icon=deck-return
+Exec=manjaro-session-select steam

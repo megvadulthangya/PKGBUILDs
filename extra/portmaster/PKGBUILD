@@ -1,0 +1,87 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Alexandr Stelnykovych <alexandr dot stelnykovych at ivpn dot net>
+# Contributor: Safing ICS Technologies <noc@safing.io>
+
+pkgname=portmaster
+pkgver=2.0.0
+pkgrel=2
+pkgdesc="Privacy Suite and Firewall - installs the official prebuilt binaries"
+arch=('x86_64')
+url="https://safing.io"
+license=('GPL-3.0-only')
+replaces=('portmaster-stub' 'portmaster-stub-bin')
+depends=(
+  'cairo'
+  'gdk-pixbuf2'
+  'glib2'
+  'gtk3'
+  'hicolor-icon-theme'
+  'libsoup3'
+  'openssl'
+  'pango'
+  'webkit2gtk-4.1'
+)
+optdepends=(
+  'libayatana-appindicator: for systray indicator'
+  'networkmanager: recommended for better integration'
+)
+options=('!strip' '!emptydirs')
+install="$pkgname.install"
+source=("https://updates.safing.io/latest/linux_amd64/updatemgr/updatemgr"
+        "$pkgname.desktop"
+        "$pkgname-autostart.desktop"
+        "$pkgname.service"
+        "$pkgname-ui-start.sh"
+        "icon-$pkgname.svg"
+        "icon-$pkgname-16.png"
+        "icon-$pkgname-32.png"
+        "icon-$pkgname-48.png"
+        "icon-$pkgname-64.png"
+        "icon-$pkgname-128.png")
+sha256sums=('d831dc82891c12121769b6c568ed8bdc6fad44d4da5ac6e5905c0f1a11dcc559'
+            'f7b7026c4b4fe73b0401af0edec9c1458ad7d05267dbe7dfe0b7733b791c3b60'
+            '0a067b241267974ab3225e904ac362eba6b0a37cc3c4ae18e30c381ad2a47076'
+            'cf595fe51bbeb3242aa1cdc844e932731fdff77671d2e2a9ce8d15acffd466a6'
+            '9e90c3b736bfedd89fee8bfed413187ac5996743015ab75fca359c47a71132a4'
+            'a07e9af436eb1ba1292ccaf619c410b2fcd1b3c2ac430f05d0c6eba1dd6886b3'
+            'f6d58c14b2cc03662d881102c332bc77ef61dd9310e994009df85d76f116d855'
+            '1c7a04f8e2e5fe702d5101ea2f88a2bb32dccadb6d224a7063c72e8f23d480ca'
+            'ce7d1fcb22bff821a25348c050b8b9d38a7e8123553137e70f07932ae58d6f6a'
+            '1fdb8e49bc686f83096b99cd6068bfbdaa253a22b7a91534380f50aa0756aaea'
+            'f5e7b9bdd2c654a2809d7e4bca5eff4642850dbb654907a458fe38fccff941e4')
+
+prepare() {
+  chmod +x "$srcdir/updatemgr"
+  mkdir -p "$srcdir/tmp_downloaded/bin"
+  mkdir -p "$srcdir/tmp_downloaded/intel"
+
+  echo "[+] updatemgr: Downloading Portmaster binaries ..."
+  "$srcdir/updatemgr" download https://updates.safing.io/stable.v3.json "$srcdir/tmp_downloaded/bin"
+  
+  echo "[+] updatemgr: Downloading Portmaster intel data ..."
+  "$srcdir/updatemgr" download https://updates.safing.io/intel.v3.json "$srcdir/tmp_downloaded/intel"
+}
+
+package() {
+  install -Dm644 "$srcdir/$pkgname.desktop" -t "$pkgdir/usr/share/applications/"
+  install -Dm644 "$srcdir/$pkgname-autostart.desktop" -t "$pkgdir/etc/xdg/autostart/"
+  install -Dm644 "$srcdir/$pkgname.service" -t "$pkgdir/usr/lib/systemd/system/"
+  install -Dm755 "$srcdir/$pkgname-ui-start.sh" -t "$pkgdir/usr/lib/$pkgname/"
+
+  install -Dm755 "$srcdir"/tmp_downloaded/bin/{"$pkgname","$pkgname-core"} -t \
+    "$pkgdir/usr/lib/$pkgname/"
+  install -Dm644 "$srcdir"/tmp_downloaded/bin/{assets,"$pkgname"}.zip -t \
+    "$pkgdir/usr/lib/$pkgname/"
+
+  install -d "$pkgdir/var/lib/$pkgname/intel"
+  for f in index.json base.dsdl geoipv4.mmdb geoipv6.mmdb index.dsd intermediate.dsdl urgent.dsdl main-intel.yaml notifications.yaml news.yaml; do
+    install -Dm644 "$srcdir/tmp_downloaded/intel/${f}" "$pkgdir/var/lib/$pkgname/intel/${f}"
+  done
+
+  for size in 16 32 48 64 128; do
+    install -Dm644 "$srcdir/icon-$pkgname-${size}.png" \
+      "$pkgdir/usr/share/icons/hicolor/${size}x${size}/apps/$pkgname.png"
+  done  
+  install -Dm644 "$srcdir/icon-$pkgname.svg" \
+    "$pkgdir/usr/share/icons/hicolor/scalable/apps/$pkgname.svg"
+}

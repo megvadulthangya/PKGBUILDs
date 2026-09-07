@@ -1,0 +1,114 @@
+# Maintainer: Philip Müller <philm@manjaro.org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+# Contributor: Frede Hundewadt <fhatmanjarorg>
+
+_ver=0.15.15dev
+
+pkgname=(
+  'manjaro-tools-base-git'
+  'manjaro-tools-pkg-git'
+  'manjaro-tools-iso-git'
+  'manjaro-tools-yaml-git'
+)
+pkgbase=manjaro-tools-git
+pkgver=r3071.5c97abe
+pkgrel=1
+pkgdesc="Development tools for Manjaro Linux"
+arch=('any')
+url="https://gitlab.manjaro.org/tools/development-tools/manjaro-tools"
+license=('GPL-2.0-or-later')
+groups=('manjaro-tools')
+makedepends=(
+  'docbook2x'
+  'git'
+)
+_commit=5c97abe3126b5108ce76738308e5e435bcce617e
+source=("git+$url.git#commit=${_commit}")
+sha256sums=('0510b6dbe7da37fcdc491d3a9c45c799b18fc4b42051cb029a6997056b0e3dd4')
+
+pkgver() {
+  cd "${pkgbase%-git}"
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+}
+
+prepare() {
+  cd "${pkgbase%-git}"
+  sed -e "s/^Version=.*/Version=${_ver}/" -i Makefile
+
+  # patches here
+}
+
+build() {
+  cd "${pkgbase%-git}"
+  make PREFIX=/usr
+}
+
+package_manjaro-tools-base-git() {
+  pkgdesc+=" (base tools)"
+  depends=(
+    'gnupg'
+    'openssh'
+    'os-prober'
+    'pacman-mirrors'
+    'rsync'
+  )
+  optdepends=(
+    'manjaro-tools-iso-git: Manjaro Linux iso tools'
+    'manjaro-tools-pkg-git: Manjaro Linux package tools'
+    'manjaro-tools-yaml-git: Manjaro Linux yaml tools'
+  )
+  provides=("${pkgname%-git}")
+  conflicts=("${pkgname%-git}")
+  backup=("etc/${pkgbase%-git}/${pkgbase%-git}.conf")
+
+  cd "${pkgbase%-git}"
+  make PREFIX=/usr DESTDIR="${pkgdir}" install_base
+}
+
+package_manjaro-tools-pkg-git() {
+  pkgdesc+=" (packaging tools)"
+  depends=(
+    'manjaro-tools-base-git'
+    'namcap'
+  )
+  provides=("${pkgname%-git}")
+  conflicts=("${pkgname%-git}" 'devtools')
+
+  cd "${pkgbase%-git}"
+  make PREFIX=/usr DESTDIR="${pkgdir}" install_pkg
+}
+
+package_manjaro-tools-yaml-git() {
+  pkgdesc+=" (yaml tools)"
+  depends=(
+    'calamares-tools'
+    'manjaro-iso-profiles-base'
+    'manjaro-tools-base-git'
+    'ruby-kwalify'
+  )
+  provides=("${pkgname%-git}")
+  conflicts=("${pkgname%-git}")
+
+  cd "${pkgbase%-git}"
+  make PREFIX=/usr DESTDIR="${pkgdir}" install_yaml
+}
+
+package_manjaro-tools-iso-git() {
+  pkgdesc="Development tools for Manjaro Linux (ISO tools)"
+  depends=(
+    'dosfstools'
+    'git'
+    'grub'
+    'libisoburn'
+    'manjaro-tools-yaml-git'
+    'mkinitcpio'
+    'mktorrent'
+    'snapd'
+    'squashfs-tools'
+  )
+  provides=("${pkgname%-git}")
+  conflicts=("${pkgname%-git}")
+
+  cd "${pkgbase%-git}"
+  make PREFIX=/usr DESTDIR="${pkgdir}" install_iso
+}

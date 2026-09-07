@@ -1,0 +1,79 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Jose Riha <jose1711 gmail com>
+# Contributor: Sebastian J. Bronner <waschtl@sbronner.com>
+# Contributor: Kevin Stolp <kevinstolp@gmail.com>
+# Contributor: Patrick Jackson <PatrickSJackson gmail com>
+# Contributor: Christoph Vigano <mail@cvigano.de>
+
+pkgname=st
+pkgver=0.9.3
+pkgrel=1
+pkgdesc="A simple virtual terminal emulator for X."
+arch=('x86_64' 'aarch64')
+url="https://st.suckless.org"
+license=('MIT')
+depends=(
+  'hicolor-icon-theme'
+  'libxft'
+)
+source=("https://dl.suckless.org/$pkgname/$pkgname-$pkgver.tar.gz"
+        'terminfo.patch'
+        'README.terminfo.rst'
+        "$pkgname.desktop"
+        "$pkgname.svg")
+sha256sums=('9ed9feabcded713d4ded38c8cebf36a3b08f0042ef7934a0e2b2409da56e649b'
+            'f9deea445a5c6203a0e8e699f3c3b55e27275f17fb408562c4dd5d649edeea23'
+            '95be3197f7de77a0fe2e4f527202e17e910ee24e1ed6bc39beb320a1304bb7e1'
+            '1a603d2723d01506612b8d4b2f492e411a004634080f04d39d462815d07341bd'
+            'a517f7f3ad106c9b20a05443e8061bf4f4365308109219ad0513813d6310e122')
+
+prepare() {
+  patch -d "$pkgname-$pkgver" -p 0 < terminfo.patch
+
+  # This package provides a mechanism to provide a custom config.h. Multiple
+  # configuration states are determined by the presence of two files in
+  # $BUILDDIR:
+  #
+  # config.h  config.def.h  state
+  # ========  ============  =====
+  # absent    absent        Initial state. The user receives a message on how
+  #                         to configure this package.
+  # absent    present       The user was previously made aware of the
+  #                         configuration options and has not made any
+  #                         configuration changes. The package is built using
+  #                         default values.
+  # present                 The user has supplied his or her configuration. The
+  #                         file will be copied to $pkgname-$pkgver and used during
+  #                         build.
+  #
+  # After this test, config.def.h is copied from $pkgname-$pkgver to $BUILDDIR to
+  # provide an up to date template for the user.
+  if [ -e "$BUILDDIR/config.h" ]
+  then
+    cp "$BUILDDIR/config.h" "$pkgname-$pkgver"
+  elif [ ! -e "$BUILDDIR/config.def.h" ]
+  then
+    echo \
+      'This package can be configured in config.h. Copy the config.def.h that' \
+      'was just placed into the package directory to config.h and modify it' \
+      'to change the configuration. Or just leave it alone to continue to use' \
+      'default values.'
+  fi
+  cp "$pkgname-$pkgver/config.def.h" "$BUILDDIR"
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  make  X11INC='/usr/include/X11' X11LIB='/usr/lib/X11'
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make PREFIX=/usr DESTDIR="$pkgdir" install
+
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+  install -Dm644 README "$srcdir/README.terminfo.rst" -t "$pkgdir/usr/share/doc/$pkgname/"
+  install -Dm644 st.info -t "$pkgdir/usr/share/$pkgname/"
+  install -Dm644 "$srcdir/$pkgname.desktop" -t "$pkgdir/usr/share/applications/"
+  install -Dm644 "$srcdir/$pkgname.svg" -t "$pkgdir/usr/share/icons/hicolor/scalable/apps/"
+}

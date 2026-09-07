@@ -1,0 +1,76 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Stefano Capitani <stefanoatmanjarodotorg>
+
+pkgname=inxi
+_pkgver=3.3.41-1
+pkgver=${_pkgver//-/.}
+pkgrel=2
+pkgdesc="Full featured CLI system information tool"
+arch=('any')
+url="https://smxi.org/docs/inxi.htm"
+license=('GPL-3.0-or-later')
+depends=(
+  'coreutils'
+  'pciutils'
+  'perl'
+  'procps-ng'
+  'util-linux'
+)
+optdepends=(
+  "bind: dig: -i wlan IP"
+  "bluez-tools: bt-adapter: -E bluetooth data (if no hciconfig, btmgmt)"
+  "bluez-utils: btmgmt: -E bluetooth data (if no hciconfig)"
+  "bluez-deprecated-tools: hciconfig: -E bluetooth data (deprecated, good report)"
+  "curl: -i (if no dig); -w,-W; -U"
+  "dmidecode: -M if no sys machine data; -m"
+  'doas: -Dx hddtemp-user; -o file-user (alt for sudo)'
+  "freeipmi: ipmi-sensors: -s IPMI sensors (servers)"
+  "hddtemp: -Dx show hdd temp, if no drivetemp module"
+  "iproute2: ip: -i ip LAN"
+  "kmod: modinfo: Ax; -Nx module version"
+  "ipmitool: -s IPMI sensors (servers)"
+  "lvm2: lvs: -L LVM data"
+  "lm_sensors: sensors: -s sensors output (optional, /sys supplies most)"
+  "mdadm: -Ra advanced mdraid data"
+  "mesa-utils: eglinfo / glxinfo: -G X11/Wayland EGL / GLX info"
+  "net-tools: ifconfig: -i ip LAN (deprecated)"
+  "perl-cpanel-json-xs: Cpanel::JSON::XS: -G wayland, --output json (faster)"
+  "perl-json-xs: JSON::XS: -G wayland, --output json (legacy)"
+  "perl-io-socket-ssl: IO::Socket::SSL: -U; -w,-W; -i (if dig not installed)"
+#  "perl-xml-dumper: XML::Dumper: --output xml - Crude and raw" # AUR
+  "smartmontools: smartctl: -Da advanced data"
+  "systemd: udevadm: -m ram data for non-root, or no dmidecode"
+  "systemd-sysvcompat: runlevel: -I fallback to Perl"
+  "sudo: -Dx hddtemp-user; -o file-user"
+  "tree: --debugger 20,21 /sys tree"
+  "upower: -sx attached device battery info"
+  "usbutils: lsusb: -A usb audio; -J (optional); -N usb networking"
+  "vulkan-tools: vulkaninfo: -G Vulkan API info"
+  "wayland-utils: wayland-info: -G Wayland data"
+  "wget: -i (if no dig); -w,-W; -U"
+  "wlr-randr: -G (Wayland, wlroots based) monitors(s) data"
+  "wmctrl: -S active window manager (fallback)"
+  "xorg-xdpyinfo: xdpyinfo: -G (X) Screen resolution, dpi; -Ga Screen size"
+  "xorg-xdriinfo: xdriinfo: -G (X) DRI driver (if missing, fallback to Xorg log)"
+  "xorg-xprop: xprop: -S (X) desktop data"
+  "xorg-xrandr: xrandr: -G (X) monitors(s) resolution; -Ga monitor data"
+)
+checkdepends=('appstream')
+source=("$pkgname-$_pkgver.tar.gz::https://codeberg.org/smxi/inxi/archive/$_pkgver.tar.gz"
+        "$pkgname.conf")
+sha256sums=('e08d92550a0f10890e722cc7db1e6d6cbde7e9fb47e61a8c6cec51f54a0b63d8'
+            '396965fd358cc7838c801253dbd3da5b331a5106bfc741e621cddd8b423d4c70')
+
+check() {
+  cd "$pkgname"
+  appstreamcli validate --no-net "$pkgname.metainfo.xml"
+}
+
+package() {
+    cd "$pkgname"
+    install -Dm755 "$pkgname" -t "$pkgdir/usr/bin/"
+    install -Dm644 "$pkgname.1" -t "$pkgdir/usr/share/man/man1/"
+    install -Dm644 "$pkgname.metainfo.xml" \
+      "$pkgdir/usr/share/metainfo/org.smxi.$pkgname.metainfo.xml"
+    install -Dm644 "$srcdir/$pkgname.conf" -t "$pkgdir/etc/"
+}

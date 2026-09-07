@@ -1,0 +1,4 @@
+[usb-dirty-pages-udev]
+source = "git"
+git = "https://github.com/biglinux/usb-dirty-pages-udev.git"
+prefix = "usb-dirty-pages-udev-"

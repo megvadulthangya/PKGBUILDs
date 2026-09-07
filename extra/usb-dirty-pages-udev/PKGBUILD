@@ -1,0 +1,20 @@
+# Maintainer: Stefano Capitani <stefanoatmanjarodotorg>
+# Contributor: Bruno Goncalves <bigbruno@gmail.com>
+
+pkgname=usb-dirty-pages-udev
+pkgver=23.10.15
+pkgrel=2
+_rel=2049
+pkgdesc="Use udev to specify dirty pages for usb devices"
+arch=('any')
+url="https://github.com/biglinux/usb-dirty-pages-udev"
+license=('GPL-3.0-or-later')
+install="${pkgname}.install"
+source=("${url}/archive/refs/tags/${pkgname}-${pkgver}-${_rel}.tar.gz")
+sha256sums=('f97a0e9d46109cbaad8e07dec115988d88df70549bad559a4f3e594d01188deb')
+
+package() {
+  cd "${pkgname}-${pkgname}-${pkgver}-${_rel}"
+  install -Dm755 "usr/bin/${pkgname}" -t "$pkgdir/usr/bin/"
+  install -Dm644 "etc/udev/rules.d/60-${pkgname}.rules" -t "$pkgdir/etc/udev/rules.d/"
+}

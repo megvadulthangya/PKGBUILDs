@@ -1,0 +1,51 @@
+post_install() {
+  if [ ! -d "/etc/netplan" ] && [ -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf ]; then
+    echo "$(cat /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf),except:interface-name:surfshark_ipv6,except:interface-name:surfshark_2,except:interface-name:surfshark_ovpn,except:interface-name:surfshark_wg" > /usr/lib/NetworkManager/conf.d/20-surfshark-and-globally-managed-devices.conf
+  fi
+
+  systemctl enable --global surfsharkd.service || true
+}
+
+post_upgrade() {
+  post_install
+}
+
+pre_remove() {
+  systemctl disable --global surfsharkd.service || true
+  systemctl disable --now surfsharkd2.service || true
+}
+
+post_remove() {
+  kill -15 $(pidof surfshark) 2> /dev/null || :
+  kill -15 $(pgrep surfsharkd) 2> /dev/null || :
+
+  rm -rf /run/surfshark || :
+  rm -f /tmp/surfsharkd.sock || :
+  rm -f /tmp/surfshark-electron.sock || :
+  rm -f $XDG_RUNTIME_DIR/surfsharkd.sock || :
+  rm -f $XDG_RUNTIME_DIR/surfshark-electron.sock || :
+
+  # Surfshark post-remove
+  nmcli connection delete surfshark_ipv6 2> /dev/null || true
+  nmcli connection delete surfshark_wg 2> /dev/null || true
+  nmcli connection delete surfshark_openvpn 2> /dev/null || true
+  nmcli connection delete surfshark_2 2> /dev/null || true
+
+  rm /usr/lib/NetworkManager/conf.d/20-surfshark-and-globally-managed-devices.conf || true
+
+  iptables -D OUTPUT -j SSKS_OUTPUT 2> /dev/null
+  ip6tables -D OUTPUT -j SSKS_OUTPUT 2> /dev/null
+
+  # order is important
+  for chain in "OUTPUT" "ALLOW" "DENY" "ALLOW_OVPN_OBSF" "ALLOW_OVPN_OBSS" "ALLOW_OVPN_TCP" "ALLOW_OVPN_UDP" "ALLOW_WG"; do
+    iptables -F SSKS_$chain 2> /dev/null
+    iptables -X SSKS_$chain 2> /dev/null
+    ip6tables -F SSKS_$chain 2> /dev/null
+    ip6tables -X SSKS_$chain 2> /dev/null
+  done
+
+  # clean up legacy rules
+  iptables -S | grep surfshark_ks | sed -r '/.*comment.*surfshark_ks*/s/-A/iptables -D/e' > /dev/null
+  ip6tables -S | grep surfshark_ks | sed -r '/.*comment.*surfshark_ks*/s/-A/ip6tables -D/e' > /dev/null
+}
+

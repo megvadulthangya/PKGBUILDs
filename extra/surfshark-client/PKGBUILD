@@ -1,0 +1,64 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+# https://ocean.surfshark.com/debian/dists/stretch/main/binary-amd64/Packages
+# https://ocean.surfshark.com/debian/dists/stretch/main/binary-arm64/Packages
+
+pkgname=surfshark-client
+pkgver=3.13.0
+pkgrel=1
+pkgdesc="Surfshark VPN client"
+arch=('x86_64' 'aarch64')
+url="https://surfshark.com/vpn"
+license=('LicenseRef-unknown')
+depends=(
+  'alsa-lib'
+  'curl'
+  'dbus'
+  'gjs'
+  'gtk3'
+  'iproute2'
+  'iptables'
+  'libappindicator'
+  'libnotify'
+  'libsecret'
+  'libxtst'
+  'networkmanager'
+  'networkmanager-openvpn'
+  'noto-fonts-emoji'
+  'nss'
+  'org.freedesktop.secrets'
+  'polkit'
+  'zip'
+)
+optdepends=(
+  'polkit-gnome: Polkit agent for GNOME'
+  'polkit-kde-agent: Polkit agent for KDE Plasma'
+)
+conflicts=('surfshark-gui-bin')
+replaces=('surfshark-gui-bin')
+install=surfshark.install
+source_x86_64=("https://ocean.surfshark.com/debian/pool/main/s/surfshark_${pkgver}_amd64.deb")
+source_aarch64=("https://ocean.surfshark.com/debian/pool/main/s/surfshark_${pkgver}_arm64.deb")
+sha256sums_x86_64=('6754219b04dd31a97a7433d8d0a04780c91c3518c12166f37655fdbb0583fcc0')
+sha256sums_aarch64=('c59cd1bfc2c1676171a2e88e538d13a06b435899d728af56809e581ec21edac3')
+
+package(){
+
+  # Extract package data
+  bsdtar -xvf data.tar.xz -C "${pkgdir}/"
+
+  # Correct folder permissions
+  find "${pkgdir}" -type d -exec chmod 755 {} \;
+
+  # Correct file permissions
+  chmod 755 "${pkgdir}"/opt/Surfshark/resources/dist/resources/{surfsharkd.js,surfsharkd2.js,update,diagnostics}
+  chmod 644 "${pkgdir}"/etc/openvpn/client/surfshark/{ovpn.cer,static.key}
+
+  # Link to the binary
+  install -d "${pkgdir}/usr/bin"
+  ln -s /opt/Surfshark/surfshark "${pkgdir}/usr/bin/"
+
+  # Remove init.d
+  rm -rf "$pkgdir/etc/init.d/"
+}

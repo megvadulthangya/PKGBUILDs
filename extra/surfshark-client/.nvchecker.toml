@@ -1,0 +1,7 @@
+[surfshark-client]
+source = "apt"
+mirror = "https://ocean.surfshark.com/debian"
+pkg = "surfshark"
+suite = "stretch"
+repo = "main"
+strip_release = "true"

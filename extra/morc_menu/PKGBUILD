@@ -1,0 +1,36 @@
+# Maintainer:
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=morc_menu
+pkgver=1.0+5+g91598f8
+pkgrel=1
+pkgdesc="Categorized desktop application menu"
+arch=('any')
+url="https://github.com/Boruch-Baum/morc_menu"
+license=('GPL-3.0-or-later')
+depends=(
+  'bash'
+  'dmenu'
+)
+makedepends=('git')
+optdepends=(
+  'dmenu-manjaro: Support for mouse, xft fonts and menu placing'
+  'rofi: Alternative frontend'
+  'rootmenu: Spawn menu by clicking desktop'
+  'wmutils: Spawn menu on cursor'
+  'xdotool: Spawn menu on cursor'
+  'zenity: Alternative frontend'
+)
+_commit=91598f85198127f1785a18f9a290e5c7dca6a6ef  # branch/master
+source=("git+https://github.com/Boruch-Baum/morc_menu.git#commit=${_commit}")
+sha256sums=('0a6adb9b819f2fbf5d72757406e9cebad5bf3092ed8c128de14cc76ee991c465')
+
+pkgver() {
+  cd "${pkgname}"
+  git describe --tags --abbrev=7 | sed 's/^v//;s/-/+/g'
+}
+
+package() {
+  cd "${pkgname}"
+  make SKEL_PREFIX=/etc/skel/.config/${MORC_MENU} DESTDIR="${pkgdir}" install
+}

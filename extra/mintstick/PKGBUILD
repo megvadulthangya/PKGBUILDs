@@ -1,0 +1,68 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: fhdk <echo ZmhAbWFuamFyby5vcmcK | base64 -d>
+# Contributor: Sam Burgos <santiago.burgos1089@gmail.com>
+# Contributor: willemw <willemw12@gmail.com>
+# Contributor: unclesam <web _AT_ shinobi-mail _DOT_ de>
+
+pkgname=mintstick
+pkgver=1.6.7
+pkgrel=2
+pkgdesc="A graphical tool that allows you to format USB sticks and create bootable USB sticks."
+arch=('any')
+url="https://github.com/linuxmint/mintstick"
+license=('GPL-2.0-or-later')
+depends=(
+  'coreutils'
+  'cdrtools'
+  'dosfstools'
+  'e2fsprogs'
+  'exfatprogs'
+  'gtk3'
+  'hicolor-icon-theme'
+  'polkit'
+  'procps-ng'
+  'python'
+  'python-dbus'
+  'python-gnupg'
+  'python-gobject'
+  'python-pyparted'
+  'python-requests'
+  'python-unidecode'
+  'python-xapp'
+  'udisks2'
+  'util-linux'
+  'xapp'
+  'xapp-symbolic-icons'
+)
+optdepends=(
+  'mint-translations: i18n'
+  'ntfsprogs: NTFS filesystems'
+)
+source=("http://packages.linuxmint.com/pool/main/m/$pkgname/${pkgname}_${pkgver}.tar.xz")
+noextract=("${pkgname}_${pkgver}.tar.xz")
+sha256sums=('2fa897a1a795ee3a05ecd206aca1a418fc03b233d04c3c7f92c8c8bae48c044b')
+
+prepare() {
+  mkdir -p "$pkgname-$pkgver"
+  bsdtar xf "${pkgname}_${pkgver}.tar.xz" --strip-components 1 -C "$pkgname-$pkgver"
+
+  cd "$pkgname-$pkgver"
+
+  # Use standard locale directory
+  sed -i 's|usr/share/linuxmint/locale|usr/share/locale|g' \
+    "lib/$pkgname.py" lib/verify.py generate_additional_files.py
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  install -Dm755 lib/* -t "$pkgdir/usr/lib/$pkgname/"
+  install -Dm644 "share/$pkgname"/* -t "$pkgdir/usr/share/$pkgname/"
+  install -Dm644 share/applications/* -t "$pkgdir/usr/share/applications/"
+  install -Dm644 share/polkit/* -t "$pkgdir/usr/share/polkit-1/actions/"
+  install -Dm755 "$pkgname" mint-iso-verify -t "$pkgdir/usr/bin/"
+  install -Dm644 share/nemo/actions/* -t "$pkgdir/usr/share/nemo/actions/"
+  install -Dm644 share/kde4/* -t "$pkgdir/usr/share/kde4/apps/solid/actions/"
+  cp -r share/icons "$pkgdir/usr/share/icons"
+  install -Dm755 bin/* -t "$pkgdir/usr/bin/"
+  install -Dm644 "debian/$pkgname.1" -t "$pkgdir/usr/share/man/man1/"
+}

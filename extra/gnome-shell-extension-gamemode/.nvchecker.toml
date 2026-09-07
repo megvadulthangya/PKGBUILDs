@@ -1,0 +1,4 @@
+[gnome-shell-extension-gamemode]
+source = "git"
+git = "https://github.com/trsnaqe/gamemode-shell-extension.git"
+prefix = "V"

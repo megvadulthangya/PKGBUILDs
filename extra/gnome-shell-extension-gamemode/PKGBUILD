@@ -1,0 +1,39 @@
+# Maintainer: Mark Wagie <mark@manjaro.org>
+# Contributor: Stefano Capitani <stefano@manjaro.org>
+# Contributor: Luke Street <luke.street@encounterpc.com>
+
+pkgname=gnome-shell-extension-gamemode
+pkgver=20.0
+pkgrel=1
+pkgdesc="GameMode Status Indicator for GNOME Shell"
+arch=('any')
+url="https://github.com/Trsnaqe/gamemode-shell-extension"
+license=('LGPL-2.1-or-later')
+depends=(
+  'gamemode'
+  'gnome-shell'
+)
+makedepends=(
+  'git'
+  'meson'
+)
+source=("git+https://github.com/Trsnaqe/gamemode-shell-extension.git#tag=V$pkgver"
+        'schema.patch')
+sha256sums=('8e05e2ccceedca84f47dc6c59553d8d2a05fee597cb648019cb354503d21fe0f'
+            '1534366a331b7821243b8dfff7494ec9a1d1ede98de1a186e6f77990bc79dc49')
+
+prepare() {
+  cd gamemode-shell-extension
+
+  # Don't compile schema
+  patch -Np1 -i ../schema.patch
+}
+
+build() {
+  arch-meson gamemode-shell-extension build
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+}

@@ -1,0 +1,49 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Dan Johansen
+# Contributor: Helmut Stult
+
+pkgname=manjaro-arm-installer
+pkgver=1.5.4
+pkgrel=1
+pkgdesc="Scripts to install Manjaro ARM directly to SD/eMMC cards"
+arch=('x86_64' 'aarch64')
+url="https://gitlab.manjaro.org/manjaro-arm/applications/manjaro-arm-installer"
+license=('GPL-3.0-or-later')
+depends_x86_64=('dialog'
+  'gawk'
+  'git'
+  'libarchive'
+  'qemu-user-static-binfmt'
+  'parted'
+  'wget'
+  'openssl'
+  'dosfstools'
+  'polkit'
+)
+depends_aarch64=(
+  'dialog'
+  'gawk'
+  'git'
+  'libarchive'
+  'parted'
+  'wget'
+  'openssl'
+  'dosfstools'
+  'polkit'
+)
+optdepends=(
+  'btrfs-progs: btrfs filesystem utilities'
+  'f2fs-tools: f2fs filesystem utilities'
+  'cryptsetup: encryption support'
+)
+#optdepends_x86_64+=(
+#  'grub-efi-arm64: for generic-efi support (only needed when script is run from other architectures than aarch64)' # AUR
+#)
+install="$pkgname.install"
+source=("$url/-/archive/$pkgver/$pkgname-$pkgver.tar.gz")
+sha256sums=('058504a1c047bf8732bddf743d971aaa46a24ffcae6859a01ed282d10f5221ba')
+
+package() {
+  cd "$pkgname-$pkgver"
+  install -Dm755 "$pkgname" "$pkgdir/usr/bin/$pkgname"
+}

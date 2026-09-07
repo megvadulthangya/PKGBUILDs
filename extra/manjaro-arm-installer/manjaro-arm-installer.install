@@ -1,0 +1,4 @@
+post_install() {
+    echo "A reboot is recommended after installing manjaro-arm-installer."
+    echo "Otherwise, the generated images might not work."
+}

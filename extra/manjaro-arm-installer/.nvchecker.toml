@@ -1,0 +1,3 @@
+[manjaro-arm-installer]
+source = "git"
+git = "https://gitlab.manjaro.org/manjaro-arm/applications/manjaro-arm-installer.git"

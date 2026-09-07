@@ -1,0 +1,4 @@
+[pacman-mirrors]
+source = "git"
+git = "https://gitlab.manjaro.org/applications/pacman-mirrors.git"
+prefix = "v"

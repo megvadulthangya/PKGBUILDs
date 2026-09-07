@@ -1,0 +1,25 @@
+theme=manjaro
+
+post_install() {
+  echo ""
+  echo "Setting Plymouth theme to ${theme}..."
+  echo ""
+  plymouth-set-default-theme -R ${theme}
+
+  rm -f /etc/plymouth/plymouthd.confe
+}
+
+post_upgrade() {
+  plymouth-set-default-theme -R
+
+  rm -f /etc/plymouth/plymouthd.confe
+}
+
+post_remove() {
+  echo ""
+  echo "Resetting to default Plymouth theme..."
+  echo ""
+  plymouth-set-default-theme -r -R
+
+  rm -f /etc/plymouth/plymouthd.confe
+}

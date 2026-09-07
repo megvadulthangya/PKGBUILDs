@@ -1,0 +1,157 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Helmut Stult
+# Contributor: graysky <therealgraysky AT protonmail DOT com>
+# Contributor: germar <germar DOT reitze AT gmail DOT com>
+
+pkgname=('backintime' 'backintime-qt')
+pkgbase=backintime
+pkgver=1.6.1
+pkgrel=1
+pkgdesc="Simple backup system inspired from the Flyback Project and TimeVault."
+arch=('any')
+url="https://github.com/bit-team/backintime"
+license=(
+  'CC0-1.0'
+  'GPL-2.0-or-later'
+  'GPL-3.0-or-later'
+  'MIT'
+)
+depends=(
+  'cron'
+  'fuse2'
+  'libnotify'
+  'openssh'
+  'polkit'
+  'python-dbus'
+  'python-keyring'
+  'python-packaging'
+  'python-pyqt6'
+  'rsync'
+  'sshfs'
+  'qt6-svg'
+  'xorg-xdpyinfo'
+)
+makedepends=(
+  'asciidoctor'
+  'git'
+  'man-db'
+#  'mkdocs'  ## build manual
+#  'mkdocs-material'  ## build manual
+#  'mkdocs-material-pymdownx-extras'  ## build manual (AUR)
+#  'python-sphinx'  ## build HTML docs
+#  'python-sphinx_rtd_theme'  ## build HTML docs
+)
+checkdepends=(
+  'python-pyfakefs'
+  'python-pytest'
+)
+source=("git+https://github.com/bit-team/backintime.git#tag=v$pkgver")
+sha256sums=('5a9b7ccc64cfd6b93bbe27d937902d1cd0defb9dcd830901c0b68ba0ede7d673')
+
+prepare() {
+  cd "$pkgbase"
+
+  # Fix documentation directories
+  sed -i -e "s|$pkgbase-common|$pkgbase|g" common/configure
+}
+
+build() {
+  cd "$pkgbase"
+
+  pushd common
+  ./configure --python
+  popd
+
+  pushd qt
+  ./configure --python
+  popd
+
+  make -C common
+  make -C qt
+
+  # Build manual
+#  pushd doc/manual
+#  mkdocs build
+#  popd
+
+  # Build HTML docs
+#  pushd common/doc-dev
+#  make html
+#  popd
+}
+
+check() {
+  cd "$pkgbase"
+  rm common/test/test_tools.py
+  rm common/test/test_sshtools.py
+  rm common/test/test_lint.py qt/test/test_lint.py
+
+  pushd common
+  pytest
+  popd
+
+  pushd qt
+  pytest
+  popd
+}
+
+package_backintime() {
+  depends=(
+    'cron'
+    'fuse2'
+    'openssh'
+    'python-dbus'
+    'python-keyring'
+    'python-packaging'
+    'rsync'
+    'sshfs'
+  )
+  optdepends=(
+    'backintime-qt: Qt frontend'
+    'encfs: used for encryption in local profiles (deprecated)'
+    'gocryptfs: used for encryption in local profiles'
+  )
+  conflicts=("$pkgbase-cli")
+  replaces=("$pkgbase-cli")
+
+  cd "$pkgbase"
+  make -C common DESTDIR="$pkgdir" install
+
+  # Fix backintime-config man page installation
+  rm -v "$pkgdir/usr/share/man/man5"
+  install -Dm644 "doc/manpages/$pkgname-config.5" -t "$pkgdir/usr/share/man/man5/"
+
+  install -Dm644 LICENSES/MIT.txt -t "$pkgdir/usr/share/licenses/$pkgname/"
+
+  # Manually compile Python bytecode
+  python -m compileall -d / "$pkgdir/usr/share/$pkgbase/common/"
+  python -O -m compileall -d / "$pkgdir/usr/share/$pkgbase/common/"
+}
+
+package_backintime-qt() {
+  pkgdesc="Qt frontend for Back In Time"
+  depends=(
+    "backintime=$pkgver"
+    'libnotify'
+    'polkit'
+    'python-dbus'
+    'python-pyqt6'
+    'xorg-xdpyinfo'
+  )
+  optdepends=(
+    'gnome-keyring: option for SSH key storage'
+    'kompare: option for comparing files'
+    'kwallet: option for SSH key storage'
+    'meld: option for comparing files'
+    'python-secretstorage: option for SSH key storage'
+  )
+
+  cd "$pkgbase"
+  make -C qt DESTDIR="$pkgdir" install
+
+  install -Dm644 LICENSES/MIT.txt -t "$pkgdir/usr/share/licenses/$pkgname/"
+
+  # Manually compile Python bytecode
+  python -m compileall -d / "$pkgdir/usr/share/$pkgbase/qt/"
+  python -O -m compileall -d / "$pkgdir/usr/share/$pkgbase/qt/"
+}

@@ -1,0 +1,5 @@
+[backintime]
+source = "git"
+git = "https://github.com/bit-team/backintime.git"
+prefix = "v"
+exclude_regex = ".*rc.*"

@@ -1,0 +1,28 @@
+diff --git a/headers/gdesktop-enums.h b/headers/gdesktop-enums.h
+index fa5cbfa..8421cc2 100644
+--- a/headers/gdesktop-enums.h
++++ b/headers/gdesktop-enums.h
+@@ -283,7 +283,9 @@ typedef enum
+   G_DESKTOP_ACCENT_COLOR_RED,
+   G_DESKTOP_ACCENT_COLOR_PINK,
+   G_DESKTOP_ACCENT_COLOR_PURPLE,
+-  G_DESKTOP_ACCENT_COLOR_SLATE
++  G_DESKTOP_ACCENT_COLOR_SLATE,
++
++  G_DESKTOP_ACCENT_COLOR_MAIA = G_DESKTOP_ACCENT_COLOR_SLATE + 100,
+ } GDesktopAccentColor;
+ 
+ #endif /* __gdesktop_enums_h__ */
+diff --git a/schemas/org.gnome.desktop.interface.gschema.xml.in b/schemas/org.gnome.desktop.interface.gschema.xml.in
+index f855144..3833fe1 100644
+--- a/schemas/org.gnome.desktop.interface.gschema.xml.in
++++ b/schemas/org.gnome.desktop.interface.gschema.xml.in
+@@ -315,7 +315,7 @@
+       <default>'blue'</default>
+       <summary>Accent color</summary>
+       <description>
+-        The preferred accent color for the user interface. Valid values are "blue", "teal", "green", "yellow", "orange", "red", "pink", "purple", "slate".
++        The preferred accent color for the user interface. Valid values are "blue", "teal", "green", "yellow", "orange", "red", "pink", "purple", "slate", "maia".
+       </description>
+     </key>
+   </schema>

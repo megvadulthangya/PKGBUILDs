@@ -1,0 +1,39 @@
+# Maintainer: Bernhard Landauer <oberon@manjaro.org>
+
+pkgname=('artwork-i3' 'i3-default-artwork')
+pkgbase=artwork-i3
+pkgver=20190912
+pkgrel=2
+arch=('any')
+url="https://github.com/oberon-manjaro/artwork-i3"
+license=('GPL-3.0-or-later')
+groups=('i3-manjaro')
+makedepends=('git')
+_commit=2697419b3f7120d0880072a47d7786af7a634990
+source=("git+https://github.com/oberon-manjaro/artwork-i3.git#commit=${_commit}")
+sha256sums=('a01306ea0d359b8deb1f31d17d6a40a9c631a6e3e26bfba361876fbaac6a0765')
+
+pkgver() {
+  cd "$pkgbase"
+  git show -s --date=format:'%Y%m%d' --format=%cd
+}
+
+package_artwork-i3() {
+  pkgdesc="Wallpapers for Manjaro i3"
+  depends=('i3-default-artwork')
+
+  cd "$pkgbase"
+  install -d "$pkgdir"/usr/share
+  cp -r backgrounds "$pkgdir"/usr/share
+  rm "$pkgdir"/usr/share/backgrounds/juhraya-default-i3.jpg
+}
+
+package_i3-default-artwork() {
+  pkgdesc="Default wallpaper and icons for Manjaro i3"
+
+  cd "$pkgbase"
+  install -d "$pkgdir"/usr/share
+  cp -r icons moc pixmaps "$pkgdir"/usr/share
+  install -Dm644 backgrounds/juhraya-default-i3.jpg \
+    "$pkgdir"/usr/share/backgrounds/i3_default_background.jpg
+}

@@ -1,0 +1,8 @@
+[pacman]
+source="archpkg"
+#source = "gitlab"
+#gitlab = "pacman/pacman"
+#host = "gitlab.archlinux.org"
+#use_max_tag = true
+#prefix = "v"
+

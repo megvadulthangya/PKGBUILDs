@@ -1,0 +1,11 @@
+diff --unified --recursive --text a/files/plasma-setup.service.in b/files/plasma-setup.service.in
+--- a/files/plasma-setup.service.in	2026-01-24 16:22:03.623788106 -0700
++++ b/files/plasma-setup.service.in	2026-01-24 16:26:34.062263480 -0700
+@@ -27,6 +27,7 @@
+ 
+ [Service]
+ Type=oneshot
++ExecStartPre=-/usr/bin/plymouth quit --retain-splash
+ ExecStart=${CMAKE_INSTALL_FULL_LIBEXECDIR}/plasma-setup-bootutil
+ 
+ [Install]

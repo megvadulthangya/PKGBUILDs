@@ -1,0 +1,28 @@
+{
+  "folders": [
+    {
+      "name": "Manjaro",
+      "guid": "30844c9b-a314-468a-ac5c-7dc0827faf4b"
+    }
+  ],
+  "bookmarks": [
+    {
+      "name": "manjaro.org",
+      "thumbnail": "/resources/manjaro.png",
+      "guid": "f4ce85f0-7aa9-48cc-880f-c99acfbdf694",
+      "guid2": "2b62f4ab-ad1f-4ce8-969f-2d5f9133b894"
+    },
+    {
+      "name": "forum.manjaro.org",
+      "thumbnail": "/resources/manjaro_forum.png",
+      "guid": "f85559c2-c2c6-4857-9fa0-19cb579c16ea",
+      "guid2": "56276ac0-4446-4438-9232-f9c65eb7dac0"
+    },
+    {
+      "name": "wiki.manjaro.org",
+      "thumbnail": "/resources/manjaro_wiki.png",
+      "guid": "76e2345a-347f-4e8a-97fa-7d3a2da825bd",
+      "guid2": "f075a187-1262-4ed9-aa8d-f6eb8e5f67b1"
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Rob McCathie
+# Contributor: Alexandre Arnt
+# Contributor: Roland Singer
+# Contributor: Ramon Buldó
+# Contributor: Tomasz Przybył
+
+pkgname=(
+  'octopi'
+  'octopi-notifier-qt6'
+  'octopi-notifier-kstatus'
+)
+pkgbase=octopi
+pkgver=0.19.0
+pkgrel=4
+pkgdesc="A powerful Pacman frontend using Qt libs"
+arch=('x86_64')
+url="https://tintaescura.com/projects/octopi"
+license=('GPL-2.0-or-later')
+depends=(
+  'alpm-octopi-utils'
+  'fakeroot'
+  'kstatusnotifieritem'
+  'pacman'
+  'pacman-contrib'
+  'qt-sudo'
+  'qt6-5compat'
+  'qt6-base'
+  'qt6-multimedia'
+  'qt6-svg'
+  'qtermwidget'
+)
+makedepends=(
+  'cmake'
+  'git'
+  'qt6-tools'
+)
+source=("git+https://github.com/aarnt/octopi.git#tag=v$pkgver")
+sha256sums=('7c56e17fcecd3da460a9c576ddb325194d7f45ab6d61b5b91ba55fb8ff348016')
+
+prepare() {
+  cd "$pkgbase"
+
+  # CMake Error: No cmake_minimum_required command is present
+  sed -i '1 i\cmake_minimum_required(VERSION 3.10)' notifier/CMakeLists.txt
+
+  # copy notifier folder for building KStatus Notifier
+  cp -rf notifier notifier-kstatus
+}
+
+build() {
+  cmake -B build -S "$pkgbase" \
+    -DCMAKE_BUILD_TYPE='RelWithDebInfo' \
+    -DCMAKE_INSTALL_PREFIX='/usr' \
+    -DUSE_KF6NOTIFICATIONS='OFF' \
+    -Wno-author
+  cmake --build build
+
+  cmake -B build-kstatus -S "$pkgbase/notifier-kstatus" \
+    -DCMAKE_BUILD_TYPE='RelWithDebInfo' \
+    -DCMAKE_INSTALL_PREFIX='/usr' \
+    -DUSE_QTERMWIDGET6='ON' \
+    -DUSE_KF6NOTIFICATIONS='ON' \
+    -Wno-author
+  cmake --build build-kstatus
+}
+
+package_octopi() {
+  depends=(
+    'alpm-octopi-utils'
+    'fakeroot'
+    'pacman'
+    'pacman-contrib'
+    'qt-sudo'
+    'qt6-5compat'
+    'qt6-base'
+    'qt6-multimedia'
+    'qt6-svg'
+    'qtermwidget'
+  )
+  optdepends=(
+    'inxi: SysInfo log output'
+    'manjaro-release: SysInfo log output'
+    'mhwd: SysInfo log output'
+    'octopi-notifier: Octopi Notifier'
+    'pacmanlogviewer: View pacman log files'
+    'systemd: SysInfo log output'
+    'yay: AUR support'
+  )
+  provides=(
+    'octopi-cachecleaner'
+    'octopi-repoeditor'
+  )
+
+  DESTDIR="$pkgdir" cmake --install build
+
+  # Move SVG to scalable apps directory and symlink PNG
+  install -d "$pkgdir/usr/share/icons/hicolor/scalable/apps"
+  mv -v "$pkgdir/usr/share/icons/hicolor/48x48/apps/$pkgbase.svg" \
+    "$pkgdir/usr/share/icons/hicolor/scalable/apps/"
+  ln -sv "/usr/share/icons/hicolor/48x48/apps/${pkgbase}_green.png" \
+    "$pkgdir/usr/share/icons/hicolor/48x48/apps/${pkgbase}.png"
+
+  # Remove Notifier files
+  rm -v "$pkgdir/usr/bin/$pkgbase-notifier"
+  rm -v "$pkgdir/usr/share/applications/$pkgbase-notifier.desktop"
+
+  # Remove duplicate license
+  rm -rv "$pkgdir/usr/share/licenses"
+}
+
+package_octopi-notifier-qt6() {
+  pkgdesc="Octopi Qt6 Notifier"
+  depends=('octopi')
+  provides=('octopi-notifier')
+  conflicts=('octopi-notifier')
+  replaces=('octopi-notifier-qt5')
+
+  DESTDIR="$pkgdir" cmake --install build/notifier
+}
+
+package_octopi-notifier-kstatus() {
+  pkgdesc="Octopi KStatus Notifer"
+  depends=(
+    'kstatusnotifieritem'
+    'octopi'
+  )
+  provides=('octopi-notifier')
+  conflicts=('octopi-notifier')
+  replaces=('octopi-notifier-frameworks')
+
+  DESTDIR="$pkgdir" cmake --install build-kstatus
+}

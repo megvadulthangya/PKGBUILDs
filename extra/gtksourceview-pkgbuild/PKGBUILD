@@ -1,0 +1,28 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+# Contributor: Rafael Fontenelle <rafaelff@gnome.org>
+
+pkgname=gtksourceview-pkgbuild
+pkgver=5
+pkgrel=3
+pkgdesc="PKGBUILD syntax highlight support in GtkSourceView"
+arch=('any')
+url="https://gitlab.com/rafaelff/gtksourceview-pkgbuild"
+license=('LGPL-2.1-or-later')
+makedepends=('git')
+source=("git+https://gitlab.com/rafaelff/gtksourceview-pkgbuild.git#tag=v$pkgver")
+sha256sums=('ba2b954ddfc18cfae2b5794db3b7f0e1ec16688a52b65459b2e76fb2b50f3c08')
+
+package() {
+  cd "$pkgname"
+  install -Dm644 pkgbuild.xml -t "$pkgdir"/usr/share/mime/packages/
+  install -Dm644 pkgbuild.lang -t "$pkgdir"/usr/share/gtksourceview-3.0/language-specs/
+
+  install -d "$pkgdir"/usr/share/{gtksourceview-{4,5},libgedit-gtksourceview-300}/language-specs/
+  ln -s /usr/share/gtksourceview-3.0/language-specs/pkgbuild.lang \
+    "$pkgdir"/usr/share/gtksourceview-4/language-specs/
+  ln -s /usr/share/gtksourceview-3.0/language-specs/pkgbuild.lang \
+    "$pkgdir"/usr/share/gtksourceview-5/language-specs/
+  ln -s /usr/share/gtksourceview-3.0/language-specs/pkgbuild.lang \
+    "$pkgdir"/usr/share/libgedit-gtksourceview-300/language-specs/
+}

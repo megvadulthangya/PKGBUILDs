@@ -1,0 +1,4 @@
+[gtksourceview-pkgbuild]
+source = "git"
+git = "https://gitlab.com/rafaelff/gtksourceview-pkgbuild.git"
+prefix = "v"

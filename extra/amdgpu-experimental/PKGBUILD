@@ -1,0 +1,28 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Fabian Bornschein <plusfabi[AT+thegoogleadress]>
+
+pkgname=amdgpu-experimental
+pkgver=20240613
+pkgrel=1
+pkgdesc="Enables experimental features for AMDGPU"
+arch=('any')
+url="https://wiki.archlinux.org/title/AMDGPU#Enable_Southern_Islands_(SI)_and_Sea_Islands_(CIK)_support"
+license=('Apache-2.0')
+depends=('linux' 'mesa' 'systemd' 'vulkan-radeon')
+install="${pkgname}.install"
+source=("91-${pkgname}.hook"
+        '91-amdgpu.deep_color.conf'
+        '91-amdgpu.exp_hw_support.conf')
+sha256sums=('eea9772b6ca8501dfe3be97185f38400f7da048e578315b08832c12876e2d2f6'
+            'f775090a158d8362d6036f267294f5a9f43e582799cde2f4f835c025b93c5d22'
+            '9abc3454e890abfd2190980285c8bf9bb62516c22589e13b106623dab838848a')
+
+pkgver() {
+  date +%Y%m%d
+}
+
+package() {
+  install -Dm644 "91-${pkgname}.hook" -t "${pkgdir}/usr/share/libalpm/hooks/"
+  install -Dm644 91-amdgpu.deep_color.conf -t "${pkgdir}/usr/lib/modprobe.d/"
+  install -Dm644 91-amdgpu.exp_hw_support.conf -t "${pkgdir}/usr/lib/modprobe.d/"
+}

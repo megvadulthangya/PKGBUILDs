@@ -1,0 +1,35 @@
+# Maintainer: Philip Müller <philm@manjaro.org>
+# Contributor: Hector Martin <marcan@marcan.st>
+
+pkgname=calamares-oem-postinstall-configs
+pkgver=20221013
+pkgrel=4
+pkgdesc="Calamares OEM setup configs"
+arch=('any')
+url="https://gitlab.manjaro.org/profiles-and-settings/calamares-oem-postinstall-configs"
+license=('MIT')
+depends=(
+  'calamares'
+  'feh'
+  'kwin'
+  'manjaro-kde-settings'
+  'xorg-xdpyinfo'
+)
+makedepends=(
+  'git'
+)
+_commit=6d8f685a36bc1b77e35e29f912832063c7ade023  # branch/master
+source=("git+$url.git#commit=${_commit}")
+sha256sums=('68d61a68946f5dc7c79b5dc8e5c4841b11f6ae8253149fe51b71bd6ec51389c0')
+
+pkgver() {
+  cd "$pkgname"
+  git show -s --date=format:'%Y%m%d' --format=%cd
+}
+
+package() {
+  cd "$pkgname"
+  make PREFIX=/usr DESTDIR="$pkgdir" install
+
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

@@ -1,0 +1,44 @@
+# Maintainer: Stefano Capitani <stefano[at]manjaro[dot]org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Helmut Stult
+# Contributor: Patrick Brisbin <pbrisbin@gmail.com>
+
+pkgname=manjaro-downgrade
+_pkgname=downgrade
+pkgver=2.3
+_pkgver=11.5.5
+pkgrel=1
+pkgdesc="Bash script for downgrading one or more packages to a version in your cache or the M.L.A./A.L.A."
+arch=('any')
+url="https://github.com/archlinux-downgrade/downgrade"
+license=('GPL-2.0-or-later')
+depends=('bash' 'fzf' 'pacman-contrib' 'pacman-mirrors')
+optdepends=('sudo: for installation via sudo')
+provides=("$_pkgname")
+conflicts=("$_pkgname")
+backup=("etc/xdg/$_pkgname/$_pkgname.conf")
+source=("https://github.com/archlinux-downgrade/$_pkgname/releases/download/v${_pkgver//_/-}/downgrade-${_pkgver//_/-}.tar.gz"
+        'manjaro-downgrade.patch')
+sha256sums=('0cb66734ae72ec6acbf697fae037136442c95268d342fc2c5c5f12bff2aa1840'
+            '84cd88dbacbf6a3d3b42c6eddb70ff161d5be117acbe689a477b18787aff5012')
+
+prepare() {
+  cd "$_pkgname-$_pkgver"
+  patch -Np1 -i "$srcdir/manjaro-downgrade.patch"
+}
+
+package() {
+  cd "$_pkgname-${_pkgver//_/-}" || exit 1
+
+  make DESTDIR="$pkgdir" PREFIX=/usr install
+  
+  #set manjaro versioning
+  sed -i "s/^DOWNGRADE_VERSION=\".*\"/DOWNGRADE_VERSION=\"$pkgver\"/" "$pkgdir/usr/bin/$_pkgname" 
+  
+  #add url for manjaro also in conifg file
+  sed -i "$ a # --ala-url 'https://archive.archlinux.org' 'https://manjaro.tuxboy.eu'" "$pkgdir/etc/xdg/downgrade/downgrade.conf"
+
+  #set symlink to original executable
+  ln -s "/usr/bin/$_pkgname" "$pkgdir/usr/bin/$pkgname"
+}
+

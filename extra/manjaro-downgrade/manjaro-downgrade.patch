@@ -1,0 +1,220 @@
+diff -Naur new-downgrade/bin/downgrade manjaro-downgrade/bin/downgrade
+--- new-downgrade/bin/downgrade	2025-11-18 16:42:49.000000000 +0100
++++ manjaro-downgrade/bin/downgrade	2025-12-22 22:52:39.688037266 +0100
+@@ -32,6 +32,7 @@
+   --oldest        $(gettext "pick oldest matching version")
+   --prefer-cache  $(gettext "do not query ala if a matching package was found in cache")
+   --version       $(gettext "show downgrade version")
++  --no-spinner    $(gettext "disables the CLI spinner/progress indicator")
+   -h, --help      $(gettext "show help script")
+ 
+ $(gettext "Note"):
+@@ -196,22 +197,160 @@
+   esac
+ }
+ 
++# Detect current repo branch using pacman-mirrors
++# Returns e.g. "unstable", "testing", "stable" or empty if detection fails.
++detect_repo_branch() {
++  local branch
++  if command -v pacman-mirrors >/dev/null 2>&1; then
++    # -aG returns the current branch name on Manjaro (e.g. unstable)
++    branch=$(pacman-mirrors -aG 2>/dev/null | head -n1 | tr -d '[:space:]')
++    printf '%s' "$branch"
++  fi
++}
++
++# Spinner/progress helper
++# SPINNER variable defaults to 1 (enabled). The spinner writes to stderr to avoid
++# mixing with function stdout (search results). It shows the current server being
++# queried (SPINNER_MSG).
++start_spinner() {
++  # Only start if enabled and no spinner already running
++  if [[ "${SPINNER:-1}" -ne 1 ]] || [[ -n "${SPINNER_PID-}" ]]; then
++    return 0
++  fi
++
++  # initial message if provided
++  : "${SPINNER_MSG:='Searching for file...'}"
++
++  (
++    # loop printing message + rotating glyph to stderr
++    local i=0 chars='|/-\' msg prev_msg
++    while :; do
++      msg="${SPINNER_MSG}"
++      # print only if changed or rotate symbol
++      printf "\r%s %s" "$msg" "${chars:$((i % ${#chars})):1}" >&2
++      i=$((i + 1))
++      sleep 0.12
++    done
++  ) &
++  SPINNER_PID=$!
++  # ensure spinner is killed on shell exit
++  trap 'stop_spinner' EXIT INT TERM
++}
++
++update_spinner_msg() {
++  # update message shown by spinner; this must set the variable used by the spinner subshell
++  if [[ "${SPINNER:-1}" -ne 1 ]]; then
++    return 0
++  fi
++  SPINNER_MSG="$1"
++}
++
++stop_spinner() {
++  if [[ -n "${SPINNER_PID-}" ]]; then
++    kill "$SPINNER_PID" 2>/dev/null || true
++    wait "$SPINNER_PID" 2>/dev/null || true
++    unset SPINNER_PID
++    # clear line
++    printf "\r\033[K" >&2
++    # remove trap set by start_spinner
++    trap - EXIT INT TERM
++  fi
++}
++
+ search_ala() {
+-  local name=$1 uriname pkgfile_re index
++  local name=$1 uriname pkgfile_re index base tmp out=() branch candidates candidate line tmp_str
++  # Keep original name for matching decoded filenames
++  local origname="$name"
+ 
+-  # This is a *very* naive URI encoding. Packages typically don't use characters
+-  # that need encoding, so we'll just add them as we get bug reports. So far +
+-  # seems to be the only one, which makes sense. If we ever move to a "real
+-  # language", we can use a library for this bit.
++  # This is a *very* naive URI encoding used for constructing certain index paths.
+   # shellcheck disable=SC2001
+   uriname=$(sed 's/+/%2B/g' <<<"$name")
+ 
+   pkgfile_re="$uriname-[^-]+-[0-9.]+-(any|$DOWNGRADE_ARCH)\\.pkg\\.tar\\.(gz|xz|zst)"
+-  index="$DOWNGRADE_ALA_URL/packages/${uriname:0:1}/$uriname/"
+ 
+-  curl --fail --silent "$index" | sed_msg "to parse A.L.A." -E '
+-    /.* href="('"$pkgfile_re"')".*/!d;
+-    s||'"$index"'\1|g; s|\+| |g; s|%|\\x|g' | xargs -0 printf "%b"
++  # Detect branch (manjaro: unstable/testing/stable)
++  branch=$(detect_repo_branch)
++
++  # Split DOWNGRADE_ALA_URL by commas or spaces into an array of bases
++  tmp_str="${DOWNGRADE_ALA_URL//,/ }"
++  read -r -a tmp_array <<<"$tmp_str"
++
++  declare -A _seen=()
++
++  # Start spinner (if enabled)
++  update_spinner_msg "Searching for file..."
++  start_spinner
++
++  for base in "${tmp_array[@]}"; do
++    # trim whitespace
++    base="${base#"${base%%[![:space:]]*}"}"
++    base="${base%"${base##*[![:space:]]}"}"
++    [[ -z "$base" ]] && continue
++    base=${base%/}
++
++    # Build candidate base URLs to try:
++    #  - base (as provided)
++    #  - base/{branch}-archive (for tuxboy-like layout), if branch detected and base doesn't already contain it
++    #  - if base contains {branch} placeholder, try replacing it
++    candidates=()
++    candidates+=("$base")
++    if [[ -n "$branch" ]]; then
++      if [[ "$base" != *"${branch}-archive"* ]]; then
++        candidates+=("$base/${branch}-archive")
++      fi
++    fi
++    if [[ "$base" == *'{branch}'* && -n "$branch" ]]; then
++      candidates+=("${base//\{branch\}/$branch}")
++    fi
++
++    for candidate in "${candidates[@]}"; do
++      # update spinner message to show which server/index we're querying
++      update_spinner_msg "Sto cercando su: $candidate"
++
++      # try two index forms:
++      # 1) candidate/packages/<first-letter>/<pkg>/  (archive.archlinux.org style)
++      # 2) candidate/  (tuxboy-style where index is at candidate/)
++      for index in "$candidate/packages/${uriname:0:1}/$uriname/" "$candidate/"; do
++        # show more specific server/index in spinner
++        update_spinner_msg "Sto interrogando: $index"
++
++        # Robust extraction for index pages (works with autoindex HTML and dir listings)
++        tmp_html=$(curl --fail --silent "$index" 2>/dev/null) || tmp_html=""
++        if [[ -n "$tmp_html" ]]; then
++          # Extract href values that end with package extensions, strip path and decode %XX
++          mapfile -t _matches < <(printf '%s\n' "$tmp_html" \
++            | grep -oE 'href="[^"]+\.pkg\.tar\.(gz|xz|zst)"' \
++            | sed -E 's/.*href="([^"]+)".*/\1/')
++          for path in "${_matches[@]}"; do
++            file="${path##*/}"
++            # Decode percent-encoding: %HH -> \xHH then printf to expand
++            # (assumes percent-encodings are valid hex pairs)
++            decoded=$(printf '%b' "${file//%/\\x}")
++            # Only consider files that start with the package name and have package extension
++            if [[ "$decoded" =~ ^${origname}-.*\.pkg\.tar\.(gz|xz|zst)$ ]]; then
++              line="$index$decoded"
++              [[ -z "$line" ]] && continue
++              if [[ -z "${_seen[$line]}" ]]; then
++                out+=("$line")
++                _seen[$line]=1
++              fi
++            fi
++          done
++        fi
++      done
++    done
++  done
++
++  # Stop spinner now that we've finished iterating bases
++  stop_spinner
++
++  if ((${#out[@]})); then
++    printf '%s\n' "${out[@]}"
++    return 0
++  fi
++
++  # No results from any configured base URL
++  return 1
+ }
+ 
+ search_cache() {
+@@ -490,6 +629,9 @@
+       --prefer-cache)
+         DOWNGRADE_PREFER_CACHE=1
+         ;;
++      --no-spinner)
++        SPINNER=0
++        ;;
+       --)
+         shift
+         pacman_args=("$@")
+@@ -544,7 +686,8 @@
+ PACMAN="pacman"
+ PACMAN_CONF="/etc/pacman.conf"
+ DOWNGRADE_ARCH="$(pacman-conf Architecture | head -n 1)"
+-DOWNGRADE_ALA_URL="https://archive.archlinux.org"
++# Default: check official archive first, then tuxboy base domain.
++DOWNGRADE_ALA_URL="https://archive.archlinux.org https://manjaro.tuxboy.eu"
+ DOWNGRADE_FROM_ALA=1
+ DOWNGRADE_FROM_CACHE=1
+ DOWNGRADE_MAXDEPTH=1
+@@ -555,6 +698,11 @@
+ DOWNGRADE_TO_OLDEST=0
+ DOWNGRADE_PREFER_CACHE=0
+ 
++# Spinner default: enabled (1). Can be disabled with --no-spinner.
++SPINNER=1
++SPINNER_PID=""
++SPINNER_MSG="Searching for file..."
++
+ # Main code execution
+ if ((!DOWNGRADE_LIB)); then
+   set -e
+@@ -592,4 +740,4 @@
+   fi
+ 
+   cli "$@"
+-fi
++fi
+\ Manca newline alla fine del file

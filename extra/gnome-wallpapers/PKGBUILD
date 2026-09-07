@@ -1,0 +1,32 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Stefano Capitani <stefano@manjaro.org>
+
+pkgname=gnome-wallpapers
+pkgver=20201020
+pkgrel=2
+pkgdesc='Manjaro Linux Gnome wallpapers'
+arch=('any')
+url="https://github.com/Ste74/Gnome-Artwork"
+license=('GPL-3.0-or-later')
+makedepends=('git')
+_commit=effd570dadb7ef8f6ed28b292358125aecfcccbe
+source=("git+https://github.com/Ste74/Gnome-Artwork.git#commit=${_commit}")
+sha256sums=('85ffde30dbc7eb101abf4be4d29468b691c362cb1409b80ca6a19eeef1006427')
+
+pkgver() {
+  cd Gnome-Artwork
+  printf "$(git show -s --format=%cd --date=format:%Y%m%d HEAD)"
+}
+
+build() {
+  cd Gnome-Artwork
+
+  # Create xml file and clean unused file
+  ./backgrounds-xml.sh
+}
+
+package() {
+  cd Gnome-Artwork
+  install -Dm644 manjaro-gnome.xml -t "$pkgdir"/usr/share/gnome-background-properties/
+  install -Dm644 *.jpg *.png -t "$pkgdir"/usr/share/backgrounds/manjaro-gnome/
+}

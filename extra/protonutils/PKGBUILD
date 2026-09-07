@@ -1,0 +1,51 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: henning mueller <mail@nning.io>
+
+pkgname=protonutils
+pkgver=1.6.7
+pkgrel=2
+pkgdesc="Lists configured Proton version per game."
+arch=('x86_64')
+url="https://github.com/nning/protonutils"
+license=('MIT')
+depends=('glibc')
+makedepends=('git' 'go')
+source=("git+https://github.com/nning/protonutils.git#tag=v${pkgver}?signed")
+sha256sums=('a7d755441404f852b124d941511b0681ff6eb4031e2dd87695712c7a6dd045b5')
+validpgpkeys=('CCBB87A93F9F494C93EEA47905CCCF87AE5FC712') # henning mueller <henning@orgizm.net>
+
+prepare() {
+  cd "$pkgname"
+  export GOPATH="$srcdir/gopath"
+  go mod tidy
+}
+
+build() {
+  cd "$pkgname"
+  export GOPATH="$srcdir/gopath"
+  export CGO_CPPFLAGS="$CPPFLAGS"
+  export CGO_CFLAGS="$CFLAGS"
+  export CGO_CXXFLAGS="$CXXFLAGS"
+  export CGO_LDFLAGS="$LDFLAGS"
+  make build_pie DESTDIR=usr
+
+  # Makefile only generates ZSH completions
+  "./cmd/$pkgname/$pkgname" completion bash > completion.bash
+  "./cmd/$pkgname/$pkgname" completion fish > completion.fish
+
+  # Clean module cache for makepkg -C
+  go clean -modcache
+}
+
+package() {
+  cd "$pkgname"
+  make DESTDIR="$pkgdir/usr" install
+
+  # Fix permissions
+  chmod 0644 "$pkgdir"/usr/share/man/man1/*.1
+  chmod 0755 "$pkgdir/usr/share/man/man1"
+
+  install -Dm644 completion.bash "$pkgdir/usr/share/bash-completion/completions/$pkgname"
+  install -Dm644 completion.fish "$pkgdir/usr/share/fish/vendor_completions.d/$pkgname.fish"
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

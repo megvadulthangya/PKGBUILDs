@@ -1,0 +1,39 @@
+diff --unified --recursive --text a/extension.js b/extension.js
+--- a/extension.js	2026-03-03 14:28:17.886997282 -0700
++++ b/extension.js	2026-03-03 14:32:11.887499852 -0700
+@@ -24,6 +24,7 @@
+     purple: { label: 'Purple', hex: '#9141ac' },
+     red:    { label: 'Red',    hex: '#e01b24' },
+     slate:  { label: 'Slate',  hex: '#6f8396' },
++    maia:   { label: 'Maia',   hex: '#16a085' },
+     teal:   { label: 'Teal',   hex: '#2190a4' },
+     yellow: { label: 'Yellow', hex: '#e5a50a' },
+ };
+@@ -39,6 +40,7 @@
+     pink:    'Adwaita-pink',
+     purple:  'Adwaita-purple',
+     slate:   'Adwaita-slate',
++    maia:    'Adwaita-maia',
+     default: 'Adwaita-blue',
+ };
+ 
+diff --unified --recursive --text a/prefs.js b/prefs.js
+--- a/prefs.js	2026-03-03 14:28:17.886997282 -0700
++++ b/prefs.js	2026-03-03 14:33:42.084810765 -0700
+@@ -21,6 +21,7 @@
+     purple: { label: 'Purple', hex: '#9141ac' },
+     red:    { label: 'Red',    hex: '#e01b24' },
+     slate:  { label: 'Slate',  hex: '#6f8396' },
++    maia:   { label: 'Maia',   hex: '#16a085' },
+     teal:   { label: 'Teal',   hex: '#2190a4' },
+     yellow: { label: 'Yellow', hex: '#e5a50a' },
+ };
+@@ -28,7 +29,7 @@
+ const ACCENT_TO_COLOR = {
+     blue: 'blue', brown: 'brown', teal: 'teal', green: 'green', yellow: 'yellow',
+     orange: 'orange', red: 'red', pink: 'pink', purple: 'purple',
+-    slate: 'slate', default: 'blue',
++    slate: 'slate', maia: 'maia', default: 'maia',
+ };
+ 
+ const ICON_PATHS = [

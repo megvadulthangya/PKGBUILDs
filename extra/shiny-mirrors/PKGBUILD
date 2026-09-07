@@ -1,0 +1,52 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=shiny-mirrors
+pkgver=r269.0e59fd0
+pkgrel=4
+pkgdesc="An alternative to Manjaro's pacman-mirrors, rewritten in Rust! A tool to find the best mirrors for you!"
+arch=('x86_64' 'aarch64')
+url="https://gitlab.com/Arisa_Snowbell/shiny-mirrors"
+license=('GPL-3.0-or-later')
+depends=('libgcc')
+makedepends=(
+  'git'
+  'rust'
+)
+backup=("etc/$pkgname.conf")
+_commit=0e59fd07a5d1bc5fc065bdf3767169aadf27bf4f  # branch/domina
+#source=("git+https://gitlab.com/Arisa_Snowbell/shiny-mirrors.git#commit=${_commit}?signed")
+source=("git+https://gitlab.com/Arisa_Snowbell/shiny-mirrors.git#commit=${_commit}")
+sha256sums=('cc600aef6941a819f65a485d9b805e5dbb988d2a55dd1f48dd7c5e830da5a6a9')
+#validpgpkeys=('E2C998FA1F7B651E45B20CDC56AA2C2801F619D7') # Arisa Snowbell <arisa.snowbell@gmail.com> (Hyena)
+
+pkgver() {
+  cd "$pkgname"
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+}
+
+prepare() {
+  cd "$pkgname"
+  cargo fetch --locked --target host-tuple
+}
+
+build() {
+  cd "$pkgname"
+  CFLAGS+=" -ffat-lto-objects"
+  export CARGO_TARGET_DIR=target
+  cargo build --frozen --release --features manjaro --no-default-features
+}
+
+package() {
+  cd "$pkgname"
+  install -Dm755 "target/release/$pkgname" -t "$pkgdir/usr/bin/"
+  install -Dm644 "target/gen/_${pkgname}" -t \
+    "$pkgdir/usr/share/zsh/site-functions/"
+  install -Dm644 "target/gen/$pkgname.bash" \
+    "$pkgdir/usr/share/bash-completion/completions/$pkgname"
+  install -Dm644 "target/gen/$pkgname.fish" -t \
+    "$pkgdir/usr/share/fish/vendor_completions.d/"
+  install -Dm644 "$pkgname/man/$pkgname.1" -t "$pkgdir/usr/share/man/man1/"
+  install -Dm644 "conf/$pkgname.conf" -t "$pkgdir/etc/"
+  install -Dm644 "$pkgname/systemd/$pkgname"{.service,.timer} -t \
+    "$pkgdir/usr/lib/systemd/system/"
+}

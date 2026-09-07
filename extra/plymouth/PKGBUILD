@@ -1,0 +1,123 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Balló György <ballogyor+arch at gmail dot com>
+# Contributor: Taijian <taijian@posteo.de>
+# Contributor: Sebastian Lau <lauseb644@gmail.com>
+# Contributor: Damian01w <damian01w@gmail.com>
+# Contributor: Padfoot <padfoot@exemail.com.au>
+
+pkgname=plymouth
+pkgver=26.134.222
+pkgrel=3
+pkgdesc="Graphical boot splash screen"
+arch=('x86_64' 'aarch64')
+url="https://www.freedesktop.org/wiki/Software/Plymouth/"
+license=('GPL-2.0-or-later')
+depends=(
+  'adwaita-fonts'
+  'bash'
+  'cairo'
+  'filesystem>=2023.12.21'
+  'fontconfig'
+  'freetype2'
+  'glib2'
+  'glibc'
+  'libdrm'
+  'libevdev'
+  'libpng'
+  'libx11'
+  'libxkbcommon'
+  'pango'
+  'systemd-libs'
+  'xkeyboard-config'
+)
+makedepends=(
+  'docbook-xsl'
+  'git'
+  'gtk3'
+  'meson'
+)
+optdepends=('gtk3: x11 renderer')
+backup=(
+  "etc/logrotate.d/bootlog"
+  "etc/$pkgname/${pkgname}d.conf"
+)
+install="$pkgname.install"
+source=("git+https://gitlab.freedesktop.org/plymouth/$pkgname.git#tag=$pkgver"
+        "0001-Revert-src-Hide-console-text-when-splash-is-requeste.patch"
+        "$pkgname.initcpio_hook"
+        "$pkgname.initcpio_install"
+        "$pkgname-shutdown.initcpio_install"
+        "50-$pkgname.conf"
+        "lxdm-$pkgname.service"
+        "lightdm-$pkgname.service"
+        "sddm-$pkgname.service"
+        "$pkgname-deactivate.service")  # needed for sddm
+sha256sums=('3c645362756f906e2b78ad9a079b085da651765bc831de8c0a9dcbceecddc39c'
+            'a1a4c4174fedc7805e7e84ef48bc8f09f7cddad6d6a6d03b97fba3f86cce2a4f'
+            'de852646e615e06d4125eb2e646d0528d1e349bd9e9877c08c5d32c43d288b6f'
+            'f8800f97902862434c1d69e321d9b466669e32485cdc7341d1d2f09ffd655ea9'
+            '5b518e8cb90b230be5d5151ff77171340e5148c687b8b0833b7f9716a52637d5'
+            'f895de71fce0cbf480527cd7f1bd9d2c81b255e0848cfb64e8fc4b37dc599d17'
+            '06b31999cf60f49e536c7a12bc1c4f75f2671feb848bf5ccb91a963147e2680d'
+            '86d0230d9393c9d83eb7bb430e6b0fb5e3f32e78fcd30f3ecd4e6f3c30b18f71'
+            '6aef0053b44db495cb5d55487438758281a626feaaa9166edbf21e2e3a5907f0'
+            '3b17ed58b59a4b60d904c60bba52bae7ad685aa8273f6ceaae08a15870c0a9eb')
+
+prepare() {
+  cd "$pkgname"
+
+  # Fix default XKB keymap fallback overriding KEYMAP
+  # https://gitlab.freedesktop.org/plymouth/plymouth/-/merge_requests/388
+  git cherry-pick -n cea90be39d263e388003a07d125b469c0803d55c
+
+  # Use mkinitcpio to update initrd
+  sed -i 's/^dracut -f$/mkinitcpio -P/' scripts/plymouth-update-initrd
+
+  # Change default theme in distribution defaults
+  sed -i 's/^Theme=spinner$/Theme=manjaro/' src/plymouthd.defaults
+
+  # Switch from Cantarell to Adwaita Sans; set monospace font to Adwaita Mono
+  sed -i 's/Cantarell/Adwaita Sans/
+          /TitleFont=Adwaita/a MonospaceFont=Adwaita Mono 12' scripts/keymap-render.py themes/*/*.plymouth.desktop
+}
+
+build() {
+  arch-meson build "$pkgname" \
+   -Dlogo=/usr/share/pixmaps/manjaro-logo.png
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --destdir "$pkgdir"
+  rm -r "$pkgdir/run"
+
+  # Install mkinitcpio hook
+  install -Dm644 "$pkgname.initcpio_hook" "$pkgdir/usr/lib/initcpio/hooks/$pkgname"
+  install -Dm644 "$pkgname.initcpio_install" "$pkgdir/usr/lib/initcpio/install/$pkgname"
+
+  # Install mkinitcpio shutdown hook and systemd drop-in snippet
+  install -Dm644 "$pkgname-shutdown.initcpio_install" "$pkgdir/usr/lib/initcpio/install/$pkgname-shutdown"
+  install -Dm644 "50-$pkgname.conf" "$pkgdir/usr/lib/tmpfiles.d/50-$pkgname.conf"
+
+  # Symlink logo for the spinner theme
+  ln -s /usr/share/pixmaps/manjaro-logo-text-dark.png \
+    "$pkgdir/usr/share/$pkgname/themes/spinner/watermark.png"
+
+  # Change commented theme in admistrator defaults
+  sed -i 's/Theme=fade-in/Theme=manjaro/' "$pkgdir/etc/$pkgname/${pkgname}d.conf"
+
+  # Symlink depreciated hooks to get a proper warning by mkinitcpio
+  # to notify the user until he fixes it
+  ln -s /usr/lib/initcpio/hooks/encrypt "$pkgdir/usr/lib/initcpio/hooks/$pkgname-encrypt"
+  ln -s /usr/lib/initcpio/install/encrypt "$pkgdir/usr/lib/initcpio/install/$pkgname-encrypt"
+  ln -s "/usr/lib/initcpio/install/$pkgname" "$pkgdir/usr/lib/initcpio/install/sd-$pkgname"
+
+  # Install DM service files
+  # Can be replaced by enabling 'lxdm.service', 'lightdm.service' or 'sddm.service' instead
+  for i in {sddm,lxdm,lightdm}-plymouth.service; do
+    install -Dm644 "${i}" -t "$pkgdir/usr/lib/systemd/system/${i}/"
+  done
+
+   # Needed for SDDM
+  install -Dm644 "$pkgname-deactivate.service" -t "$pkgdir/usr/lib/systemd/system/"
+}

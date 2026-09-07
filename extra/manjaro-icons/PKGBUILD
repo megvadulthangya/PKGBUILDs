@@ -1,0 +1,40 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=manjaro-icons
+pkgver=20240502
+pkgrel=1
+pkgdesc="Official Manjaro icons"
+arch=('any')
+url="https://gitlab.manjaro.org/artwork/icon-themes/manjaro-icons"
+license=('GPL-3.0-or-later')
+makedepends=('git')
+_commit=cc53d4bf0edb285de7131a3b3ca70fb2ea9cae29
+options=('!strip')
+source=("git+https://gitlab.manjaro.org/artwork/icon-themes/manjaro-icons.git#commit=${_commit}")
+sha256sums=('0c5cd57ec3eac7cc14c19b675acb507834b41569e1543183c5a9b7dea26d5457')
+
+pkgver() {
+  cd "$pkgname"
+  printf "$(git show -s --format=%cd --date=format:%Y%m%d HEAD)"
+}
+
+package() {
+  cd "$pkgname"
+  install -d "$pkgdir"/usr/share/icons/manjaro
+  cp -r 2022 green maia white "$pkgdir"/usr/share/icons/manjaro
+
+  for i in 16 22 24 32 48 64 96 128; do
+    install -d "$pkgdir/usr/share/icons/hicolor/${i}x${i}/apps"
+  done
+  install -d "$pkgdir"/usr/share/icons/hicolor/scalable/apps
+
+  cd "$pkgdir"/usr/share/icons/hicolor
+  src=/usr/share/icons/manjaro/2022
+  for i in 16 22 24 32 48 64 96 128; do
+    ln -s "${src}/${i}x${i}.png" "${i}x${i}/apps/manjaro.png"
+  done
+  ln -s "${src}"/2022.svg scalable/apps/manjaro.svg
+  ln -s "${src}"/2022.svg scalable/apps/manjarolinux.svg
+  ln -s "${src}"/2022.svg ../whiskermenu-manjaro.svg
+}

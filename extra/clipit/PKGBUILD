@@ -1,0 +1,68 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=clipit
+pkgver=1.4.5+25+gf35db54
+pkgrel=1
+epoch=1
+pkgdesc="Lightweight GTK+ clipboard manager (fork of Parcellite)"
+arch=('x86_64')
+url="https://github.com/CristianHenzel/ClipIt"
+license=('GPL-3.0-or-later AND LGPL-2.1-or-later')
+depends=(
+  'gtk3'
+  'libayatana-appindicator'
+)
+makedepends=(
+  'git'
+  'intltool'
+  'meson'
+)
+checkdepends=('appstream-glib')
+optdepends=('xdotool: for automatic paste')
+_commit=f35db540c9d3c57b13439d66597736e917e8c9a1
+source=("git+https://github.com/CristianHenzel/ClipIt.git#commit=${_commit}"
+        '0001-Autostart-in-MATE.patch'
+        "${pkgname}-${pkgver//+*/}-force-gdk_backend-x11.patch"
+        'incompatible-pointer-types.patch'
+        "${pkgname}.appdata.xml")
+sha256sums=('b029c84ca67e29701206d88fe18e3466ad72f476595490a18e632bca6f0cdc9a'
+            '803e5c0f0ba27be3754ca501dc0f3164b802a013b9e4b9f619f9ded1533465ad'
+            '4d8829899c0a7bd72ad41678b15eef86d467efd864850fe0870cd5dd2675d6e5'
+            'f810dd20c0dffe31f329a8dd00824c286158c749386395b259fca2766e4b79f4'
+            '4d82871c3862275595efd34521901318cbce56ff23d1d605d95d031c66ed9b7b')
+
+pkgver() {
+  cd ClipIt
+  git describe --tags --abbrev=7 | sed 's/^v//;s/-/+/g'
+}
+
+prepare() {
+  cd ClipIt
+
+  # clipit doesn't autostart in MATE
+  # Fixed upstream but not yet merged
+  patch -Np1 -i "${srcdir}/0001-Autostart-in-MATE.patch"
+
+  # Force GDK_BACKEND to x11
+  patch -Np1 -i "${srcdir}/${pkgname}-${pkgver//+*/}-force-gdk_backend-x11.patch"
+
+  # Fix -Werror=incompatible-pointer-types
+  patch -Np1 -i "${srcdir}/incompatible-pointer-types.patch"
+}
+
+build() {
+  arch-meson ClipIt build -Denable-appindicator=true
+  meson compile -C build
+}
+
+check() {
+  desktop-file-validate "build/${pkgname}.desktop"
+  appstream-util validate-relax --nonet "${pkgname}.appdata.xml"
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "${pkgdir}"
+
+  install -Dm644 "${pkgname}.appdata.xml" -t "${pkgdir}/usr/share/metainfo/"
+}

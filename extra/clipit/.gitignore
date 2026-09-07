@@ -1,0 +1,4 @@
+*.gz
+!0001-Autostart-in-MATE.patch.patch
+!clipit-1.4.5-force-gdk_backend-x11.patch
+!clipit.appdata.xml

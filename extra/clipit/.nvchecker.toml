@@ -1,0 +1,4 @@
+[clipit]
+source = "git"
+git = "https://github.com/CristianHenzel/ClipIt.git"
+prefix = "v"

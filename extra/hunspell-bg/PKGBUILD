@@ -1,0 +1,59 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Slavi Pantaleev <s.pantaleev at gmail.com>
+
+pkgname=hunspell-bg
+pkgver=4.3
+pkgrel=5
+epoch=1
+pkgdesc="Bulgarian dictionary for Hunspell"
+arch=('any')
+url="https://bgoffice.sourceforge.net"
+license=('GPL-2.0-or-later OR LGPL-2.1-or-later OR MPL-1.1')
+makedepends=('qt6-webengine')
+optdepends=('hunspell: the spell checking libraries and apps')
+provides=('hunspell-dictionary')
+source=("https://sourceforge.net/projects/bgoffice/files/OpenOffice.org%20Spell%20BG/$pkgver/OOo-spell-bg-$pkgver.zip")
+sha256sums=('33c71a42faf1e247d112450c932d41ecae2fc584e17face60c5731376ee83168')
+
+build() {
+  cd "OOo-spell-bg-$pkgver"
+
+  # UTF-8 convert
+  for u in bg_BG.dic bg_BG.aff README.bulgarian; do
+    mv "${u}" "${u}".UTF-8
+    iconv -f windows-1251 -t utf-8 "${u}".UTF-8 -o "${u}"
+  done
+  sed -i 's/microsoft-cp1251/UTF-8/g' bg_BG.aff
+
+  # fix file encoding - FS#68481
+  # check for broken files using
+  # file -i  $(pacman -Ql hunspell-bg | sed "s/hunspell-bg//") | grep iso
+  for i in README.bulgarian; do
+    mv "${i}" "${i}".ISO-8859
+    iconv -f iso-8859-1 -t utf-8 "${i}".ISO-8859 -o "${i}"
+  done
+}
+
+package() {
+  cd "OOo-spell-bg-$pkgver"
+  install -Dm644 bg_??.dic bg_??.aff -t "$pkgdir/usr/share/hunspell/"
+
+  # myspell symlinks
+  install -d "$pkgdir/usr/share/myspell/dicts"
+  pushd "$pkgdir/usr/share/myspell/dicts"
+    for file in "$pkgdir/usr/share/hunspell/"*; do
+      ln -sv /usr/share/hunspell/$(basename ${file}) .
+    done
+  popd
+
+  # Install webengine dictionaries
+  install -d "$pkgdir"/usr/share/qt{,6}/qtwebengine_dictionaries/
+  for _file in "$pkgdir"/usr/share/hunspell/*.dic; do
+  _filename=$(basename "${_file}")
+    /usr/lib/qt6/qwebengine_convert_dict "${_file}" "$pkgdir/usr/share/qt6/qtwebengine_dictionaries/${_filename/\.dic/\.bdic}"
+  ln -rs "$pkgdir/usr/share/qt6/qtwebengine_dictionaries/${_filename/\.dic/\.bdic}" "$pkgdir/usr/share/qt/qtwebengine_dictionaries/"
+  done
+
+  # docs
+  install -Dm644 README.bulgarian -t "$pkgdir/usr/share/doc/$pkgname/"
+}

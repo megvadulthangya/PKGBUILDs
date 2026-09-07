@@ -1,0 +1,35 @@
+diff -Npur rtl8723bu.orig/os_dep/ioctl_cfg80211.c rtl8723bu/os_dep/ioctl_cfg80211.c
+--- rtl8723bu.orig/os_dep/ioctl_cfg80211.c	2025-08-13 08:28:39.432259011 +0200
++++ rtl8723bu/os_dep/ioctl_cfg80211.c	2025-08-13 08:52:09.392617908 +0200
+@@ -2369,7 +2369,11 @@ exit:
+ 
+ }
+ 
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6,17,0))
++static int cfg80211_rtw_set_wiphy_params(struct wiphy *wiphy, int radio_idx, u32 changed)
++#else
+ static int cfg80211_rtw_set_wiphy_params(struct wiphy *wiphy, u32 changed)
++#endif
+ {
+ 	DBG_8192C("%s\n", __func__);
+ 	return 0;
+@@ -3146,6 +3150,9 @@ static int cfg80211_rtw_set_txpower(stru
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0))
+ 	struct wireless_dev *wdev,
+ #endif
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6,17,0))
++	int radio_idx,
++#endif
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)) || defined(COMPAT_KERNEL_RELEASE)
+ 	enum nl80211_tx_power_setting type, int mbm)
+ #else
+@@ -3160,6 +3167,9 @@ static int cfg80211_rtw_get_txpower(stru
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,8,0))
+ 	struct wireless_dev *wdev,
+ #endif
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6,17,0))
++	int radio_idx,
++#endif
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6,14,0))
+ 	unsigned int link_id,
+ #endif

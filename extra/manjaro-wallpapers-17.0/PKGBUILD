@@ -1,0 +1,20 @@
+# Maintainer:
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+# Contributor: Hugo Posnic
+# Contributor: FadeMind
+
+pkgname=manjaro-wallpapers-17.0
+pkgver=1.3
+pkgrel=2
+pkgdesc="Official Wallpapers for the Manjaro Linux 17.x release"
+arch=('any')
+url="https://github.com/manjaro/manjaro-wallpapers-17.0"
+license=('GPL-3.0-or-later')
+options=('!strip')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz")
+sha256sums=('c0e7e72e56960ac2307c7ba59c15487873b4becf50c3b52646b8880bc4b83cd5')
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

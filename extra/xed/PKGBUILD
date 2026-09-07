@@ -1,0 +1,35 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bruno Pagani <archange@archlinux.org>
+# Contributor: Eli Schwartz <eschwartz@archlinux.org>
+# Contributor: Nate Simon <aurpkg (at natesimon.net)>
+
+pkgname=xed
+pkgver=3.8.5
+pkgrel=0
+pkgdesc="A small and lightweight text editor. X-Apps Project."
+arch=(x86_64)
+url="https://github.com/linuxmint/${pkgname}"
+license=(GPL)
+groups=(x-apps)
+depends=(gspell gtksourceview4 libpeas xapp xapp-symbolic-icons)
+makedepends=(meson samurai gobject-introspection intltool itstool glib2-devel)
+optdepends=('python: required for some plugins')
+source=(${url}/archive/${pkgver}/${pkgname}-${pkgver}.tar.gz
+        libxml-2.12.patch)
+sha256sums=('3594a455982c4dfd9d9d969e456ce021ececcba45e1035c8bbafd2433835b83c'
+            'ed19b6f419a4f703d290d8c97ed5d904c88a90fc475c738a0e65f7ab31697c40')
+b2sums=('7cef89ba1dd9743464912891c1a4faec3ff62b6be30b1a7cfef24daf228b87e99df471e5fb37d3ae6bf1c0b5b6d17589c97e92c371776a762920955085ef822f'
+        'bd3f1c73b5873b05db1a734d2b42025d460f6862dbb13813e3fc97602c43e6758e2857f2e2db14e739780a7d58fdb48e87186cfde4393b7799070def14750353')
+
+prepare() {
+  patch -d $pkgname-$pkgver -p1 < libxml-2.12.patch
+}
+
+build() {
+  arch-meson ${pkgname}-${pkgver} build
+  samu -C build
+}
+
+package(){
+  DESTDIR="${pkgdir}" samu -C build install
+}

@@ -1,0 +1,3 @@
+[coreboot-configurator]
+source = "git"
+git = "https://github.com/StarLabsLtd/coreboot-configurator.git"

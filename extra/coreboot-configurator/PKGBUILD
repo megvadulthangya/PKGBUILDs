@@ -1,0 +1,33 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=coreboot-configurator
+pkgver=11
+pkgrel=5
+pkgdesc="Graphical interface to change settings available in coreboot CBFS"
+arch=('x86_64')
+url="https://github.com/StarLabsLtd/coreboot-configurator"
+license=('GPL-2.0-only')
+groups=('coreboot-utils')
+depends=(
+  'nvramtool'
+  'polkit'
+  'qt5-base'
+  'qt5-svg'
+  'yaml-cpp'
+)
+makedepends=(
+  'inkscape'
+  'meson'
+)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+sha256sums=('9c846caae40baf2273440313444f540a6c7ce4add04abb39cd18fe29b3ebac57')
+
+build() {
+  arch-meson "$pkgname-$pkgver" build
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+}

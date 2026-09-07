@@ -1,0 +1,23 @@
+# Maintainer:
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+# Contributor: Foivos <gitlab.manjaro.org/zakkak>
+
+pkgname=i3-scrot
+pkgver=2.1
+pkgrel=3
+pkgdesc="Simple screenshot script using scrot"
+arch=('any')
+url="https://web.archive.org/web/20170517195802/https://classicforum.manjaro.org/index.php?topic=31977.msg261964#msg261964"
+license=('GPL-3.0-or-later')
+depends=(
+  'libnotify'
+	'scrot'
+	'xclip'
+	'xdg-user-dirs'
+)
+source=("$pkgname")
+sha256sums=('6d4d902fbfcf06feee3529f759f27ed695abcb29e4ac3118ab0044b895c2a14f')
+
+package() {
+  install -Dm755 "$srcdir/$pkgname" -t "$pkgdir/usr/bin/"
+}

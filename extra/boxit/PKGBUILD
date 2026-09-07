@@ -1,0 +1,61 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Contributor: Helmut Stult
+
+pkgbase=boxit
+pkgname=(boxit boxit-server)
+pkgver=2.1.3
+pkgrel=20
+pkgdesc="Manjaro Linux repository management system"
+arch=('x86_64')
+url="https://gitlab.manjaro.org/tools/maintenance-tools/boxit"
+license=('GPL-3.0-or-later')
+depends=(
+  'icu'
+  'qt5-base'
+  'readline'
+)
+makedepends=('git')
+_commit=8298684d4fec43beeac3154f63f320f680d55af2  # branch/master
+source=("git+https://gitlab.manjaro.org/tools/maintenance-tools/boxit.git#commit=${_commit}")
+sha256sums=('93c0bd9a78f5f16ad0d966153750108235a429ccaba0dd32ce4862a4700a3d19')
+
+build() {
+  cd "$srcdir/$pkgbase/$pkgbase/src"
+
+  echo "build $pkgbase"
+  qmake-qt5
+
+  # Build fix
+  make sub-DBus
+  cp DBus/libDBus.a libDBus.a
+
+  make all
+
+  cd "$srcdir/$pkgbase/$pkgbase-server/src"
+
+  echo "build $pkgbase-server"
+  qmake-qt5
+
+  make all
+}
+
+package_boxit() {
+  pkgdesc+=" client"
+
+  cd "$srcdir/$pkgbase/$pkgname/src"
+  make INSTALL_ROOT="${pkgdir}" install
+}
+
+package_boxit-server() {
+   pkgdesc+=" server"
+
+  cd "$srcdir/$pkgbase/$pkgbase-server/src"
+  make INSTALL_ROOT="${pkgdir}" install
+
+  # TODO - convert to systemd-scripts
+  #install -d ${pkgdir}/etc/init.d
+  #install -d ${pkgdir}/usr/bin
+  #install -d ${pkgdir}/etc/boxit
+}

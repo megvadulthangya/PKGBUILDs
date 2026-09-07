@@ -1,0 +1,4 @@
+[boxit]
+source = "git"
+git = "https://gitlab.manjaro.org/tools/maintenance-tools/boxit.git"
+prefix = "v"

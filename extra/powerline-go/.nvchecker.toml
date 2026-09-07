@@ -1,0 +1,4 @@
+[powerline-go]
+source = "git"
+git = "https://github.com/justjanne/powerline-go.git"
+prefix = "v"

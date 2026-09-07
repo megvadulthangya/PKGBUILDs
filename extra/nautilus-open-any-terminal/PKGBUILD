@@ -1,0 +1,28 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=nautilus-open-any-terminal
+pkgver=0.8.2
+pkgrel=1
+pkgdesc="Nautilus extension which adds a context entry for opening other terminal emulators"
+arch=('any')
+url="https://github.com/Stunkymonkey/nautilus-open-any-terminal"
+license=('GPL-3.0-or-later')
+depends=('nautilus-python')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz"
+        "com.github.stunkymonkey.$pkgname.gschema.override")
+sha256sums=('f7a48327947658c8d34879dbbc1081c40e726dc1cfd42a0191ef6a9d63faca71'
+            '44cf07db726144563e7c98522899770c5b5c9cf6b1302188f84db18e6aa20d42')
+
+build() {
+  cd "$pkgname-$pkgver"
+  make build
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make PREFIX='/usr' DESTDIR="$pkgdir" install-nautilus
+
+  # Set default terminal to GNOME Console
+  install -Dm644 "$srcdir/com.github.stunkymonkey.$pkgname.gschema.override" -t \
+    "$pkgdir/usr/share/glib-2.0/schemas/"
+}

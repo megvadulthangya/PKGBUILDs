@@ -1,0 +1,4 @@
+[elementary-xfce-icon-theme]
+source = "git"
+git = "https://github.com/shimmerproject/elementary-xfce.git"
+prefix = "v"

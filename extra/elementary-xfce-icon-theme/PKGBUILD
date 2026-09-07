@@ -1,0 +1,42 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Raphael Scholer <rascholer@gmail.com>
+# Contributor: m8D2 <omui (at) proton mail (dot) com>
+
+pkgname=elementary-xfce-icon-theme
+pkgver=0.22
+pkgrel=1
+pkgdesc="Elementary icons forked from upstream, extended and maintained for Xfce"
+arch=('any')
+url="https://shimmerproject.org"
+license=('GPL-3.0-or-later')
+depends=('hicolor-icon-theme')
+makedepends=(
+  'gdk-pixbuf2'
+  'gtk-update-icon-cache'
+  'librsvg'
+  'optipng'
+)
+conflicts=('elementary-xfce-icons')
+replaces=('elementary-xfce-icons')
+options=('!strip')
+source=("elementary-xfce-$pkgver.tar.gz::https://github.com/shimmerproject/elementary-xfce/archive/v$pkgver.tar.gz")
+sha256sums=('0be90252c4bf8e06bbca16ef376bd1d7891f3353a5145289bff8a48563568259')
+
+build() {
+  cd "elementary-xfce-$pkgver"
+  ./configure --prefix=/usr
+  make
+}
+
+package() {
+  cd "elementary-xfce-$pkgver"
+  make DESTDIR="$pkgdir" install
+
+  # Remove unnecessary files
+  find "$pkgdir/usr/share/icons" \
+  \( \
+    -name 'AUTHORS' \
+    -o -name 'CONTRIBUTORS' \
+    -o -name 'LICENSE' \
+  \) -delete
+}

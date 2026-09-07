@@ -1,0 +1,73 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Contributor: Helmut Stult
+# Contributor: Alexander Epaneshnikov <alex19ep@archlinux.org>
+# Contributor: Caleb Maclennan <caleb@alerque.com>
+# Contributor: Sam Burgos <santiago.burgos1089@gmail.com>
+
+## Configuration
+
+# - The default configuration is stored in dconf under the schema x.dm.slick-greeter.
+# - Distributions should set their own defaults using a glib override.
+# - Users can create and modify /etc/lightdm/slick-greeter.conf, settings in this files take priority and overwrite dconf settings.
+
+pkgname=lightdm-slick-greeter
+_pkgname=${pkgname#lightdm-}
+pkgver=2.2.7
+pkgrel=1
+pkgdesc="A slick-looking LightDM greeter"
+arch=('x86_64')
+url="https://github.com/linuxmint/slick-greeter"
+license=('GPL-3.0-only')
+depends=(
+  'cairo'
+  'freetype2'
+  'gtk3'
+  'libcanberra'
+  'libxext'
+  'lightdm'
+  'pixman'
+  'python-gobject'
+  'xapp'
+  'xapp-symbolic-icons'
+  'xorg-server'
+)
+makedepends=(
+  'meson'
+  'vala'
+)
+optdepends=(
+  'lightdm-settings: Configure slick-greeter'
+  'numlockx: Activate numlock'
+  'onboard: On-screen keyboard'
+)
+source=("$pkgname-$pkgver.tar.gz::${url}/archive/${pkgver}.tar.gz")
+sha256sums=('f685da6ca9d97329b4b200077d12db0ad4f9964d4515479e6c00bba721ab0626')
+
+prepare() {
+  cd "${_pkgname}-${pkgver}"
+
+  # adjust launcher name
+  sed -i "s/${_pkgname}/$pkgname/g"  "debian/90-${_pkgname}.conf"
+}
+
+build() {
+  arch-meson "${_pkgname}-${pkgver}" build
+  meson compile -C build
+}
+
+check() {
+  cd "${_pkgname}-${pkgver}"
+  desktop-file-validate "data/${_pkgname}.desktop"
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+
+  # adjust launcher name
+  mv "${pkgdir}/usr/share/xgreeters/${_pkgname}.desktop" \
+    "${pkgdir}/usr/share/xgreeters/$pkgname.desktop"
+
+  cd "${_pkgname}-${pkgver}"
+  install -Dm644 "debian/90-${_pkgname}.conf" -t "$pkgdir/usr/share/lightdm/lightdm.conf.d/"
+}

@@ -1,0 +1,4 @@
+[greybird-gtk-theme]
+source = "git"
+git = "https://github.com/shimmerproject/Greybird.git"
+prefix = "v"

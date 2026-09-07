@@ -1,0 +1,42 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Steven Seifried <gitlab@canox.net>
+
+pkgname=tuxedo-drivers-dkms
+pkgver=4.22.0
+pkgrel=1
+pkgdesc="TUXEDO Computers kernel module drivers for keyboard, keyboard backlight & general hardware I/O using the SysFS interface"
+arch=('x86_64')
+url="https://gitlab.com/tuxedocomputers/development/packages/tuxedo-drivers"
+license=('GPL-2.0-or-later')
+depends=('dkms')
+optdepends=('udev-hid-bpf: resolve keyboard issues on the Sirius 16 Gen1/2')
+provides=(
+  'clevo-acpi'
+  'clevo-wmi'
+  'ite_829x'
+  'ite_8291'
+  'ite_8291_lb'
+  'ite_8297'
+  'tuxedo-drivers'
+  'tuxedo-keyboard'
+  'tuxedo-keyboard-ite'
+  'tuxedo-io'
+  'uniwill-wmi')
+conflicts=('tuxedo-keyboard-dkms' 'tuxedo-keyboard-ite-dkms')
+replaces=('tuxedo-keyboard-dkms' 'tuxedo-keyboard-ite-dkms')
+source=("$url/-/archive/v$pkgver/${pkgname%-dkms}-v$pkgver.tar.gz"
+        'dkms.conf')
+sha256sums=('5c629afe53951f2e235f04d84f2d5c62859ac2aaea4d7d6708b82e86b067c344'
+            '0b1f2ceb729b1944504d1227e39b202159076846aaa38f8b6237b9535e543a21')
+
+package() {
+  cd "${pkgname%-dkms}-v$pkgver"
+  install -Dm644 "$srcdir/dkms.conf" -t "$pkgdir/usr/src/${pkgname%-dkms}-$pkgver/"
+  sed -i "s/#MODULE_VERSION#/$pkgver/g" "$pkgdir/usr/src/${pkgname%-dkms}-$pkgver/dkms.conf"
+
+  install -Dm644 files/usr/lib/modprobe.d/*.conf -t "$pkgdir/usr/lib/modprobe.d/"
+  install -Dm644 files/usr/lib/udev/rules.d/*.rules -t "$pkgdir/usr/lib/udev/rules.d/"
+  install -Dm644 files/usr/lib/udev/hwdb.d/*.hwdb -t "$pkgdir/usr/lib/udev/hwdb.d/"
+
+  cp -r src/* "$pkgdir/usr/src/${pkgname%-dkms}-$pkgver/"
+}

@@ -1,0 +1,5 @@
+[tuxedo-drivers-dkms]
+source = "git"
+git = "https://gitlab.com/tuxedocomputers/development/packages/tuxedo-drivers.git"
+prefix = "v"
+exclude_regex = ".*(alpha|beta|rc).*"

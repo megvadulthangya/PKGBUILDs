@@ -1,0 +1,3 @@
+[wallpapers-juhraya]
+source = "git"
+git = "https://gitlab.manjaro.org/artwork/wallpapers/Community-Wallpapers.git"

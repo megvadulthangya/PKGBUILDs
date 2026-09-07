@@ -1,0 +1,18 @@
+# Contributor: Stefano Capitani <stefano@manjaro.org>
+
+pkgname=wallpapers-juhraya
+pkgver=1.1
+pkgrel=3
+pkgdesc="Community Wallpapers for the Manjarolinux 18.1 Juhraya release"
+arch=('any')
+url="https://gitlab.manjaro.org/artwork/wallpapers/Community-Wallpapers"
+license=('CC-BY-SA-4.0')
+options=('!strip')
+source=("$url/-/archive/$pkgver/Community-Wallpapers-$pkgver.tar.gz")
+sha256sums=('13b49a95a8bd825aa73414288f7ef915829e7d19ec70ccc94ffca55bdd171188')
+
+package() {
+  cd "Community-Wallpapers-${pkgver}"
+  make DESTDIR="$pkgdir" install
+}
+

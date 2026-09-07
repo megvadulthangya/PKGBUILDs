@@ -1,0 +1,33 @@
+# Maintainer: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Contributor: Helmut Stult
+
+pkgname=manjaro-arm-tools
+pkgver=2.11.0
+pkgrel=1
+pkgdesc="Scripts for building Manjaro-ARM packages and images"
+arch=('any')
+url="https://gitlab.manjaro.org/manjaro-arm/applications/manjaro-arm-tools"
+license=('GPL3')
+backup=("etc/$pkgname/$pkgname.conf")
+depends=('arch-install-scripts'
+         'gawk'
+         'git'
+         'gptfdisk'
+         'manjaro-arm-qemu-static'
+         'parted'
+         'xz'
+         'zip')
+optdepends=('bmap-tools: create bmap files')
+source=("$url/-/archive/$pkgver/$pkgname-$pkgver.tar.gz")
+sha256sums=('75ab1145a5f2916316de7e5c7be73b1b1ec13449ff99187a9c54346d7d8bec5f')
+
+package() {
+    cd "$pkgname-$pkgver"
+    install -dm777 "$pkgdir/usr/share/$pkgname/lib"
+    install -dm777 "$pkgdir/usr/share/$pkgname/profiles"
+    install -dm777 "$pkgdir/var/lib/$pkgname"/{img,pkg,tmp}
+    install -dm777 "$pkgdir/var/cache/$pkgname"/{img,pkg,pkg/pkgcache}
+    install -Dm755 lib/* -t "$pkgdir/usr/share/$pkgname/lib/"
+    install -Dm755 bin/* -t "$pkgdir/usr/bin/"
+    install -Dm644 "lib/$pkgname.conf" -t "$pkgdir/etc/$pkgname/"
+}

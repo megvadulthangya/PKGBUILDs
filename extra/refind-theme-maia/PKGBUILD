@@ -1,0 +1,29 @@
+# Maintainer: Matti Hyttinen
+# Contributor: Helmut Stult
+
+pkgname=refind-theme-maia
+_name=refind-theme-regular
+pkgver=r32.8e5f434
+pkgrel=4
+pkgdesc="Manjaro theme for rEFInd"
+arch=('any')
+url="https://github.com/Chrysostomus/refind-theme-regular"
+license=('AGPL-3.0-or-later AND OFL-1.1 AND Ubuntu-font-1.0')
+depends=('refind')
+makedepends=('git')
+install="${pkgname}.install"
+_commit=8e5f434edf6d27ec06887a261cc51cd06000c030
+source=("git+https://github.com/Chrysostomus/refind-theme-regular.git#commit=${_commit}")
+sha256sums=('b7a59e4cf2d3bad200b7bcef22f26f29fbddc3967fbc055b9db844b8eeb48bb2')
+
+pkgver() {
+  cd refind-theme-regular
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+}
+
+package() {
+  cd refind-theme-regular
+  install -Dm644 theme.conf -t "${pkgdir}/usr/share/refind/${pkgname}/"
+  cp -r fonts icons "${pkgdir}/usr/share/refind/${pkgname}"
+  install -Dm644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}/"
+}

@@ -1,0 +1,3 @@
+[manjaro-check-repos]
+source = "git"
+git = "https://gitlab.manjaro.org/applications/manjaro-check-repos.git"

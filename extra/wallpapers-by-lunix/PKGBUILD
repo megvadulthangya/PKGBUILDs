@@ -1,0 +1,93 @@
+# Contributor: fhdk <fh at manjaro org>
+
+pkgname=(
+  'manjaro-wallpapers-by-lunix-budgie'
+  'manjaro-wallpapers-by-lunix-cinnamon'
+  'manjaro-wallpapers-by-lunix-cool-logo'
+  'manjaro-wallpapers-by-lunix-deepin'
+  'manjaro-wallpapers-by-lunix-gnome'
+  'manjaro-wallpapers-by-lunix-i3'
+  'manjaro-wallpapers-by-lunix-kde-plasma'
+  'manjaro-wallpapers-by-lunix-manjaro'
+  'manjaro-wallpapers-by-lunix-openbox'
+  'manjaro-wallpapers-by-lunix-xfce'
+)
+pkgbase=manjaro-wallpapers-by-lunix
+pkgver=1.1
+pkgrel=2
+pkgdesc="Manjaro Wallpapers By Lunix"
+arch=('any')
+url="https://github.com/fhdk/manjaro-wallpapers-by-lunix"
+license=('GPL-3.0-or-later')
+makedepends=('git')
+options=('!strip')
+_commit=e7f525b9411bfa2b86f2089f9e509d1ae6fe6bc1  # branch/master
+source=("git+https://github.com/fhdk/manjaro-wallpapers-by-lunix.git#commit=${_commit}")
+sha256sums=('26ec29d1fc576fa6d2553d0717c5a23c17db4239d88fd57b7a943f09d59f28fd')
+
+_install() {
+  cd "$pkgbase"
+  install -d "$pkgdir"/usr/share/backgrounds/lunix
+  cp -r "${1}" "$pkgdir"/usr/share/backgrounds/lunix
+}
+
+package_manjaro-wallpapers-by-lunix-budgie() {
+  pkgdesc+=" - Budgie"
+
+  _install "budgie"
+}
+
+package_manjaro-wallpapers-by-lunix-cinnamon() {
+  pkgdesc+=" - Cinnamon"
+
+  _install "cinnamon"
+}
+
+package_manjaro-wallpapers-by-lunix-cool-logo() {
+  pkgdesc+=" - Cool Logo"
+
+  _install "cool-logo"
+}
+
+package_manjaro-wallpapers-by-lunix-deepin() {
+  pkgdesc+=" - Deepin"
+
+  _install "deepin"
+}
+
+package_manjaro-wallpapers-by-lunix-gnome() {
+  pkgdesc+=" - GNOME"
+
+  _install "gnome"
+}
+
+package_manjaro-wallpapers-by-lunix-i3() {
+  pkgdesc+=" - i3"
+
+  _install "i3"
+}
+
+package_manjaro-wallpapers-by-lunix-kde-plasma() {
+  pkgdesc+=" - KDE Plasma"
+
+  _install "kde-plasma"
+}
+
+package_manjaro-wallpapers-by-lunix-manjaro() {
+  pkgdesc+=" - Logo"
+
+  _install "manjaro"
+}
+
+package_manjaro-wallpapers-by-lunix-openbox() {
+  pkgdesc+=" - Openbox"
+
+  _install "openbox"
+}
+
+package_manjaro-wallpapers-by-lunix-xfce() {
+  pkgdesc+=" - Xfce"
+
+  _install "xfce"
+}
+

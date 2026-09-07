@@ -1,0 +1,17 @@
+manjaro-wallpapers-by-lunix
+src
+pkg
+*.pkg.*
+*.src.*
+*.tar.*
+*.tgz
+*.run
+*.zip
+*.xz
+*.log
+*~
+.AURINFO
+.SRCINFO
+.lock
+*apng.patch.gz
+*.xpi

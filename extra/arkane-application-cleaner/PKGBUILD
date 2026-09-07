@@ -1,0 +1,21 @@
+# Maintainer: Dennis ten Hoove <contact@arkanelinux.org>
+
+pkgname=arkane-application-cleaner
+pkgver=2025.02.11
+pkgrel=1
+pkgdesc="Hide unwanted .desktop files"
+arch=('any')
+url="https://github.com/arkanelinux/arkane-application-cleaner"
+license=('BSD-3-Clause')
+depends=('bash')
+makedepends=('git')
+source=("git+https://github.com/arkanelinux/arkane-application-cleaner.git#tag=$pkgver")
+sha256sums=('c30f6e1c99421a931499d056d1e9ab2d9f17944479228b0d16ef12ea376787ca')
+
+package() {
+	cd "$pkgname"
+	install -Dm755 "$pkgname" -t "$pkgdir/usr/bin/"
+	install -Dm644 "$pkgname.hook" -t "$pkgdir/usr/share/libalpm/hooks/"
+	install -Dm644 configs/* -t "$pkgdir/etc/arkane/application-cleaner/"
+	install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

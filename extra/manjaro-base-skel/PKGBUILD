@@ -1,0 +1,26 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dog]org>
+# Contributor: artoo <artoo@manjaro.org>
+
+pkgname=manjaro-base-skel
+pkgver=20171029
+pkgrel=4
+pkgdesc="Manjaro Linux base skeleton files"
+arch=('any')
+url="https://gitlab.manjaro.org/profiles-and-settings/desktop-settings"
+license=('GPL-3.0-or-later')
+makedepends=('git')
+install="$pkgname.install"
+_commit=2ac156f7838daa2b3a69fdbf85fc6ed7bf1fe100
+source=("git+https://gitlab.manjaro.org/profiles-and-settings/desktop-settings.git#commit=${_commit}")
+sha256sums=('48ac95ab7238997314056c271f889c83e802f139d89e387855c7720f3bb811b9')
+
+pkgver() {
+  cd desktop-settings
+  git show -s --date=format:'%Y%m%d' --format=%cd
+}
+
+package() {
+  cd desktop-settings
+  install -d "$pkgdir"/etc
+  cp -r shared/skel "$pkgdir"/etc
+}

@@ -1,0 +1,32 @@
+# Maintainer: 
+# Contributor: Chrysostomus <forum.manjaro.org/u/Chrysostomus>
+
+pkgname=rootmenu
+pkgver=0.15
+pkgrel=3
+pkgdesc="A WM independent desktop menu"
+arch=('any')
+url="https://github.com/Chrysostomus/rootmenu"
+license=('LicenseRef-unknown')
+depends=(
+  'awk'
+  'dash'
+  'rofi'
+  'xorg-xev'
+  'xorg-xinput'
+)
+optdepends=(
+  'dmenu-manjaro: used for the example menus'
+  'wmutils: used for the example menus'
+  'xdg-utils: used for the example menus'
+  'xdotool: used for the example menus'
+)
+makedepends=('git')
+_commit=2bacdab70b4825439b8b95b95bb80b379284e8a4  # branch/master
+source=("git+https://github.com/Chrysostomus/rootmenu.git#commit=${_commit}")
+sha256sums=('54a622ef0871392dad2a366b77dc0716851281aaa6334c86525a4f781072a6c8')
+
+package () {
+  cd "$pkgname"
+  install -Dm755 bin/* -t "$pkgdir/usr/"
+}

@@ -1,0 +1,4 @@
+[gnome-shell-extension-gnome-ui-tune]
+source = "git"
+git = "https://github.com/axxapy/gnome-ui-tune.git"
+prefix = "v"

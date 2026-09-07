@@ -1,0 +1,31 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Maintainer: Matti Hyttinen
+
+pkgname=micro-manjaro
+pkgver=3.0
+pkgrel=5
+pkgdesc="Manjaro settings for Micro"
+arch=('x86_64')
+url="https://gitlab.manjaro.org/packages/extra/micro-manjaro"
+license=('GPL-3.0-or-later')
+depends=('micro')
+install="$pkgname.install"
+source=('bindings.json'
+        "${pkgname%-*}-keymap.service"
+        'settings.json'
+        'supplemental.kmap'
+        'tcelldb')
+sha256sums=('2bf75e78d51b4b708b93c3f40554aac5b7a2275114a07fbcd736b29388dbcd18'
+            '6851636dca40655c858202a78245f6712f560947e2ee606b83807d2ad4323ebd'
+            'bc651a7b3f6ca6b3e8652a2d20da1fa1c56bf7a92a2c7c6beb1b7ea9d4199d96'
+            '25ec4626dd99caad38040db308d5b7aa2afac73e50f212f9f1ee90963e2a77d5'
+            '2cbe3bb64551720a055c5efbd5758fb39af7e9e6ef1de46087b74295df78cb26')
+
+package() {
+	install -Dm644 {bindings,settings}.json -t \
+		"$pkgdir/etc/skel/.config/${pkgname%-*}"
+	install -Dm644 tcelldb "$pkgdir/etc/skel/.tcelldb"
+	install -Dm644 "${pkgname%-*}-keymap.service" -t \
+		"$pkgdir/usr/lib/systemd/system"
+	install -Dm644 supplemental.kmap -t "$pkgdir/usr/share/kbd/keymaps"
+}

@@ -1,0 +1,31 @@
+pre_install() {
+	if systemctl status micro-keymap.service &> /dev/null; then
+		systemctl disable --now micro-keymap.service
+	fi
+}
+
+post_install() {
+	[ -e ~/.tcelldb ] || cp /etc/skel/.tcelldb ~/.tcelldb
+	[ -e ~/.config/micro/bindings.json ] || mkdir -p ~/.config/micro/ && \
+		cp /etc/skel/.config/micro/bindings.json ~/.config/micro/bindings.json
+
+	systemctl enable --now micro-keymap.service
+}
+
+pre_upgrade() {
+	pre_install
+}
+
+post_upgrade() {
+	[ -e ~/.tcelldb ] || cp /etc/skel/.tcelldb ~/.tcelldb
+	[ -e ~/.config/micro/bindings.json ] || mkdir -p ~/.config/micro/ && \
+		cp /etc/skel/.config/micro/bindings.json ~/.config/micro/bindings.json
+
+	systemctl daemon-reload
+	systemctl enable --now micro-keymap.service
+}
+
+pre_remove() {
+	systemctl stop micro-keymap.service || true
+	systemctl disable micro-keymap.service || true
+}

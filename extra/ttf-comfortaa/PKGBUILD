@@ -1,0 +1,20 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=ttf-comfortaa
+pkgver=3.105
+pkgrel=2
+pkgdesc="Rounded geometric sans-serif typeface from Google by Johan Aakerlund"
+arch=('any')
+url="https://fonts.google.com/specimen/Comfortaa"
+license=('OFL-1.1')
+makedepends=('git')
+_commit=2a87ac6f6ea3495150bfa00d0c0fb53dd0a2f11b
+source=("git+https://github.com/googlefonts/comfortaa.git#commit=${_commit}")
+sha256sums=('6cbb5a2f0163c7133a257d05b5de968fc52562d30f519b77686b062c5d93e75f')
+
+package() {
+  cd comfortaa
+  install -Dm644 fonts/TTF/*.ttf -t "$pkgdir/usr/share/fonts/TTF/"
+  install -Dm644 OFL.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

@@ -1,0 +1,5 @@
+[gnome-shell-extension-appindicator]
+source = "git"
+git = "https://github.com/ubuntu/gnome-shell-extension-appindicator.git"
+prefix = "v"
+

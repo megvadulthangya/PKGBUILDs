@@ -1,0 +1,49 @@
+# Maintainer: Dennis ten Hoove <contact@arkanelinux.org>
+
+pkgname=os-installer
+pkgver=0.5.1
+pkgrel=1
+pkgdesc="Operating system installer by the GNOME project"
+arch=('any')
+url="https://gitlab.gnome.org/p3732/os-installer"
+license=('GPL-3.0-or-later')
+depends=(
+  'gnome-desktop-4'
+  'gtk4'
+  'libadwaita'
+  'libgweather-4'
+  'python-gobject'
+  'python-yaml'
+  'udisks2'
+  'vte4'
+)
+makedepends=(
+  'blueprint-compiler'
+  'git'
+  'meson'
+)
+checkdepends=('appstream-glib')
+optdepends=(
+  'epiphany: online assistance'
+  'gnome-control-center: Wi-Fi setup'
+  'gnome-disk-utility: manual disk partitioning'
+)
+source=("git+https://gitlab.gnome.org/p3732/os-installer.git#tag=$pkgver")
+sha256sums=('722719d3b583ab76a2de055caea451232c0400ac89a8d32a610314232c2a3da2')
+
+prepare () {
+	cd "$pkgname"
+}
+
+build () {
+	arch-meson "$pkgname" build
+  meson compile -C build
+}
+
+check() {
+  meson test -C build --print-errorlogs
+}
+
+package() {
+	meson install -C build --no-rebuild --destdir "$pkgdir"
+}

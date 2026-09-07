@@ -1,0 +1,3 @@
+[os-installer]
+source = "git"
+git = "https://gitlab.gnome.org/p3732/os-installer.git"

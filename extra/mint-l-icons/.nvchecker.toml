@@ -1,0 +1,3 @@
+[mint-l-icons]
+source = "git"
+git = "https://github.com/linuxmint/mint-l-icons.git"

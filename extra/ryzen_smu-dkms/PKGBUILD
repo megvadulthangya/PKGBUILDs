@@ -1,0 +1,46 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Mario Oenning <mo-son at mailbox dot org>
+
+pkgname=ryzen_smu-dkms
+pkgver=r191.d298366
+_PKGVER=0.17  ## Check Makefile for VERSION
+pkgrel=1
+epoch=1
+pkgdesc="A Linux kernel driver that exposes access to the SMU (System Management Unit) for certain AMD Ryzen Processors."
+arch=('x86_64')
+url="https://github.com/amkillam/ryzen_smu"
+license=('GPL-2.0-or-later')
+depends=('dkms')
+makedepends=('git')
+provides=('ryzen_smu')
+conflicts=('ryzen_smu')
+_commit=d2983668300dd2a598e5a7dc40e71ce0678cc270
+source=("git+https://github.com/amkillam/ryzen_smu.git#commit=${_commit}"
+        'dkms.conf'
+        'ryzen_smu.conf')
+sha256sums=('8644ea3330b6c96e0b0f97cab7b4e44ed7e1b420360b3217182a001b3677c09d'
+            '0ced27963dac8e270221574d0c2b686bbbb012e3af8741188800f9cb6b7d8e63'
+            'a48f5c846ca5fd8f185f1317c8001c97f59ac432392d53b581802c7761b9360f')
+
+pkgver() {
+  cd ryzen_smu
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+}
+
+build() {
+  cd ryzen_smu
+  make -C userspace
+}
+
+package() {
+  cd ryzen_smu
+  install -Dm644 {Makefile,dkms.conf,drv.c,smu.c,smu.h} -t "$pkgdir/usr/src/ryzen_smu-${_PKGVER}/"
+  install -Dm644 "$srcdir/dkms.conf" -t "$pkgdir/usr/src/ryzen_smu-${_PKGVER}/"
+
+  sed -e "s/@_PKGBASE@/ryzen_smu/" \
+    -e "s/@PKGVER@/${_PKGVER}/" \
+    -i "$pkgdir"/usr/src/ryzen_smu-${_PKGVER}/dkms.conf
+
+  install -Dm644 "$srcdir/ryzen_smu.conf" -t "$pkgdir/usr/lib/depmod.d/"
+  install -Dm700 userspace/monitor_cpu -t "$pkgdir/usr/bin/"
+}

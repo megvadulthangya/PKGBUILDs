@@ -1,0 +1,48 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: JakobDev<jakobdev at gmx dot de>
+
+pkgname=python-desktop-entry-lib
+_name=${pkgname#python-}
+pkgver=5.0
+pkgrel=3
+pkgdesc="A Python library for working with .desktop files"
+arch=('any')
+url="https://codeberg.org/JakobDev/desktop-entry-lib"
+license=('BSD-2-Clause')
+depends=(
+  'desktop-file-utils'
+  'python'
+  'xdg-user-dirs'
+)
+makedepends=(
+  'python-build'
+  'python-installer'
+  'python-setuptools'
+  'python-sphinx'
+  'python-wheel'
+)
+optdepends=('python-jeepney: Install desktop entries using xdg-desktop-portal')
+source=("$_name-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz")
+noextract=("$_name-$pkgver.tar.gz")
+sha256sums=('2189a34f209782bd7c0d392c13093f764e00aacc3b9c49c74a69194cfb9e439b')
+
+prepare() {
+  mkdir -p "$_name-$pkgver"
+  bsdtar xf "$_name-$pkgver.tar.gz" --strip-components 1 -C "$_name-$pkgver"
+}
+
+build() {
+  cd "$_name-$pkgver"
+  python -m build --wheel --no-isolation
+
+  cd docs
+  make man
+}
+
+package() {
+  cd "$_name-$pkgver"
+  python -m installer --destdir "$pkgdir" dist/*.whl
+
+  install -Dm644 "docs/_build/man/$_name.1" -t "$pkgdir/usr/share/man/man1/"
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname"
+}

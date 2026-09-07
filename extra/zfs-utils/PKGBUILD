@@ -1,0 +1,76 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+# Contributor: Helmut Stult
+
+# Arch credits:
+# Maintainer: Kevin Stolp <kevinstolp@gmail.com>
+# Contributor: Eli Schwartz <eschwartz@archlinux.org>
+# Contributor: Iacopo Isimbaldi <isiachi@rhye.it>
+
+pkgname=zfs-utils
+pkgver=2.4.4
+pkgrel=1
+pkgdesc="Userspace utilities for the Zettabyte File System."
+arch=('x86_64')
+url="http://zfsonlinux.org/"
+license=('CDDL-1.0')
+optdepends=('python: pyzfs and extra utilities')
+backup=('etc/default/zfs'
+        'etc/zfs/zed.d/zed.rc')
+install="${pkgname}.install"
+source=("https://github.com/zfsonlinux/zfs/releases/download/zfs-${pkgver}/zfs-${pkgver}.tar.gz"{,.asc}
+        'zfs-node-permission.conf'
+        'zfs.initcpio.install'
+        'zfs.initcpio.hook')
+sha256sums=('2a3c70d55a37cc71618a95a60e81ad66530201eb118d37741dc92efcf848c8b1'
+            'SKIP'
+            '7ad45fd291aa582639725f14d88d7da5bd3d427012b25bddbe917ca6d1a07c1a'
+            '2f09c742287f4738c7c09a9669f8055cd63d3b9474cd1f6d9447152d11a1b913'
+            '15b5acea44225b4364ec6472a08d3d48666d241fe84c142e1171cd3b78a5584f')
+validpgpkeys=('4F3BA9AB6D1F8D683DC2DFB56AD860EED4598027'  # Tony Hutter (GPG key for signing ZFS releases) <hutter2@llnl.gov>
+              'C33DF142657ED1F7C328A2960AB9E991C6AF658B') # Brian Behlendorf <behlendorf1@llnl.gov>
+
+prepare() {
+  cd "zfs-${pkgver}"
+
+  # pyzfs is not built, but build system tries to check for python anyway
+  ln -sf /bin/true python3-fake
+
+  autoreconf -fi
+}
+
+build() {
+  # Disable tree vectorization. Related issues:
+  # https://github.com/openzfs/zfs/issues/13605
+  # https://github.com/openzfs/zfs/issues/13620
+  export CFLAGS="$CFLAGS -fno-tree-vectorize"
+  export CXXFLAGS="$CXXFLAGS -fno-tree-vectorize"
+
+  cd "zfs-${pkgver}"
+  ./configure --prefix=/usr \
+    --sysconfdir=/etc \
+    --sbindir=/usr/bin \
+    --with-mounthelperdir=/usr/bin \
+    --with-udevdir=/usr/lib/udev \
+    --libexecdir=/usr/lib \
+    --localstatedir=/var \
+    --with-python="$PWD/python3-fake" \
+    --enable-pyzfs=no \
+    --enable-systemd \
+    --with-config=user
+  make
+}
+
+package() {
+  cd "${srcdir}/zfs-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+
+  install -Dm644 contrib/bash_completion.d/zfs "${pkgdir}"/usr/share/bash-completion/completions/zfs
+
+  # Fix for permissions being overwritten on /dev/zfs. Related issues:
+  # https://github.com/openzfs/zfs/issues/15146
+  # https://github.com/systemd/systemd/issues/28653
+  install -D -m644 "${srcdir}"/zfs-node-permission.conf "${pkgdir}"/usr/lib/tmpfiles.d/zfs-node-permission.conf
+  
+  install -Dm644 "${srcdir}"/zfs.initcpio.hook "${pkgdir}"/usr/lib/initcpio/hooks/zfs
+  install -Dm644 "${srcdir}"/zfs.initcpio.install "${pkgdir}"/usr/lib/initcpio/install/zfs
+}

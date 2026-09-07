@@ -1,0 +1,39 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index e6c2d14..10351d5 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -647,8 +647,8 @@ dependencies = [
+ 
+ [[package]]
+ name = "libryzenadj"
+-version = "0.16.0"
+-source = "git+https://gitlab.com/honjow/libryzenadj-rs.git#e2f2867ef82e6f66795f9bd3bf8263d277a46316"
++version = "0.18.0"
++source = "git+https://gitlab.com/philm/libryzenadj-rs.git#e84f2948062c63135c6ceff327098045c72e1374"
+ dependencies = [
+  "errno",
+  "libryzenadj-sys",
+@@ -658,8 +658,8 @@ dependencies = [
+ 
+ [[package]]
+ name = "libryzenadj-sys"
+-version = "0.16.0"
+-source = "git+https://gitlab.com/honjow/libryzenadj-rs.git#e2f2867ef82e6f66795f9bd3bf8263d277a46316"
++version = "0.18.0"
++source = "git+https://gitlab.com/philm/libryzenadj-rs.git#e84f2948062c63135c6ceff327098045c72e1374"
+ dependencies = [
+  "bindgen",
+  "cmake",
+diff --git a/Cargo.toml b/Cargo.toml
+index a7f0b3f..0deba3a 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -30,7 +30,7 @@ serde = { version = "1.0.219", features = ["derive"] }
+ udev = { version = "0.9.3", features = ["send", "sync"] }
+ 
+ [target.'cfg(target_arch = "x86_64")'.dependencies]
+-libryzenadj = { git = "https://gitlab.com/honjow/libryzenadj-rs.git" }
++libryzenadj = { git = "https://gitlab.com/philm/libryzenadj-rs.git" }
+ 
+ [profile.release]
+ debug = false

@@ -1,0 +1,42 @@
+# Maintainer: William Edwards <shadowapex@gmail.com>
+pkgname=powerstation-git
+_pkgbase=powerstation
+pkgver=v0.7.0.r0.gffa6156
+pkgrel=3
+pkgdesc="Open source performance daemon with DBus interface"
+arch=('x86_64')
+url="https://github.com/ShadowBlip/PowerStation"
+license=('GPL')
+depends=('dbus' 'pciutils')
+makedepends=('rust' 'make' 'cmake' 'clang' 'git')
+provides=('powerstation')
+conflicts=('powerstation-bin')
+_commit=ffa61569a5619c145d2ab843f94c06822a428f49
+source=("${_pkgbase}::git+https://github.com/ShadowBlip/${_pkgbase}.git#commit=$_commit"
+        'honjow.patch::https://github.com/honjow/PowerStation/compare/ffa6156...72487b4.patch'
+        'update-ryzenadj-to-v0.18.patch')
+options=(!lto)
+
+sha256sums=('fcfca93a4f8bbdb41d1580d452bbda55130306b65bc407a90e7b1ec5e1e7ed09'
+            '835eec90cb5a33369497fb54afec12e8e67c0b09bef0856bbd519edc12baf4c9' 'SKIP')
+
+pkgver() {
+	cd "$srcdir/${_pkgbase}"
+	git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+prepare() {
+	cd "$srcdir/${_pkgbase}"
+	patch -p1 -i ../honjow.patch
+	patch -p1 -i ../update-ryzenadj-to-v0.18.patch
+}
+
+build() {
+	cd "$srcdir/${_pkgbase}"
+	make build
+}
+
+package() {
+	cd "$srcdir/${_pkgbase}"
+	make install PREFIX=${pkgdir}/usr NO_RELOAD=true
+}

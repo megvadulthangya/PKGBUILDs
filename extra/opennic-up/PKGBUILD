@@ -1,0 +1,23 @@
+# Maintainer: Kewl <xrjy@nygb.rh.bet(rot13)>
+
+pkgname=opennic-up
+pkgver=1.2.4
+pkgrel=2
+pkgdesc="OpenNIC auto DNS updater"
+arch=('any')
+url="https://github.com/kewlfft/${pkgname}"
+license=('LGPL3')
+depends=('fping' 'ldns')
+optdepends=('networkmanager')
+backup=("etc/opennic-up.conf")
+source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/v${pkgver}.tar.gz"
+        'opennic-up-on-boot.service')
+sha256sums=('8cb7ae04f1af55c900a24a72da23807b0250df415be2bedc73242d86750f26c6'
+            'c5eedeb0c864528a99dac0cb176c5d341104ee058582a1fcc9dc83968f5c85d9')
+
+package() {
+    cd ${pkgname}-${pkgver}
+    install -Dm755 -t "${pkgdir}/usr/bin" ${pkgname} 
+    install -Dm644 -t "${pkgdir}/usr/lib/systemd/system" ${pkgname}.{service,timer}
+    install -Dm644 -t "${pkgdir}/usr/lib/systemd/system" "${srcdir}/opennic-up-on-boot.service"
+}

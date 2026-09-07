@@ -1,0 +1,60 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Helmut Stult
+# Contributor: UnicornDarkness
+
+pkgname=memtest86-efi
+pkgver=11.7build1000
+pkgrel=1
+epoch=1
+pkgdesc="A free, thorough, stand alone memory test as an EFI application"
+arch=('any')
+url="https://www.memtest86.com"
+license=('LicenseRef-custom')
+depends=('bash')
+makedepends=('7zip')
+backup=("etc/$pkgname/$pkgname.conf")
+install="$pkgname.install"
+source=("$pkgname-$pkgver.zip::https://www.memtest86.com/downloads/memtest86-usb.zip"
+        "$pkgname"
+        "$pkgname.conf"
+        "$pkgname-update.hook")
+sha256sums=('1c01e03adac5c9e4d5d4e863de16771161b00e06032b7e91b1aeeba86c35a4de'
+            '405056d11baf5d68b408c470a7055a8c05d32fb05c8e50912268ac14cbbee154'
+            '15f62066f99724633c71e57d05d0b79d122dc60a50771ab22af4feca1bac0b37'
+            'a002238f5b2f00452b474d89dcfd41e35031bc576ffb08a58e27aa8fb10c7337')
+
+prepare() {
+  7z e -y "$srcdir/memtest86-usb.img" '*EFI System Partition*' > /dev/null
+  7z x -y "$srcdir/"*"EFI System Partition.img" -o"$pkgname-$pkgver" > /dev/null
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+
+  # Move MemTest86 stuff in share directory
+  for file in EFI/BOOT/*; do
+    if [[ "$file" == *".efi" ]]; then
+      filebase="$(basename "${file}" | tr '[:upper:]' '[:lower:]')"
+      install -Dvm755 "${file}" "$pkgdir/usr/share/$pkgname/${filebase}"
+    elif [[ -d "$file" ]]; then
+      dirbase="$(basename "${file}")"
+      install -dvm755 "$pkgdir/usr/share/$pkgname/${dirbase}"
+    else
+      filebase="$(basename "$file")"
+      install -Dvm644 "${file}" "$pkgdir/usr/share/$pkgname/${filebase}"
+    fi
+  done
+  for file in help/*; do
+    filebase="$(basename "$file")"
+    install -Dvm644 "${file}" "$pkgdir/usr/share/doc/$pkgname/${filebase}"
+  done
+
+  install -Dvm644 "license.rtf" "$pkgdir/usr/share/licenses/$pkgname/LICENSE.rtf"
+
+  # Install AUR provided script
+  install -Dvm755 "$srcdir/$pkgname" -t "$pkgdir/usr/bin/"
+  install -Dvm644 "$srcdir/$pkgname.conf" -t "$pkgdir/etc/$pkgname/"
+
+  # Install Pacman hooks
+  install -Dvm644 "$srcdir/$pkgname-update.hook" -t "$pkgdir/usr/share/libalpm/hooks/"
+}

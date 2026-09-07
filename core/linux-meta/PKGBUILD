@@ -1,0 +1,77 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgbase=linux-meta
+pkgname=('linux-meta' 'linux-headers-meta')
+pkgdesc="Manjaro stable kernel meta package"
+pkgver=7.1
+_pkgver="${pkgver//./}"
+pkgrel=1
+arch=('any')
+url="https://manjaro.org"
+license=('LicenseRef-None')
+
+_eol=(
+  '418'
+  '420'
+  '50'
+  '52'
+  '53'
+  '55'
+  '56'
+  '57'
+  '58'
+  '59'
+  '511'
+  '512'
+  '513'
+  '514'
+  '516'
+  '517'
+  '518'
+  '519'
+  '60'
+  '62'
+  '63'
+  '64'
+  '65'
+  '67'
+  '68'
+  '69'
+  '610'
+  '611'
+  '613'
+  '614'
+  '615'
+  '616'
+  '617'
+  '619'
+  '70'
+)
+
+_array() {
+  _array=''
+  for k in ${_eol[@]}; do
+    _array+=" linux${k}${_suffix}"
+  done
+  _array=(${_array})
+}
+
+_package() {
+  depends+=("linux${_pkgver}${_suffix}")
+  conflicts+=("${_array[@]}")
+  replaces+=("${_array[@]}")
+}
+
+package_linux-meta() {
+  _array
+  _package
+}
+
+package_linux-headers-meta() {
+  pkgdesc="Manjaro stable kernel header files meta package"
+  replaces=('linux-meta-headers')
+  _suffix="-headers"
+  _array
+  _package
+}

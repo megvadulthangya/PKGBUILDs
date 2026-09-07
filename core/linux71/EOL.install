@@ -1,0 +1,17 @@
+eol() {
+  echo ">>> NOTE, 7.1.13 is the last maintenance release of the 7.1 kernel series."
+  echo "    This kernel is now marked 'End Of Life' (EOL)."
+  echo "    "
+  echo "    It is recommend to switch to the newer linux72 series:"
+  echo "    'sudo mhwd-kernel -i linux72'"
+  echo "    "
+}
+
+post_upgrade() {
+  eol
+}
+
+post_install() {
+  eol
+}
+

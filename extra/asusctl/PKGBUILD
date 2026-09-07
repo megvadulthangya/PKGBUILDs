@@ -1,0 +1,92 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Fabian Bornschein <fabiscafe@archlinux.org>
+# Contributor: Static_Rocket
+
+pkgbase=asusctl
+pkgname=(
+  asusctl
+  rog-control-center
+)
+_app_id=org.opengamingcollective.rog-control-center
+pkgver=6.4.0
+pkgrel=2
+pkgdesc="Daemon and tools to control your ASUS ROG laptop."
+arch=('x86_64')
+url="https://asus-linux.org"
+license=('MPL-2.0')
+makedepends=(
+  'fontconfig'
+  'git'
+  'rust'
+)
+checkdepends=(
+  'appstream'
+  'desktop-file-utils'
+)
+source=("git+https://github.com/OpenGamingCollective/asusctl.git#tag=$pkgver")
+sha256sums=('cf14551d40d3317d09a2f655198045aa47d4d70360a11aadeef405a6f06983bc')
+
+prepare() {
+  cd "${pkgbase}"
+  cargo fetch --locked --target host-tuple
+}
+
+build() {
+  cd "${pkgbase}"
+  export CARGO_PROFILE_RELEASE_LTO=true
+  export CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
+  make FROZEN=1 build
+}
+
+check() {
+  cd "${pkgbase}"
+  appstreamcli validate --no-net "rog-control-center/data/${_app_id}.metainfo.xml"
+  desktop-file-validate "rog-control-center/data/${_app_id}.desktop"
+}
+
+package_asusctl() {
+  depends=(
+    'glibc'
+    'libgcc'
+    'libusb'
+    'systemd-libs'
+  )
+  optdepends=(
+    'cardwire: dGPU control'
+    'power-profiles-daemon: Power profile support'
+    'rog-control-center: GUI for asusctl'
+  )
+  conflicts=('gnome-shell-extension-asusctl-gnome')
+  install="${pkgbase}.install"
+
+  cd "${pkgbase}"
+  make DESTDIR="${pkgdir}" \
+    install-asusd \
+    install-asus-shutdown \
+    install-asusctl \
+    install-asusd_user \
+    install-data-asusd \
+    install-data-asusd_user
+}
+
+package_rog-control-center() {
+  pkgdesc="An experimental GUI for asusctl"
+  depends=(
+    'asusctl'
+    'fontconfig'
+    'freetype2'
+    'glibc'
+    'hicolor-icon-theme'
+    'libayatana-appindicator'
+    'libgcc'
+    'libinput'
+    'libxkbcommon'
+    'seatd'
+    'systemd-libs'
+  )
+
+  cd "${pkgbase}"
+  make DESTDIR="${pkgdir}" \
+    install-rog_gui \
+    install-data-rog_gui
+}

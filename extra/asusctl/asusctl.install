@@ -1,0 +1,18 @@
+post_upgrade() {
+  if systemctl is-active asusd.service --quiet; then
+    echo -e "\033[0;34m"
+    echo "-> Restarting asusd service"
+    echo -e "\033[0m"
+    systemctl restart asusd.service
+  fi
+}
+
+pre_remove() {
+  if systemctl is-active asusd.service --quiet; then
+    systemctl disable --now asusd.service
+  fi
+
+  if systemctl is-active asus-shutdown.service --quiet; then
+    systemctl disable --now asus-shutdown.service
+  fi
+}

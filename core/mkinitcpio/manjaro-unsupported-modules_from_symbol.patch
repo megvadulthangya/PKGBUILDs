@@ -1,0 +1,11 @@
+--- a/functions	2024-01-15 22:53:37.000000000 +0700
++++ b/functions	2024-01-16 10:17:38.390700191 +0700
+@@ -1383,6 +1383,8 @@ add_all_modules_from_symbol() {
+ 
+ 
+ add_checked_modules_from_symbol() {
++    # skip this on unsupported kernels (https://bugs.archlinux.org/task/72964)
++    [[ "$(echo "$KERNELVERSION" | cut -d '.' -f 1-2)" < "5.17" ]] && return
+     if ! add_all_modules_from_symbol "$@"; then
+         return 1
+     fi

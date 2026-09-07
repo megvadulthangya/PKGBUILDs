@@ -1,0 +1,11 @@
+--- a/functions	2024-01-15 22:53:37.000000000 +0700
++++ b/functions	2024-01-16 10:17:38.390700191 +0700
+@@ -733,7 +733,7 @@ add_file() {
+     # Handle cases where the parent of the destination is a symlink.
+     # What if there is a symlink higher up in the file path, you ask?
+     # We simply hope that never happens...
+-    if [[ -z "$mode" && "$src" == "$dest" && -L "${dest%/*}" ]]; then
++    if [[ -z "$mode" && "$src" == "$dest" && -L "${dest%/*}" && ! "${dest%/*}" =~ "extramodules" ]]; then
+         destrealpath="$(realpath -- "${dest%/*}")"
+         if [[ ! -e "${BUILDROOT}${dest%/*}" ]]; then
+             add_dir "${destrealpath}"

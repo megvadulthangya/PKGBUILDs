@@ -1,0 +1,72 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Helmut Stult
+# Contributor: Giancarlo Razzolini <grazzolini@archlinux.org>
+# Contributor: Morten Linderud <foxboron@archlinux.org>
+# Contributor: Dave Reisner <dreisner@archlinux.org>
+# Contributor: Thomas Bächler <thomas@archlinux.org>
+
+pkgname=mkinitcpio
+pkgver=41.1
+pkgrel=1
+pkgdesc="Modular initramfs image creation utility"
+arch=('any')
+url='https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio'
+license=('GPL-2.0-only')
+depends=('awk' 'mkinitcpio-busybox' 'kmod' 'util-linux' 'libarchive' 'coreutils'
+         'bash' 'binutils' 'diffutils' 'findutils' 'grep' 'gzip' 'filesystem' 'zstd' 'systemd')
+checkdepends=('bats' 'bats-assert' 'lzop')
+makedepends=('asciidoctor' 'git' 'meson')
+optdepends=('xz: Use lzma or xz compression for the initramfs image'
+            'bzip2: Use bzip2 compression for the initramfs image'
+            'lzop: Use lzo compression for the initramfs image'
+            'lz4: Use lz4 compression for the initramfs image'
+            'mkinitcpio-nfs-utils: Support for root filesystem on NFS'
+            'systemd-ukify: alternative UKI generator')
+conflicts=(
+  'lvm2<2.03.36-2'
+)
+provides=('initramfs')
+backup=('etc/mkinitcpio.conf')
+source=("git+$url.git#tag=v${pkgver}?signed"
+        # Manjaro patches
+        'manjaro.patch'
+        'manjaro-extramodules.patch'
+        'manjaro-unsupported-modules_from_symbol.patch'
+        )
+install=mkinitcpio.install
+sha512sums=('6a795ada3522b12e2e5d04d47314c8479eb4a7095b588d8fb6464569c2e7ec2014e5baae55c2138be0b6b8ba805bff34a029ab42a3fedc950d6e34bbb80db93b'
+            '1ac9c2837fe700e882856955cfacdc6f007a7d056ff2289bc272a6cfba3ce4c90775347c73a54b06591c19f04f18cdd9febe67ccc2ba20f9a5ed9523537c09b2'
+            '04f87d5aa3d159045cf25773f3113f9a875d20234ba736f429cdca3ca4f0cb08ee737792ae72ff7a00ac6573fe904cc030cc9adf0a6c5c8e319f370a33872317'
+            '35054b177112feca517ed7aadab4e26f032085c1369e8f436cac4955a2d16410f1030794eeb93e826e3ccf3d83d26498bc14e7fff3df277d80bdcf9a66d63c9a')
+b2sums=('bda091e49685ddf242305e39e310d49f636c284c9d9e51882a55352e6fa9d9635422c94b30e94c42b2e07e8be633eb65bdfe96d2c9d90b2989351a9b5cfce4cc'
+        '88281c7ff5cd255bda1fa3350d0a82d21abebac375078f58d4aed383d2cb89de9461645e8dcd1e8c65b7ea26fd9b69023482af786d4bd00adbac6df9c60d2d1e'
+        '1046085788eea6ee04115d3776a292ae6e336fdc2f99b7a9ff4a6408e6b6a83cc106a41c46ba7fb795f81fcfa48ca1752ea3296f8d701435a49f7cbf107b8c76'
+        '240b3d577b6b1975809af5b8a75c84a7cb828cf5957fb846deb7883b9db20f1c87de4e8e63f4fd6be774fb6ddb34d724899b43f3e37517f7b0e297a67cd736d9')
+validpgpkeys=('ECCAC84C1BA08A6CC8E63FBBF22FB1D78A77AEAB'    # Giancarlo Razzolini
+              'BB8E6F1B81CF0BB301D74D1CBF425A01E68B38EF')   # nl6720
+
+prepare() {
+  cd "$pkgname"
+  local src
+  for src in "${source[@]}"; do
+      src="${src%%::*}"
+      src="${src##*/}"
+      [[ $src = *.patch ]] || continue
+      echo "Applying patch $src..."
+      patch -Np1 < "../$src"
+  done
+}
+
+build(){
+  arch-meson -Dsystemd_hooks=true "$pkgname" build
+  meson compile -C build
+}
+
+check() {
+  meson test -C build
+}
+
+package() {
+  meson install -C build --destdir "$pkgdir"
+}

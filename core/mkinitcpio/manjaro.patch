@@ -1,0 +1,134 @@
+diff --unified --recursive a/libalpm/scripts/mkinitcpio b/libalpm/scripts/mkinitcpio
+--- a/libalpm/scripts/mkinitcpio	2024-02-28 12:12:07.000000000 -0700
++++ b/libalpm/scripts/mkinitcpio	2024-03-04 11:00:14.866974762 -0700
+@@ -7,7 +7,7 @@ args=()
+ package=0
+ 
+ install_preset() {
+-    local pkgbase="$1" preset="$2"
++    local pkgbase="$1" preset="$2" kernelbase="$3"
+ 
+     if [[ ! -e "$preset" ]]; then
+         if [[ -e "$preset.pacsave" ]]; then
+@@ -15,27 +15,31 @@ install_preset() {
+             mv -- "${preset}.pacsave" "$preset"
+         else
+             # create the preset from the template
+-            sed "s|%PKGBASE%|${pkgbase}|g" /usr/share/mkinitcpio/hook.preset \
++            sed "s|%KERNELBASE%|${kernelbase}|g" /usr/share/mkinitcpio/hook.preset \
+                 | install -Dm644 /dev/stdin "$preset"
+         fi
+     fi
+ }
+ 
+ generate_presets() {
+-    local preset pkgbase pkgbase_path
++    local preset pkgbase pkgbase_path kernelbase
+ 
+     # only make presets for kernels with a pkgbase
+     for pkgbase_path in /usr/lib/modules/*/pkgbase; do
+         if read -r pkgbase &>/dev/null <"$pkgbase_path"; then
+             preset="/etc/mkinitcpio.d/${pkgbase}.preset"
+-            install_preset "$pkgbase" "$preset"
++            if ! read -r kernelbase &>/dev/null < "$(dirname ${pkgbase_path})/kernelbase"; then
++                # this kernel has no kernelbase, use pkgbase
++                kernelbase="${pkgbase}"
++            fi
++            install_preset "$pkgbase" "$preset" "$kernelbase"
+         fi
+     done
+ }
+ 
+ remove_preset() {
+     if [[ -n "$pkgbase" && -e "$preset" ]]; then
+-        if ! cmp "$preset" <(sed "s|%PKGBASE%|${pkgbase}|g" /usr/share/mkinitcpio/hook.preset) &>/dev/null; then
++        if ! cmp "$preset" <(sed "s|%KERNELBASE%|${kernelbase}|g" /usr/share/mkinitcpio/hook.preset) &>/dev/null; then
+             if [[ ! -e "$preset.pacsave" ]]; then
+                 # save the preset as pacsave
+                 mv -- "$preset" "$preset.pacsave" && return 0
+@@ -105,8 +109,8 @@ read_preset() {
+         unsorted_filelist+=("/boot/vmlinuz-${pkgbase}"
+             "/boot/initramfs-${pkgbase}.img"
+             "/boot/initramfs-${pkgbase}-fallback.img"
+-            "/efi/EFI/Linux/arch-${pkgbase}.efi"
+-            "/efi/EFI/Linux/arch-${pkgbase}-fallback.efi")
++            "/efi/EFI/Linux/manjaro-${pkgbase}.efi"
++            "/efi/EFI/Linux/manjaro-${pkgbase}-fallback.efi")
+         unsorted_kernellist+=("/boot/vmlinuz-${pkgbase}")
+     fi
+ 
+@@ -125,7 +129,7 @@ install_kernel() {
+     local pkgbase="$1"
+     local kernel preset="/etc/mkinitcpio.d/${pkgbase}.preset"
+ 
+-    install_preset "$pkgbase" "$preset"
++    install_preset "$pkgbase" "$preset" "$kernelbase"
+     (
+         # source the preset to get the kernel and image locations
+         # shellcheck disable=SC1090
+@@ -184,6 +188,11 @@ while read -r line; do
+         continue
+     fi
+ 
++    if ! read -r kernelbase &>/dev/null < "${line%/vmlinuz}/kernelbase"; then
++        # this kernel has no kernelbase, use pkgbase
++        kernelbase="${pkgbase}"
++    fi
++
+     case "$1" in
+         install) install_kernel "$pkgbase" ;;
+         remove) remove_kernel "$pkgbase" ;;
+diff --unified --recursive a/mkinitcpio.d/example.preset b/mkinitcpio.d/example.preset
+--- a/mkinitcpio.d/example.preset	2024-02-28 12:12:07.000000000 -0700
++++ b/mkinitcpio.d/example.preset	2024-03-04 11:00:14.866974762 -0700
+@@ -14,14 +14,14 @@
+ # presetname_image   - the filename of generated image
+ # presetname_options - any extra options
+ 
+-#default_kver="3.0-ARCH"
++#default_kver="6.5.2-1-MANJARO"
+ #default_config="/etc/mkinitcpio.conf"
+-default_image="/tmp/initramfs-linux.img"
+-default_uki="/efi/EFI/Linux/arch-linux.efi"
++default_image="/boot/initramfs-6.5-x86_64.img"
++default_uki="/efi/EFI/Linux/manjaro-6.5-x86_64.efi"
+ default_options=""
+ 
+-#fallback_kver="3.0-ARCH"
++#fallback_kver="6.5.8-3-MANJARO
+ #fallback_config="/etc/mkinitcpio.conf"
+-fallback_image="/tmp/initramfs-linux-fallback.img"
+-fallback_uki="/efi/EFI/Linux/arch-linux-fallback.efi"
++fallback_image="boot/initramfs-6.5-x86_64-fallback.img"
++fallback_uki="/efi/EFI/Linux/manjaro-6.5-x86_64-fallback.efi"
+ fallback_options="-S autodetect"
+diff --unified --recursive a/mkinitcpio.d/hook.preset b/mkinitcpio.d/hook.preset
+--- a/mkinitcpio.d/hook.preset	2024-02-28 12:12:07.000000000 -0700
++++ b/mkinitcpio.d/hook.preset	2024-03-04 11:03:31.716657205 -0700
+@@ -1,18 +1,18 @@
+-# mkinitcpio preset file for the '%PKGBASE%' package
++# mkinitcpio preset file for the '%KERNELBASE%' package
+ 
+ #ALL_config="/etc/mkinitcpio.conf"
+-ALL_kver="/boot/vmlinuz-%PKGBASE%"
+-#ALL_kerneldest="/boot/vmlinuz-%PKGBASE%"
++ALL_kver="/boot/vmlinuz-%KERNELBASE%"
++#ALL_kerneldest="/boot/vmlinuz-%KERNELBASE%"
+ 
+ PRESETS=('default')
+ #PRESETS=('default' 'fallback')
+ 
+ #default_config="/etc/mkinitcpio.conf"
+-default_image="/boot/initramfs-%PKGBASE%.img"
+-#default_uki="/efi/EFI/Linux/arch-%PKGBASE%.efi"
+-#default_options="--splash /usr/share/systemd/bootctl/splash-arch.bmp"
++default_image="/boot/initramfs-%KERNELBASE%.img"
++#default_uki="/efi/EFI/Linux/manjaro-%KERNELBASE%.efi"
++#default_options="--splash /usr/share/systemd/bootctl/splash-manjaro.bmp"
+ 
+ #fallback_config="/etc/mkinitcpio.conf"
+-#fallback_image="/boot/initramfs-%PKGBASE%-fallback.img"
+-#fallback_uki="/efi/EFI/Linux/arch-%PKGBASE%-fallback.efi"
++#fallback_image="/boot/initramfs-%KERNELBASE%-fallback.img"
++#fallback_uki="/efi/EFI/Linux/manjaro-%KERNELBASE%-fallback.efi"
+ #fallback_options="-S autodetect"

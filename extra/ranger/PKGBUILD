@@ -1,0 +1,101 @@
+# Maintainer: Matti Hyttinen
+
+# Arch credits:
+# Contributor: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Contributor: Caleb Maclennan <caleb@alerque.com>
+# Contributor: schuay <jakob.gruber@gmail.com>
+# Contributor: Roman Zimbelmann <romanz@lavabit.com>
+# Contributor: XavRan <leandro.espinozar@protonmail.com>
+# Contributor: nfnty <arch at nfnty dot se>
+# Contributor: aksr <aksr at t-com dot me>
+
+pkgname=ranger
+pkgver=1.9.3+720+g38bb8901
+pkgrel=1
+pkgdesc="Simple, vim-like file manager"
+arch=('any')
+url="https://ranger.github.io/"
+license=('GPL-3.0-or-later')
+depends=('python')
+makedepends=(
+  'git'
+  'python-build'
+  'python-installer'
+  'python-setuptools'
+  'python-wheel'
+)
+checkdepends=(
+  'python-astroid'
+#  'python-pytest-pylint'  # AUR
+  'shellcheck'
+)
+optdepends=(
+  'atool: to preview archives'
+  'bat: option for syntax highlighting of code'
+  'calibre: option for image previews of ebooks'
+#  'drawio: for draw.io diagram previews' # in AUR
+  'file: for determining file types'
+  'djvulibre: for DjVu previews'
+  'elinks: option for previews of html pages'
+  'ffmpegthumbnailer: for video thumbnails'
+  'fontforge: for font previews'
+  'highlight: option for syntax highlighting of code'
+  'imagemagick: to auto-rotate images'
+  'jq: for JSON files'
+  'jupyter-nbconvert: for Jupyter Notebooks'
+  'kitty: option for image previews'
+  'libcaca: for ASCII-art image previews'
+  'librsvg: for SVG previews'
+  'lynx: option to preview html pages'
+  'mediainfo: option for viewing information about media files'
+  'mpv: option for image previews'
+  'mupdf-tools: option for PDF previews'
+  'odt2txt: for OpenDocument text files'
+  'openscad: for 3D model previews'
+  'perl-image-exiftool: option for viewing information about media files'
+  'poppler: option for PDF previews'
+#  'python-bidi: to display right-to-left file names correctly (Hebrew, Arabic)' # in AUR
+  'python-chardet: for improved encoding detection of text files'
+  'python-pillow: draw images in the terminal (w3m, iTerm2 and urxvt)'
+  'python-pygments: option for syntax highlighting of code'
+  'rxvt-unicode: option for image previews'
+  'sudo: to use the "run as root"-feature'
+  'terminology: option for image previews'
+  'transmission-cli: for viewing BitTorrent information'
+  'ueberzug: option for image previews'
+  'w3m: option for image & html previews'
+)
+_commit=38bb8901004b75a407ffee4b9e176bc0a436cb15  # branch/master
+source=("git+https://github.com/ranger/ranger.git#commit=$_commit")
+sha256sums=('1e35404bec8ad5a1c1d9625f3cd235885d3941bfe07b8c55fcbf2f131178d3a1')
+
+pkgver() {
+  cd "$pkgname"
+  git describe --tags | sed 's/^v//;s/-/+/g'
+}
+
+build() {
+  cd "$pkgname"
+  python -m build --wheel --no-isolation
+}
+
+check() {
+  cd "$pkgname"
+
+  # Test using doctest
+  make test_doctest
+
+  # Test using pytest
+#  make test_pytest
+
+  # Verify the manpage is complete
+  make test_other
+
+  # Test using shellcheck
+  make test_shellcheck
+}
+
+package() {
+  cd "$pkgname"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+}

@@ -1,0 +1,12 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = realtime-privileges
+
+[Action]
+Description = 'Add current users to user-group 'realtime''
+When = PostTransaction
+Depends = manjaro-pipewire
+Exec = /bin/realtime-privileges
+

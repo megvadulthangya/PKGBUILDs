@@ -1,0 +1,117 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Maintainer: Philip Müller <philm@manjaro.org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+# Contributor: WorMzy Tykashi <wormzy.tykashi@gmail.com>
+
+## Service Packs
+## https://www.softmaker.com/download/servicepacks
+
+pkgname=softmaker-office-2024
+_revision=1234
+pkgver=2024.${_revision}
+pkgrel=1
+pkgdesc="GDPR-compliant alternative to Microsoft Office"
+arch=('x86_64')
+url="https://www.softmaker.com/"
+license=('LicenseRef-custom')
+depends=(
+  'curl'
+  'desktop-file-utils'
+  'gst-plugins-base-libs'
+  'gstreamer'
+  'hicolor-icon-theme'
+  'libglvnd'
+  'libx11'
+  'libxext'
+  'libxmu'
+  'libxrandr'
+  'libxrender'
+  'shared-mime-info'
+)
+install='softmaker-office.install'
+source=(
+        "https://www.softmaker.net/down/${pkgname}-${_revision}-amd64.tgz"
+        "${pkgname}-textmaker"
+        "${pkgname}-planmaker"
+        "${pkgname}-presentations"
+        "${pkgname}-textmaker.desktop"
+        "${pkgname}-planmaker.desktop"
+        "${pkgname}-presentations.desktop")
+sha256sums=('a083bfa79d80488534aa342ac69fe5f4656b50af8b40d4315f5c0a85e2874f7c'
+            '00af1be185b00ab98ae33e6cad82ae00d845d78c6c4d7ab028d25f836f079f54'
+            'c99ddfed2be5266f6036ed57394fe83867ac374eed7fc7165cb6f65a6360a479'
+            'a70b5f3f7e54c4aee273636e7a8f8ad9ec8dbca1498132c6d9724e12eba39cbc'
+            'd3ed0ea90bda5217d8d0837dca2646a63b57cf05f05028fb27a73a12b68b7a89'
+            '460c616eb9ddeaed95cb67922f8e302c6eb5e38f546a3c6c9fa03baa05abb00c'
+            'e6890c6dca685e38334e2c15f70f7862cf1e10d760c95b6ad1a6dea5d1215c78')
+
+prepare() {
+  mkdir -p "${pkgname}-${_revision}"
+  bsdtar xvf office2024.tar.lzma -C "${pkgname}-${_revision}"
+
+  cd "${pkgname}-${_revision}"
+
+  # Fix mime conflict with FreeOffice
+  sed -i -e 's|icon name="application-x-pmd"|icon name="application-x-sm-2024-pmd"|g' "mime/${pkgname}.xml"
+  sed -i -e 's|icon name="application-x-prd"|icon name="application-x-sm-2024-prd"|g' "mime/${pkgname}.xml"
+  sed -i -e 's|icon name="application-x-tmd"|icon name="application-x-sm-2024-tmd"|g' "mime/${pkgname}.xml"
+}
+
+package() {
+  cd "${pkgname}-${_revision}"
+
+  # Install package files
+  install -d "${pkgdir}/usr/share/${pkgname}"
+  cp -r * "${pkgdir}/usr/share/${pkgname}"
+
+  # Install copyright & LICENSE
+  install -Dm 644 -t "${pkgdir}/usr/share/licenses/${pkgname}/" \
+    "${pkgdir}/usr/share/${pkgname}/mime/copyright" \
+    "${pkgdir}/usr/share/${pkgname}/mime/xdg-utils/LICENSE"
+
+  # Symlink affiliate link
+  install -d "${pkgdir}/usr/share/doc/${pkgname}"
+  echo "office-2024-l-manjaro" > "${pkgdir}/usr/share/${pkgname}/affiliate.txt"
+  ln -s "/usr/share/${pkgname}/affiliate.txt" "$pkgdir/usr/share/doc/${pkgname}/"
+
+  # Install user manuals to doc
+  find "$pkgdir/usr/share/${pkgname}"/ -type f -name "*.pdf" \
+    -exec install -Dm644 {} "$pkgdir/usr/share/doc/${pkgname}/" \;
+
+  # Install program executables
+  install -Dm 755 -t "${pkgdir}/usr/bin" \
+    "${srcdir}/${pkgname}"-{planmaker,presentations,textmaker}
+
+  # Symlink icons
+  for size in 16 24 32 48 64 128 256 512 1024
+  do
+    install -d "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps"
+    ln -s "/usr/share/${pkgname}/icons/pml_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/${pkgname}-planmaker.png"
+    ln -s "/usr/share/${pkgname}/icons/prl_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/${pkgname}-presentations.png"
+    ln -s "/usr/share/${pkgname}/icons/tml_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/${pkgname}-textmaker.png"
+
+    install -d "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/mimetypes"
+    ln -s "/usr/share/${pkgname}/icons/pmd_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/mimetypes/application-x-sm-2024-pmd.png"
+    ln -s "/usr/share/${pkgname}/icons/prd_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/mimetypes/application-x-sm-2024-prd.png"
+    ln -s "/usr/share/${pkgname}/icons/tmd_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/mimetypes/application-x-sm-2024-tmd.png"
+  done
+
+  # Install desktop files
+  install -Dm 644 -t "${pkgdir}/usr/share/applications" \
+    "${srcdir}/${pkgname}"-{planmaker,presentations,textmaker}.desktop
+
+  # Install mime files
+  install -Dm 644 -t "${pkgdir}/usr/share/mime/packages/" \
+    "${pkgdir}/usr/share/${pkgname}/mime/${pkgname}.xml"
+  install -Dm 644 "${pkgdir}/usr/share/${pkgname}/mime/${pkgname}.mime" \
+    "${pkgdir}/usr/lib/mime/packages/${pkgname}"
+
+  # Cleanup
+  rm -rfv "${pkgdir}/usr/share/${pkgname}/mime/"
+}

@@ -1,0 +1,31 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: MatMoul <matmoul at the google email domain which is .com>
+
+pkgname=alpm-octopi-utils
+pkgver=1.0.2
+pkgrel=13
+pkgdesc="Alpm utils for Octopi"
+arch=('x86_64')
+url="https://github.com/aarnt/alpm_octopi_utils"
+license=('LicenseRef-unknown')
+depends=('pacman')
+makedepends=(
+  'cmake'
+  'git'
+  'vala'
+)
+_commit=0ed2a8bd6b869f40683cf7a79727dc64d7da274e
+source=("git+https://github.com/aarnt/alpm_octopi_utils.git#commit=${_commit}")
+sha256sums=('25c8f9ce3f24f5f9bf271c1acbf4935ee3ed1ff12bd66e9f3115b9d40c53bebe')
+
+build() {
+  cmake -B build -S alpm_octopi_utils \
+    -DCMAKE_BUILD_TYPE='RelWithDebInfo' \
+    -DCMAKE_INSTALL_PREFIX='/usr' \
+    -Wno-author
+  cmake --build build
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build
+}

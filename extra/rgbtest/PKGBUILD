@@ -1,0 +1,35 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+
+pkgname=('rgbtest'
+)
+pkgver=v4.1.release.r1.g98b2808
+pkgrel=1
+arch=('x86_64')
+url="https://github.com/chipmunk-sm/rgbtest"
+license=('GPL-3.0-or-later')
+depends=('qt6-base')
+makedepends=('git')
+source=(git+$url.git)
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir/${pkgname}"
+	git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+}
+
+build() {
+  cd "${pkgname}"
+  qmake6 \
+    PREFIX=/usr \
+    QMAKE_CFLAGS="${CFLAGS}" \
+    QMAKE_CXXFLAGS="${CXXFLAGS}" \
+    QMAKE_LFLAGS="${LDFLAGS}"
+  make
+}
+
+package() {
+  cd "${pkgname}"
+  install -Dm755 rgbtest ${pkgdir}/usr/bin/rgbtest
+  install -Dm644 data/rgbtest.desktop  ${pkgdir}/usr/share/applications/rgbtest.desktop
+  install -Dm644 data/rgbtest.svg      ${pkgdir}/usr/share/icons/hicolor/scalable/apps/rgbtest.svg
+}

@@ -1,0 +1,8 @@
+post_install() {
+  # Enable service by default
+  systemctl --global enable steam-powerbuttond.service
+}
+
+pre_remove() {
+  systemctl --global disable steam-powerbuttond.service
+}

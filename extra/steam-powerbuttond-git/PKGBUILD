@@ -1,0 +1,37 @@
+# Maintainer: Derek J. Clark <derekjohn.clark@gmail.com>
+pkgname=steam-powerbuttond-git
+_gitdir=steam-powerbuttond
+pkgver=24.05.r21.6c89b0e
+pkgrel=1
+pkgdesc="Simple powerbutton daemon for steam with gamescope-session"
+arch=('any')
+url="https://github.com/ShadowBlip/steam-powerbuttond"
+license=('GPL')
+groups=()
+depends=('python' 'python-evdev')
+optdepends=()
+makedepends=('git')
+source=("${_gitdir}::git+${url}.git")
+sha256sums=('SKIP')
+install=$pkgname.install
+
+pkgver() {
+	cd "$srcdir/${_gitdir}"
+	printf "%s.r%s.%s" $(git show -s --date=format:'%y.%m' --format=%cd HEAD) "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+	cd "$srcdir/${_gitdir}"
+	sed -i -e 's|/usr/local/bin|/usr/bin|g' steam-powerbuttond.service
+	sed -i -e 's|multi-user|default|g' steam-powerbuttond.service
+}
+
+package() {
+	cd "$srcdir/${_gitdir}"
+
+	mkdir -p ${pkgdir}/usr/lib/systemd/user
+	install -m644 steam-powerbuttond.service ${pkgdir}/usr/lib/systemd/user
+
+	mkdir -p ${pkgdir}/usr/bin
+	install -m755 steam-powerbuttond ${pkgdir}/usr/bin
+}

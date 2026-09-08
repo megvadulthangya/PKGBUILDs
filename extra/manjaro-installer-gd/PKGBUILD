@@ -1,0 +1,37 @@
+# Maintainer: Derek J. Clark <derekjohn.clark@gmail.com>
+pkgname=manjaro-installer-gd
+pkgver=0.0.1
+_commit=9c5547455f45a49cf78f7a2f6735c4e592b41a4d
+pkgrel=5
+pkgdesc="Graphical installer component for Manjaro Gaming "
+arch=('x86_64')
+url="https://github.com/philmmanjaro/manjaro-installer-gd"
+license=('GPL')
+groups=()
+depends=('glibc' 'gcc-libs' 'libx11' 'libxres' 'libxcb' 'libxext' 'libxau'
+	'libxdmcp' 'gamescope' 'vulkan-tools' 'mesa-utils' 'pv' 'coreutils'
+)
+makedepends=('godot<=4.4.1' 'scons' 'pkgconf' 'gcc' 'libxcursor' 'libxinerama'
+	'libxi' 'libxrandr' 'mesa' 'glu' 'libglvnd' 'alsa-lib' 'make' 'unzip' 'wget' 'git'
+)
+source=("git+https://github.com/philmmanjaro/manjaro-installer-gd.git#commit=$_commit")
+sha256sums=('1fdd1a0c6a85fadde908cf2ce82a41b9e738cf484a72f6dd88142a76e7a1f6ae')
+
+prepare() {
+	cd "$srcdir/${pkgname}"
+}
+
+build() {
+	cd "$srcdir/${pkgname}"
+	make build
+}
+
+package() {
+	options=('!strip')
+	cd "$srcdir/${pkgname}"
+
+	mkdir -p "${pkgdir}"/opt/manjaro/$pkgname
+	install -Dm755 manjaro-installer.x86_64 "${pkgdir}"/opt/manjaro/$pkgname/manjaro-installer-gd
+	install -Dm644 libpty.linux.template_debug.x86_64.so "${pkgdir}"/opt/manjaro/$pkgname/libpty.linux.template_debug.x86_64.so
+	install -Dm644 liblinuxthread.linux.template_debug.x86_64.so "${pkgdir}"/opt/manjaro/$pkgname/liblinuxthread.linux.template_debug.x86_64.so
+}

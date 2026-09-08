@@ -1,0 +1,147 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Maintainer: Artem Grinev <agrinev@manjaro.org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgbase=artwork-breath
+pkgname=(
+  'breath-wallpapers'
+  'plasma6-themes-breath'
+  'plasma6-themes-breath-extra'
+  'plasma6-themes-breath-migration'
+  'sddm-breath-theme'
+)
+pkgver=24.0.0
+pkgrel=6
+arch=('x86_64' 'aarch64')
+url="https://gitlab.manjaro.org/artwork/themes/breath"
+license=(
+  'CC-BY-SA-4.0'
+  'GPL-2.0-or-later'
+  'GPL-3.0-only'
+  'LGPL-2.0-or-later'
+)
+makedepends=(
+  'breeze'
+  'cmake'
+  'extra-cmake-modules'
+  'git'
+  'kconfig'
+  'kcoreaddons'
+  'libplasma'
+  'plasma-workspace'
+  'qt6-5compat'
+  'qt6-base'
+  'qt6-declarative'
+)
+_commit=0266802cdbe62a9f18c9fdb9630732d60e49fa90  # 24.0.0
+source=("git+$url.git#commit=${_commit}")
+sha256sums=('da137cb462b1cbc7a1aae8fc46f5010288b2cb87da9324d58252da3cb898fabc')
+
+build() {
+
+  echo "Building plasma6-themes-breath..."
+  cmake -B build-breath -S breath \
+    -DCMAKE_BUILD_TYPE='Release' \
+    -DCMAKE_INSTALL_PREFIX='/usr' \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS='ON' \
+    -DBUILD_PLASMA_THEMES='ON'
+  cmake --build build-breath
+
+  echo "Building plasma6-themes-breath-extra..."
+  cmake -B build-breath-extra -S breath \
+    -DCMAKE_BUILD_TYPE='Release' \
+    -DCMAKE_INSTALL_PREFIX='/usr' \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS='ON' \
+    -DBUILD_EXTRA_COLORS='ON'
+  cmake --build build-breath-extra
+
+  echo "Building plasma6-themes-breath-migration..."
+  cmake -B build-breath-migration -S breath \
+    -DCMAKE_BUILD_TYPE='Release' \
+    -DCMAKE_INSTALL_PREFIX='/usr' \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS='ON' \
+    -DBUILD_MIGRATION='ON'
+  cmake --build build-breath-migration
+
+  echo "Building sddm-breath-theme..."
+  cmake -B build-sddm -S breath \
+    -DCMAKE_BUILD_TYPE='Release' \
+    -DCMAKE_INSTALL_PREFIX='/usr' \
+    -DKDE_INSTALL_USE_QT_SYS_PATHS='ON' \
+    -DBUILD_SDDM_THEME='ON'
+  cmake --build build-sddm
+}
+
+package_breath-wallpapers() {
+  pkgdesc="Breath wallpapers"
+  arch=('any')
+
+  cd breath/wallpapers
+  install -Dm644 Bamboo/contents/images/5120x2880.png \
+    "$pkgdir"/usr/share/backgrounds/bamboo.png
+  install -Dm644 Bamboo\ at\ Night/contents/images/5120x2880.png \
+    "$pkgdir"/usr/share/backgrounds/bambooatnight.png
+
+  install -Dm644 North/contents/images/5120x2880.png \
+    "$pkgdir"/usr/share/backgrounds/north.png
+  install -Dm644 North/contents/images_dark/5120x2880.png \
+    "$pkgdir"/usr/share/backgrounds/northdark.png
+}
+
+package_plasma6-themes-breath() {
+  pkgdesc="Breath theme for Plasma 6"
+  arch=('any')
+  depends=(
+    'breeze'
+    'plasma6-themes-breath-migration'
+    'qt6-declarative'
+  )
+  conflicts=(
+    'breath2-icon-themes'
+    'plasma5-themes-breath'
+    'plasma5-themes-breath2'
+  )
+  replaces=(
+    'breath2-icon-themes'
+    'plasma5-themes-breath'
+    'plasma5-themes-breath2'
+  )
+
+  DESTDIR="$pkgdir" cmake --install build-breath
+}
+
+package_plasma6-themes-breath-extra() {
+  pkgdesc="Additional Breath colors for Plasma 6"
+  arch=('any')
+
+  DESTDIR="$pkgdir" cmake --install build-breath-extra
+}
+
+package_plasma6-themes-breath-migration() {
+  pkgdesc="Breath theme migration routine for kconf_update"
+  depends=(
+    'kconfig'
+    'kcoreaddons'
+    'qt6-base'
+  )
+  conflicts=('plasma5-themes-breath-migration')
+  replaces=('plasma5-themes-breath-migration')
+
+  DESTDIR="$pkgdir" cmake --install build-breath-migration
+}
+
+package_sddm-breath-theme() {
+  pkgdesc="Breath theme for SDDM"
+  arch=('any')
+  depends=(
+    'libplasma'
+    'plasma-workspace'
+    'plasma6-themes-breath'
+    'qt6-5compat'
+    'qt6-declarative'
+  )
+  conflicts=('sddm-breath2-theme')
+  replaces=('sddm-breath2-theme')
+
+  DESTDIR="$pkgdir" cmake --install build-sddm
+}

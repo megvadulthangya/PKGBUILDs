@@ -1,0 +1,4 @@
+#!/bin/sh
+# A script to run PlanMaker.
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/share/softmaker-office-2021/dpf3
+/usr/share/softmaker-office-2021/planmaker "$@"

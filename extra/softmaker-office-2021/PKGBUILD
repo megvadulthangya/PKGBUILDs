@@ -1,0 +1,109 @@
+# Maintainer: Philip Müller <philm@manjaro.org>
+# Maintainer: Bernhard Landauder <bernhard@manjaro.org>
+# Contributor: Niklas Pulina <pulina@softmaker.de>
+# Author of AUR PKGBUILD for FreeOffice: Muflone http://www.muflone.com/contacts/english/
+
+pkgname=softmaker-office-2021
+_revision=1068
+pkgver=2021.${_revision}
+pkgrel=1
+pkgdesc="A complete, reliable, lightning-fast and Microsoft Office-compatible office suite with a word processor, spreadsheet, and presentation graphics software."
+arch=('x86_64')
+url="https://www.softmaker.com/"
+license=('custom')
+depends=('curl' 'hicolor-icon-theme' 'libglvnd' 'libxmu' 'libxrandr')
+makedepends=('chrpath' 'xz')
+conflicts=("${pkgname%-2021}")
+install="${pkgname%-2021}.install"
+source=("https://www.softmaker.net/down/${pkgname}-${_revision}-amd64.tgz"
+        "${pkgname}-textmaker"
+        "${pkgname}-planmaker"
+        "${pkgname}-presentations"
+        "${pkgname}-textmaker.desktop"
+        "${pkgname}-planmaker.desktop"
+        "${pkgname}-presentations.desktop")
+sha256sums=('a73819c8b89321520641358614233aa4c8933e3e2705c913e0b5b94445f6443d'
+            'b801c33cf6cdb789da185b44f325fed919162e6cbbc44eafb3fdba781c1c3d8f'
+            '3a1204fe000a63f06e798916e8bf7b83ae63b9f208ceaffb52fc1a994f28a1a3'
+            '1a0d50764f4d7d2660a8b684b4c2c755376788434840b017585b2f5f851d6455'
+            'bce89a8103733850654ce44139f1120b0b4bea164d61df23cfc37e38453287cb'
+            '8ed74fefc3448e56dda765f4ee34a437b926df9d715f64bc118294936bc8d068'
+            'a785a584db1bd0d47f20afe1c13a87b77b39346ae33ba932f2e4d0a9fde2363f')
+
+prepare() {
+  xz -df "office2021.tar.lzma"
+
+  mkdir -p "${pkgname}-${_revision}"
+  bsdtar xvf office2021.tar -C "${pkgname}-${_revision}"
+
+  cd "${pkgname}-${_revision}"
+
+  # Remove insecure RPATH
+  chrpath --delete "textmaker"
+  chrpath --delete "planmaker"
+  chrpath --delete "presentations"
+
+  # Fix mime conflict with FreeOffice
+  sed -i -e 's|icon name="application-x-pmd"|icon name="application-x-sm-2021-pmd"|g' "mime/${pkgname}.xml"
+  sed -i -e 's|icon name="application-x-prd"|icon name="application-x-sm-2021-prd"|g' "mime/${pkgname}.xml"
+  sed -i -e 's|icon name="application-x-tmd"|icon name="application-x-sm-2021-tmd"|g' "mime/${pkgname}.xml"
+}
+
+package() {
+  cd "${pkgname}-${_revision}"
+
+  # Install package files
+  install -d "${pkgdir}/usr/share/${pkgname}"
+  cp -r * "${pkgdir}/usr/share/${pkgname}"
+
+  # Install copyright & LICENSE
+  install -Dm 644 -t "${pkgdir}/usr/share/licenses/${pkgname}/" \
+    "${pkgdir}/usr/share/${pkgname}/mime/copyright" \
+    "${pkgdir}/usr/share/${pkgname}/mime/xdg-utils/LICENSE"
+
+  # Symlink affiliate link
+  install -d "${pkgdir}/usr/share/doc/${pkgname}"
+  echo "freeoffice-2021-l-manjaro" > "${pkgdir}/usr/share/${pkgname}/affiliate.txt"
+  ln -s "/usr/share/${pkgname}/affiliate.txt" "$pkgdir/usr/share/doc/${pkgname}/"
+
+  # Symlink user manuals
+  find "$pkgdir/usr/share/${pkgname}"/ -type f -name "*.pdf" \
+    -exec cp -s {} "$pkgdir/usr/share/doc/${pkgname}/" \;
+
+  # Install program executables
+  install -Dm 755 -t "${pkgdir}/usr/bin" \
+    "${srcdir}/${pkgname}"-{planmaker,presentations,textmaker}
+
+  # Symlink icons
+  for size in 16 24 32 48 64 128 256 512 1024
+  do
+    install -d "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps"
+    ln -s "/usr/share/${pkgname}/icons/pml_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/${pkgname}-planmaker.png"
+    ln -s "/usr/share/${pkgname}/icons/prl_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/${pkgname}-presentations.png"
+    ln -s "/usr/share/${pkgname}/icons/tml_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/${pkgname}-textmaker.png"
+
+    install -d "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/mimetypes"
+    ln -s "/usr/share/${pkgname}/icons/pmd_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/mimetypes/application-x-sm-2021-pmd.png"
+    ln -s "/usr/share/${pkgname}/icons/prd_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/mimetypes/application-x-sm-2021-prd.png"
+    ln -s "/usr/share/${pkgname}/icons/tmd_${size}.png" \
+      "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/mimetypes/application-x-sm-2021-tmd.png"
+  done
+
+  # Install desktop files
+  install -Dm 644 -t "${pkgdir}/usr/share/applications" \
+    "${srcdir}/${pkgname}"-{planmaker,presentations,textmaker}.desktop
+
+  # Install mime files
+  install -Dm 644 -t "${pkgdir}/usr/share/mime/packages/" \
+    "${pkgdir}/usr/share/${pkgname}/mime/${pkgname}.xml"
+  install -Dm 644 "${pkgdir}/usr/share/${pkgname}/mime/${pkgname}.mime" \
+    "${pkgdir}/usr/lib/mime/packages/${pkgname}"
+
+  # Cleanup
+  rm -rfv "${pkgdir}/usr/share/${pkgname}/mime/"
+}

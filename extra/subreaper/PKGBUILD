@@ -1,0 +1,28 @@
+pkgname=subreaper
+_pkgbase=reaper
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="A command to monitor and annotate a process tree"
+arch=('x86_64')
+options=(!lto)
+url="https://github.com/playtron-os/reaper"
+license=('MIT')
+makedepends=('meson' 'make')
+conflicts=('reaper')
+source=("reaper-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+sha256sums=('4581859aaa5c6f01ec3ef27d4beaa7769bda26ca64a4e8b038c7082ae75b98ff')
+
+prepare() {
+	cd "$srcdir/reaper-$pkgver"
+}
+
+build() {
+	cd "$srcdir/reaper-$pkgver"
+	make build
+}
+
+package() {
+	cd "$srcdir/reaper-$pkgver"
+	install -Dm755 build/reaper "${pkgdir}"/usr/bin/reaper
+	install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

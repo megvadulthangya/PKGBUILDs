@@ -1,0 +1,89 @@
+# Maintainer: Philip Müller <philm@manjaro.org>
+
+pkgname=(
+#  'matcha-kde'
+#  'matcha-kde-wallpapers'
+  'kvantum-theme-matcha'
+#  'konsole-colorscheme-matcha'
+#  'yakuake-skin-matcha'
+#  'konversation-theme-matcha'
+)
+pkgbase=matcha-kde
+pkgver=20191119
+pkgrel=2
+pkgdesc="Matcha KDE Based on Matcha Theme and Arc KDE"
+arch=('any')
+url="https://gitlab.com/cscs/matchama-kde"
+license=('GPL-3.0-or-later')
+makedepends=('git')
+options=('!strip')
+_commit=8525e052971c807d3f6797d7baf38f51c81d4b81
+source=("git+${url}.git#commit=${_commit}")
+sha256sums=('1a6ef8a52f7f560929ba0482864d821810c98e30f1259280b97194bc99f20d64')
+
+pkgver() {
+  cd matchama-kde
+  git show -s --date=format:'%Y%m%d' --format=%cd
+}
+
+prepare() {
+  cd matchama-kde
+}
+
+_install() {
+  cd matchama-kde
+  install -d "${pkgdir}"/usr/share
+  cp -r "$@" "${pkgdir}"/usr/share
+}
+
+package_matcha-kde() {
+  pkgdesc="Matcha theme for KDE Plasma 5"
+  depends=('plasma-workspace')
+  optdepends=(
+    'konsole-colorscheme-matcha: matcha theme for Konsole'
+    'konversation-theme-matcha: matcha theme for Konversation'
+    'kvantum-theme-matcha: matcha theme for Kvantum (recommended)'
+    'matcha-firefox-theme: matcha theme for Firefox'
+    'matcha-gtk-theme: for a consistent look in GTK applications'
+    'matcha-kde-wallpapers: matcha KDE wallpapers'
+    'papirus-icon-theme: for a more consistent and beautiful experience (recommended)'
+    'yakuake-skin-matcha: matcha theme for Yakuake'
+  )
+  install="${pkgbase}.install"
+
+  _install plasma aurorae color-schemes
+}
+
+package_matcha-kde-wallpapers() {
+  pkgdesc="Matcha KDE wallpapers"
+
+  _install wallpapers
+}
+
+package_kvantum-theme-matcha() {
+  pkgdesc="Matcha theme for Kvantum"
+  depends=('kvantum-qt5')
+
+  _install Kvantum
+}
+
+package_konsole-colorscheme-matcha() {
+  pkgdesc="Matcha theme for Konsole"
+  depends=('konsole')
+
+  _install konsole
+}
+
+package_yakuake-skin-matcha() {
+  pkgdesc="Matcha theme for Yakuake"
+  depends=('yakuake')
+
+  _install yakuake
+}
+
+package_konversation-theme-matcha() {
+  pkgdesc="Matcha theme for Konversation"
+  depends=('konversation')
+
+  _install konversation
+}

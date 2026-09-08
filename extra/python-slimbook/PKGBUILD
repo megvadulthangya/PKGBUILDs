@@ -1,0 +1,41 @@
+# Maintainer: Bernhard Landauer <bernhard@manjaro.org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=python-slimbook
+pkgver=1.21.0
+pkgrel=1
+pkgdesc="Python bindings for libslimbook and some extra goodies for Slimbook python based apps"
+arch=('any')
+url="https://github.com/Slimbook-Team/python-slimbook"
+license=('LGPL-3.0-or-later')
+depends=(
+  'libslimbook'
+  'python'
+)
+makedepends=(
+  'python-build'
+  'python-installer'
+  'python-setuptools'
+  'python-wheel'
+)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+#source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+sourcefiles/$pkgname/$pkgver/${pkgname}_${pkgver}.tar.xz")
+#noextract=("${pkgname}_${pkgver}.tar.xz")
+sha256sums=('546370f71f89eed86a3aa2899ab3d55b27e0e536051a693c212b7dedaf5c55b2')
+
+prepare() {
+#  mkdir -p "$pkgname-$pkgver"
+#  bsdtar xf "${pkgname}_${pkgver}.tar.xz" --strip-components 1 -C "$pkgname-$pkgver"
+
+  return 0
+}
+
+build() {
+  cd "$pkgname-$pkgver"
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+}

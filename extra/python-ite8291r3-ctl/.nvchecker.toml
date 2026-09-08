@@ -1,0 +1,4 @@
+[python-ite8291r3-ctl]
+source = "git"
+git = "https://github.com/pobrn/ite8291r3-ctl.git"
+prefix = "v"

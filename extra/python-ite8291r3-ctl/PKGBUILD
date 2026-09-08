@@ -1,19 +1,38 @@
-# Maintainer: Jose Olivio Pedrosa <root at rwx dot ovh>
+# Maintainer: Bernhard Landauer <bernhard@manjaro.org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Jose Olivio Pedrosa <root at rwx dot ovh>
+
 pkgname=python-ite8291r3-ctl
-pkgver=0.3
-pyname=ite8291r3-ctl
-pkgrel=4
-pkgdesc="ite8291r3-ctl is a userspace driver for the ITE 8291 (rev 0.03) RGB keyboard backlight controller."
-arch=(any)
+_name=${pkgname#python-}
+pkgver=0.4
+pkgrel=1
+pkgdesc="Userspace driver for the ITE 8291 RGB keyboard backlight controller."
+arch=('any')
 url="https://github.com/pobrn/ite8291r3-ctl"
-license=(GPL2)
-depends=(python  python-pyusb)
-makedepends=(python-setuptools)
-conflicts=()
-source=("https://files.pythonhosted.org/packages/source/${pyname:0:1}/${pyname}/${pyname}-${pkgver}.tar.gz")
-sha256sums=('d8645a478c552fde378f5a81fee32e1be6e8987698a8c40e6947234bd5be9532')
+license=('GPL-2.0-only')
+depends=(
+  'python'
+  'python-pyusb'
+)
+makedepends=(
+  'python-build'
+  'python-installer'
+  'python-setuptools'
+  'python-wheel'
+)
+optdepends=(
+  'python-pillow: For the screen mode'
+  'python-xlib: For the screen mode'
+)
+source=("$_name-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('361779cd389fe8a05e70f64f3931881271472edef8ada789f1f55d8ef4276f0e')
+
+build() {
+  cd "$_name-$pkgver"
+  python -m build --wheel --no-isolation
+}
 
 package() {
-  cd "${srcdir}/${pyname}-${pkgver}"
-  python setup.py install --root="$pkgdir/" --optimize=1
+  cd "$_name-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
 }

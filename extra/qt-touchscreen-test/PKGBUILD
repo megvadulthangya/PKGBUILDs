@@ -1,0 +1,38 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+
+pkgname=('qt-touchscreen-test'
+)
+pkgver=r5.a788e18
+pkgrel=1
+arch=('x86_64')
+url="https://github.com/Witekio/qt-touchscreen-test"
+license=('GPL-3.0-or-later')
+depends=('qt6-base' 'qt6-declarative')
+makedepends=('git')
+source=(git+$url.git
+        touchscreen-test.svg touchscreen-test.desktop)
+sha256sums=('SKIP'
+            'd3b6c14a4c49aafb29ae49c255a9e874fe6183334a9b6b1875a075972fe662bf'
+            'a72a937da97cb997d366956f143c8d40192ca38cdb9aab6da49c9c4e23a2033a')
+
+pkgver() {
+	cd "$srcdir/${pkgname}"
+	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+  cd "${pkgname}"
+  qmake6 \
+    PREFIX=/usr \
+    QMAKE_CFLAGS="${CFLAGS}" \
+    QMAKE_CXXFLAGS="${CXXFLAGS}" \
+    QMAKE_LFLAGS="${LDFLAGS}"
+  make
+}
+
+package() {
+  cd "${pkgname}"
+  install -Dm755 touchscreen-test ${pkgdir}/usr/bin/touchscreen-test
+  install -Dm644 $srcdir/touchscreen-test.desktop  ${pkgdir}/usr/share/applications/touchscreen-test.desktop
+  install -Dm644 $srcdir/touchscreen-test.svg      ${pkgdir}/usr/share/icons/hicolor/scalable/apps/touchscreen-test.svg
+}

@@ -1,0 +1,18 @@
+[Desktop Entry]
+Categories=KDE;GNOME;Utility;
+Exec=touchscreen-test
+GenericName[en_US]=Touchscreen Test
+GenericName=Touchscreen graphical test application
+Icon=touchscreen-test
+MimeType=
+Name[en_US]=touchscreen-test
+Name=touchscreen-test
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

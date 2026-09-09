@@ -1,0 +1,29 @@
+# Maintainer: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=slimbook-keyboard-dkms
+pkgver=0.2.8
+pkgrel=2
+pkgdesc="Keyboard module for Slimbook Essential model (and laptops with similar keyboards)"
+arch=('x86_64')
+url="https://github.com/Slimbook-Team/slimbook-keyboard-dkms"
+license=('GPL-3.0-or-later')
+depends=('dkms')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+#source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+sourcefiles/$pkgname/$pkgver/${pkgname}_${pkgver}.tar.gz")
+#noextract=("${pkgname}_${pkgver}.tar.gz")
+sha256sums=('8ddc77c6bfd1b14ebf8bd83faa76774082f575031ef154604ba004c4b2509363')
+
+prepare() {
+#  mkdir -p "$pkgname-$pkgver"
+#  bsdtar xf "${pkgname}_${pkgver}.tar.gz" --strip-components 1 -C "$pkgname-$pkgver"
+
+  cd "$pkgname-$pkgver"
+  sed -i "s/MODVER = 0.0/MODVER = "$pkgver"/g" slimbook_keyboard-0.0/Makefile
+  sed -i "s/0.0/"$pkgver"/g" slimbook_keyboard-0.0/dkms.conf
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  install -Dm644 slimbook_keyboard-0.0/* -t "$pkgdir/usr/src/slimbook_keyboard-$pkgver/"
+}
+

@@ -4,7 +4,7 @@
 # Contributor: Sam Burgos < sam dot burgos1089 at gmail dot com >
 
 pkgname=mint-themes
-pkgver=2.3.9
+pkgver=2.4.1
 pkgrel=1
 epoch=1
 pkgdesc="A collection of Mint themes."
@@ -20,7 +20,7 @@ options=('!strip')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 #source=("http://packages.linuxmint.com/pool/main/m/$pkgname/${pkgname}_${pkgver}.tar.xz")
 noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('313c10ec5cb776eb10068079e9ff384fb1de4351f23a13ee2452592957bc01de')
+sha256sums=('bd67cbe9489ca3cf1f9ff2951b9f41740db072caa3d7adad787603dc3ce8c531')
 
 prepare() {
 #  mkdir -p "$pkgname-$pkgver"

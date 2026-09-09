@@ -1,0 +1,14 @@
+post_install() {
+  echo "Enabling and starting slimbook service..."
+  systemctl enable --now slimbook
+}
+
+post_upgrade() {
+  echo "Restarting slimbook service..."
+  systemctl restart slimbook
+}
+
+pre_remove() {
+  echo "Disabling and stopping slimbook service..."
+  systemctl disable --now slimbook
+}

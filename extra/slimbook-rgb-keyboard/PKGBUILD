@@ -1,0 +1,53 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=slimbook-rgb-keyboard
+pkgver=0.7.1
+pkgrel=1
+pkgdesc="Utility to manage color and brightness of Slimbook RGB keyboard"
+arch=('any')
+url="https://github.com/Slimbook-Team/slimbookrgbkeyboard"
+license=('GPL-3.0-or-later')
+depends=(
+  'gtk3'
+  'polkit'
+  'python-gobject'
+  'python-ite8291r3-ctl'
+  'python-slimbook'
+)
+optdepends=(
+  'slimbook-qc71-dkms: support for Slimbook Titan'
+  'slimbook-keyboard-dkms: support for Slimbook Essential'
+)
+provides=('slimbookrgbkeyboard')
+install="$pkgname.install"
+source=("slimbookrgbkeyboard-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+#source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+sourcefiles/slimbookrgbkeyboard/${pkgver}/slimbookrgbkeyboard_${pkgver}.tar.gz")
+#noextract=("slimbookrgbkeyboard_${pkgver}.tar.gz")
+sha256sums=('ad445b6b83bc80d00d7dc1987813ede2deb68c3a4b79ce7f62b3c6713373e3a3')
+
+prepare() {
+  # mkdir -p "slimbookrgbkeyboard-$pkgver"
+  # bsdtar xf "slimbookrgbkeyboard_${pkgver}.tar.gz" --strip-components 1 -C \
+  #   "slimbookrgbkeyboard_-$pkgver"
+
+  cd "slimbookrgbkeyboard-$pkgver"
+
+  # Correct icon
+  desktop-file-edit --set-icon=slimbookrgbkeyboard slimbookrgbkeyboard.desktop
+}
+
+package() {
+  cd "slimbookrgbkeyboard-$pkgver"
+  install -Dm755 bin/* -t "$pkgdir/usr/bin/"
+  install -Dm644 slimbookrgbkeyboard.desktop -t "$pkgdir/usr/share/slimbookrgbkeyboard/"
+  install -d "$pkgdir/usr/share/applications"
+  ln -s /usr/share/slimbookrgbkeyboard/slimbookrgbkeyboard.desktop \
+    "$pkgdir/usr/share/applications/"
+  install -d "$pkgdir/usr/share/pixmaps"
+  ln -s /usr/share/slimbookrgbkeyboard/src/images/icono.png \
+    "$pkgdir/usr/share/pixmaps/slimbookrgbkeyboard.png"
+  cp -a src "$pkgdir/usr/share/slimbookrgbkeyboard"
+  install -Dm644 policykit/* -t "$pkgdir/usr/share/polkit-1/actions/"
+  install -Dm755 post-suspension/* -t "$pkgdir/usr/lib/systemd/system-sleep/"
+}

@@ -1,0 +1,4 @@
+[slimbook-rgb-keyboard]
+source = "git"
+git = "https://github.com/Slimbook-Team/slimbookrgbkeyboard.git"
+prefix = "v"

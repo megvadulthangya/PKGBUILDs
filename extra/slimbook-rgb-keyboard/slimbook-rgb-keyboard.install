@@ -1,0 +1,31 @@
+post_install() {
+  ls /usr/bin | grep ite8291r3-ctl
+
+  if [ $? -eq 0 ];then
+      echo "ite8291r3_driver installed!"
+      echo "Checking devices"
+      /usr/bin/ite8291r3-ctl query --devices
+      if [ $? -eq 0 ]; then #IF device able
+          echo "ite8291r3_driver --> ABLE" > /usr/share/slimbookrgbkeyboard/ite8291r3_driver.txt
+
+          sudo modprobe qc71_laptop
+          if [ $? -ne 0 ]; then   
+              echo "qc71_laptop modprobe failed"
+          else 
+              echo "qc71_laptop modprobe ok"
+          fi
+      else
+          echo "clevo_platform set to install."
+          #This throws clevo-xwmi install when app launched
+          echo "clevo_platform --> TRY ABLE" > /usr/share/slimbookrgbkeyboard/clevo_module.txt
+      fi
+  else
+      echo "ite8291r3_driver not installed, error"
+  fi
+
+  python /usr/share/slimbookrgbkeyboard/src/configuration/check_config.py
+}
+
+post_upgrade() {
+  post_install
+}

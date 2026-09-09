@@ -3,7 +3,7 @@
 
 pkgname=mint-l-icons
 pkgver=1.8.2
-pkgrel=1
+pkgrel=2
 pkgdesc="A flat, colorful, and modern theme based on Paper and Moka (legacy)."
 arch=('any')
 url="https://github.com/linuxmint/mint-l-icons"
@@ -14,20 +14,16 @@ depends=(
 )
 makdepends=('git')
 options=('!strip')
-_commit=a3c9f5f521b74bec30bb132e99d0278b169fdae6
-source=("git+https://github.com/linuxmint/mint-l-icons.git#commit=${_commit}")
-# source=("http://packages.linuxmint.com/pool/main/m/$pkgname/${pkgname}_${pkgver}.tar.xz")
-# noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('6d777327143a6dc15986b94fc2ac6ba26ba719a7d1199acfc4ab2cd0b087547e')
+source=("http://packages.linuxmint.com/pool/main/m/$pkgname/${pkgname}_${pkgver}.tar.xz")
+noextract=("${pkgname}_${pkgver}.tar.xz")
+sha256sums=('647bdceadb610d56f4b49409f4ca8163f522ef04c8f2d3dc56531ea6464efb66')
 
 prepare() {
-  return 0
-
-  # mkdir -p "$pkgname-$pkgver"
-  # bsdtar xf "${pkgname}_${pkgver}.tar.xz" --strip-components 1 -C "$pkgname-$pkgver"
+  mkdir -p "$pkgname-$pkgver"
+  bsdtar xf "${pkgname}_${pkgver}.tar.xz" --strip-components 1 -C "$pkgname-$pkgver"
 }
 
 package() {
-  cd "$pkgname"
+  cd "$pkgname-$pkgver"
   cp -r usr "$pkgdir/"
 }

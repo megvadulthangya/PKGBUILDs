@@ -1,0 +1,36 @@
+# Maintainer: Bernhard Landauer <bernhard@manjaro.org>
+
+pkgname=slimbook-qc71-dkms
+pkgver=0.4.4.0
+pkgrel=1
+pkgdesc="Slimbook service implementation and adaptation of pobrn/qc71_laptop"
+arch=('x86_64')
+url="https://github.com/Slimbook-Team/slimbook-qc71-dkms"
+license=('GPL-2.0-or-later')
+depends=('dkms')
+makedepends=('git')
+source=("git+https://github.com/Slimbook-Team/slimbook-qc71-dkms.git#tag=$pkgver"
+        'git+https://github.com/Slimbook-Team/qc71_laptop.git')
+#source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+sourcefiles/$pkgname/$pkgver/${pkgname}_${pkgver}.tar.gz")
+#noextract=("${pkgname}_${pkgver}.tar.gz")
+sha256sums=('47eca7fb51e8623b003794c0621021d45e17d7f7416d552de07affdc28562507'
+            'SKIP')
+
+prepare() {
+#  mkdir -p "$pkgname-$pkgver"
+#  bsdtar xf "${pkgname}_${pkgver}.tar.gz" --strip-components 1 -C "$pkgname-$pkgver"
+
+  cd "$pkgname"
+  git submodule init
+  git config submodule.slimbook-qc71-0.0.url "$srcdir/qc71_laptop"
+  git -c protocol.file.allow=always submodule update
+
+  sed -i "s/MODVER = 0.0/MODVER = "$pkgver"/g" slimbook-qc71-0.0/Makefile
+  sed -i "s/0.0/"$pkgver"/g" slimbook-qc71-0.0/dkms.conf
+}
+
+package() {
+  cd "$pkgname/slimbook-qc71-0.0"
+  install -Dm644 Makefile -t "$pkgdir/usr/src/slimbook-qc71-$pkgver/"
+  install -Dm644 dkms.conf *.c *.h -t "$pkgdir/usr/src/slimbook-qc71-$pkgver/"
+}

@@ -1,0 +1,128 @@
+# Maintainer: Philip Müller <philm [at] manjaro [dot] org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+# Contributor: FH <fhatmanjaroorg>
+# Contributor: Erik Fleischer <erik [at] erlenweg [dot] de>
+# Contributor: Cian Mc Govern <cian [at] cianmcgovern [dot] com>
+# Contributor: Roland Singer <roland [at] manjaro [dot] org>
+# Contributor: TheBenj <thebenj88 [at] gmail [dot] com>
+# Contributor: Philipp 'TamCore' B. <philipp [at] tamcore [dot] eu>
+
+# See https://www.codeweavers.com/support/wiki/linux/faq/Arch
+#     https://www.codeweavers.com/crossover/changelog
+
+pkgname=crossover22
+_pkgname=crossover
+pkgver=22.1.1
+pkgrel=5
+_pkgdebrel=1
+pkgdesc="Run Windows Programs on Linux"
+arch=('x86_64')
+url="https://www.codeweavers.com/crossover"
+license=('LicenseRef-custom')
+depends=(
+    'desktop-file-utils'
+    'gtk3'
+    'gzip'
+    'python'
+    'python-cairo'
+    'python-gobject'
+    'python-pyxdg'
+    'lib32-alsa-lib'
+    'lib32-glibc>=2.11'
+    'lib32-freetype2'
+    'lib32-libglvnd'
+    'lib32-libice'
+    'lib32-libpng'
+    'lib32-libpulse'
+    'lib32-libsm'
+    'lib32-libx11'
+    'lib32-libxext'
+    'lib32-libxrandr'
+    'lib32-libxrender'
+    'lib32-mesa'
+    'lib32-zlib'
+    'libpulse'
+    'libunwind'
+    'libxcrypt-compat'
+    'openssl'
+    'perl'
+    'vte3'
+)
+optdepends=(
+    "lib32-fontconfig: Lets Windows applications find and use the system's TrueType fonts. This is strongly recommended for office-type applications"
+    'lib32-gcc-libs: Needed to unpack installers in the .7z format'
+    'lib32-glu: May be needed by some games or CAD applications'
+    'lib32-gmp: Needed by some Windows applications (Quicken, Outlook, Diablo III, and many more) to perform encryption or check online certificates'
+    'lib32-gnutls: Needed by some Windows applications (Quicken, Outlook, Diablo III, and many more) to perform encryption or check online certificates'
+#    'lib32-gsm: Lets Windows applications use the GSM codec (msgsm32.acm) for audio compression and decompression'  ## AUR
+#    'lib32-gst-plugins-base: This is needed by some games and multimedia applications to play audio and/or video content'  ## AUR
+#    'lib32-gstreamer: This is needed by some games and multimedia applications to play audio and/or video content'  ## AUR
+    'lib32-krb5: Lets Windows applications use the Kerberos authentication protocol'
+    'lib32-lcms2: Provides color profile information to Windows applications. This is particularly useful if you have color-calibrated your screen but some applications need it even if you have not done so'
+    'lib32-libcups: Needed to access printers managed by CUPS. Without it printing is most likely impossible so this is strongly recommended for office-type applications'
+    'lib32-libdbus: Lets Windows applications automatically detect the insertion of media such as CD-ROMs and USB flash drives. Without it the corresponding Windows drive letters must be created manually'
+    'lib32-libldap: Lets Windows applications access LDAP servers'
+    'lib32-libtiff: Needed by some Windows applications that manipulate TIFF images'
+    'lib32-libusb: Provide Windows applications with access for controlling data transfer to and from USB devices'
+    'lib32-libxcomposite: Needed for Windows applications that display 3D graphics in a window. This includes most CAD-like applications and some games'
+    'lib32-libxcursor: Lets Windows applications use color mouse pointers. This is mostly useful for some games'
+    'lib32-libxfixes: Provides better copy/paste support from X to Windows applications'
+    "lib32-libxi: Provides support for joysticks and graphics tablets. If you don't have such a device you don't need it"
+    'lib32-libxinerama: If your computer has multiple display screens, the Xinerama library lets Windows applications take advantage of them'
+    'lib32-libxml2: Lets Windows applications read and write XML files'
+#    'lib32-libxslt: Lets Windows applications perform queries and transformations on XML files'  ## Dropped from repos
+    'lib32-libxxf86vm: Lets Windows games perform gamma correction on the screen to adjust the brightness'
+#    'lib32-mpg123: May be needed by some games and multimedia applications to play audio content'  ## AUR
+    "lib32-ocl-icd: Some Windows applications use OpenCL to leverage the graphics card's GPU to speed up parallel computing tasks"
+#    'lib32-openal: Some Windows applications use the OpenAL library to produce three-dimensional positional audio'  ## AUR
+    'lib32-openssl: Provides support for secure Internet communication'
+    'lib32-systemd: Provides access to the udev Linux device manager and lets Windows applications detect HID devices such as game controllers'
+#    'lib32-unixodbc: Lets Windows applications use the ODBC API to access databases'  ## AUR
+#    'lib32-v4l-utils: Lets Windows applications access video capture devices such as webcams and TV tuners'  ## AUR
+    'lib32-vulkan-icd-loader: Needed for games which use the Vulkan graphics API; for D3D12 applications; and for the DXVK layer for D3D11'
+    'libxcrypt-compat: Needed for NTLM authentication'
+    'polkit: May be needed to run commands as root'
+    'unzip: required to install Guild Wars, automatic installer extraction'
+)
+provides=("crossover=${pkgver}")
+conflicts=('crossover')
+install=${_pkgname}.install
+source=("https://media.codeweavers.com/pub/crossover/cxlinux/demo/${_pkgname}_${pkgver}-${_pkgdebrel}.deb")
+sha256sums=('d0746a09525caa06e9de05e4b8013097b10a4bc946bf6f867391618b1440471b')
+
+package() {
+    bsdtar -xvf data.tar.xz -C ${pkgdir}
+
+    sed -e 's!;;"MenuRoot" = ""!"MenuRoot" = "Windows Games"!' \
+        -e 's!;;"MenuStrip" = ""!"MenuStrip" = "1"!' \
+        -i ${pkgdir}/opt/cxoffice/share/${_pkgname}/bottle_data/cxbottle.conf
+
+    install -d ${pkgdir}/usr/bin
+    ln -s /opt/cxoffice/bin/${_pkgname} ${pkgdir}/usr/bin/
+    ln -s /opt/cxoffice/bin/cxsetup ${pkgdir}/usr/bin/
+
+    install -d ${pkgdir}/etc/profile.d
+    echo '[ -d /opt/cxoffice/bin ] && export PATH="${PATH}:/opt/cxoffice/bin"' > ${pkgdir}/etc/profile.d/cxoffice.sh
+    echo '[ -d /opt/cxoffice/bin ] && setenv PATH ${PATH}:/opt/cxoffice/bin' > ${pkgdir}/etc/profile.d/cxoffice.csh
+    chmod 755 ${pkgdir}/etc/profile.d/cxoffice.sh ${pkgdir}/etc/profile.d/cxoffice.csh
+
+    # Disable auto-update
+    sed -i -e 's/;;\"AutoUpdate\" = \"1\"/\"AutoUpdate\" = \"0\"/g' ${pkgdir}/opt/cxoffice/share/${_pkgname}/data/cxoffice.conf
+
+    # Install configuration file
+    install -Dm644 ${pkgdir}/opt/cxoffice/share/${_pkgname}/data/cxoffice.conf ${pkgdir}/opt/cxoffice/etc/cxoffice.conf
+    sed -e 's!;;"PrivateShortcutDirs" = ""!"PrivateShortcutDirs" = "${HOME}/bin:${CX_ROOT}/bin"!' \
+        -e 's!;;"PrivateLinuxNSPluginDirs" = ""!"PrivateLinuxNSPluginDirs" = "${MOZ_PLUGIN_PATH}"!' \
+        -e 's!;;"PrivateLinux64NSPluginDirs" = ""!"PrivateLinux64NSPluginDirs" = "${MOZ_PLUGIN_PATH}"!' \
+        -e 's!;;"ProductPackage" = ""!"ProductPackage" = "Manjaro community package"!' \
+        -i ${pkgdir}/opt/cxoffice/etc/cxoffice.conf
+
+    # place license in correct directory
+    install -d ${pkgdir}/usr/share/licenses/${_pkgname}/
+    cat ${pkgdir}/usr/share/doc/${_pkgname}/license.txt.gz | gzip -d > ${pkgdir}/usr/share/licenses/${_pkgname}/license.txt
+    ln -s /usr/share/doc/${_pkgname}/copyright ${pkgdir}/usr/share/licenses/${_pkgname}/
+
+    # Remove Lintian
+    rm -rf ${pkgdir}/usr/share/lintian/
+}

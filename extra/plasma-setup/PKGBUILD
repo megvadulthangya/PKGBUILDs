@@ -1,7 +1,7 @@
 # Maintainer: Philip Mueller <philm@manjaro.org>
 
 pkgname=plasma-setup
-pkgver=6.7.4
+pkgver=6.7.5
 pkgrel=1
 pkgdesc='KDE Plasma first run setup tool'
 arch=('x86_64')
@@ -26,7 +26,7 @@ makedepends=(
 )
 source=("git+https://invent.kde.org/plasma/plasma-setup.git#tag=v$pkgver"
         '0000-kill-plymouth.patch')
-sha256sums=('bcc6424e0c8c224ffe1a3a1e0bfaf686ee06b46317d04bd7f567f79b1e574c6d'
+sha256sums=('176adb82986ffd221e8e7466f295da08c6f9bf5c71845ce7447898736093e167'
             'a9fe89958f319f8930254d3d7d85f9c95fae22d980c7595c8951d87941ead022')
 
 _backports=(

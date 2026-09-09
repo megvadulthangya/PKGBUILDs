@@ -2,7 +2,7 @@
 # Contributor: Bernhard Landauer <bernhard@manjaro.org>
 
 pkgname=libslimbook
-pkgver=1.24.0
+pkgver=1.26.0
 pkgrel=1
 pkgdesc="Core functionality for Slimbook apps"
 arch=('x86_64')
@@ -21,7 +21,7 @@ provides=('libslimbook.so=1')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 #source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+sourcefiles/$pkgname/$pkgver/${pkgname}_${pkgver}.tar.xz")
 #noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('0f5bda8a78121c576ed27a0be8402244c5e3a895c07a9286a4f873749a6d7421')
+sha256sums=('6192972563e2de5f1914368590b0698ecca40b101cd824e3e8c6cc4fbf1fa5ca')
 
 prepare() {
 #  mkdir -p "$pkgname-$pkgver"

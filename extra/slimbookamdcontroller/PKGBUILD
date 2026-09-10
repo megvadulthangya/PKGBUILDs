@@ -1,8 +1,8 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=slimbookamdcontroller
-pkgver=0.4.5
-pkgrel=2
+pkgver=0.4.6.0
+pkgrel=1
 pkgdesc="Application for the performance management of AMD processors"
 arch=('any')
 url="https://github.com/Slimbook-Team/slimbookamdcontroller"
@@ -11,6 +11,7 @@ depends=(
   'gtk3'
   'libayatana-appindicator'
   'libnotify'
+  'polkit'
   'python-cairo'
   'python-gobject'
   'python-matplotlib'
@@ -19,11 +20,15 @@ depends=(
   'systemd-libs'
 )
 #source=("$url/releases/download/v$pkgver/${pkgname}_${pkgver}_all.deb")
-source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+files/${pkgname}_${pkgver}_amd64.deb")
-sha256sums=('d3841d98951ca37f6bf11269189cddd57bbd6981250da156942b61c870d8ca55')
+source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+files/${pkgname}_${pkgver}~bpo22.04.0_amd64.deb")
+sha256sums=('6390bc8e8de8137d2e2343df75a3d3b901ee3e67fd2a87e2070a8c255042f6ad')
 
 package() {
   bsdtar xf data.tar.zst -C "$pkgdir"
+
+  install -d "$pkgdir/usr/lib/udev/rules.d"
+  mv "$pkgdir/etc/udev/rules.d/81.power.rules" "$pkgdir/usr/lib/udev/rules.d/"
+  rm -rf "$pkgdir/etc/"
 
   # App permissions
   chmod +x "$pkgdir/usr/lib/systemd/system-sleep/$pkgname"

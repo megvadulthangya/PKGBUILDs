@@ -1,0 +1,23 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=mobile-config-thunderbird
+pkgver=0.1.2
+pkgrel=1
+pkgdesc="Mobile and privacy friendly configuration for Thunderbird"
+arch=('any')
+url="https://gitlab.postmarketos.org/postmarketOS/mobile-config-thunderbird"
+license=('MPL-2.0')
+depends=('thunderbird')
+makedepends=('zip')
+source=("$url/-/archive/$pkgver/$pkgname-$pkgver.tar.gz")
+sha256sums=('e942c7c7936b7da13204471341eaaf615fdcd8ed04dabd8598fd1b78cffd4191')
+
+build() {
+  cd "$pkgname-$pkgver"
+  make
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+}

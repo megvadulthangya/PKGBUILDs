@@ -1,0 +1,3 @@
+[mobile-config-thunderbird]
+source = "git"
+git = "https://gitlab.postmarketos.org/postmarketOS/mobile-config-thunderbird.git"

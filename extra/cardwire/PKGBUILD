@@ -43,7 +43,7 @@ prepare() {
   rustup toolchain install "${_toolchain}" --component rust-src
   export RUSTUP_TOOLCHAIN="${_toolchain}"
   export BINSTALL_DISABLE_TELEMETRY=true
-  cargo binstall bpf-linker --no-confirm
+  cargo binstall --locked --no-confirm --version 0.11.0 bpf-linker
   cargo fetch --locked --target host-tuple
 }
 

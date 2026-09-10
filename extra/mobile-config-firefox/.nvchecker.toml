@@ -1,0 +1,3 @@
+[mobile-config-firefox]
+source = "git"
+git = "https://gitlab.postmarketos.org/postmarketOS/mobile-config-firefox.git"

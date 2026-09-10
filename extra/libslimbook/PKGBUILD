@@ -1,6 +1,9 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 # Contributor: Bernhard Landauer <bernhard@manjaro.org>
 
+# Slimbook OBS
+# https://build.opensuse.org/package/show/home:Slimbook/libslimbook
+
 pkgname=libslimbook
 pkgver=1.26.0
 pkgrel=1

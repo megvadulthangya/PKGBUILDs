@@ -1,19 +1,24 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 # Contributor: Bernhard Landauer <bernhard@manjaro.org>
 
+# Slimbook OBS
+# https://build.opensuse.org/package/show/home:Slimbook/slimbook-service
+
 pkgname=slimbook_service
-pkgver=1.0.12
+pkgver=1.0.14
 pkgrel=1
 pkgdesc="Service for Slimbook laptops"
 arch=('any')
 url="https://github.com/Slimbook-Team/slimbook_service"
 license=('GPL-3.0-or-later')
 depends=(
-  'libayatana-appindicator'
+  'gtk4'
+  'libadwaita'
   'libnotify'
   'libslimbook'
   'power-profiles-daemon'
   'python-dateutil'
+  'python-dbus'
   'python-evdev'
   'python-feedparser'
   'python-gobject'
@@ -25,7 +30,7 @@ depends=(
 optdepends=('slimbook-qc71-dkms')
 install="$pkgname.install"
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
-sha256sums=('9c6a26e359bf181d41c70f9a3a7835936914b970ce85dba6cd17241871260800')
+sha256sums=('047b0422f8b1cbe32e605d415098aa6281578896cc7232b1500a7f03b293e812')
 
 package() {
   cd "$pkgname-$pkgver"
@@ -34,11 +39,8 @@ package() {
   install -Dm644 90-slimbook-service.preset -t "$pkgdir/usr/lib/systemd/system-preset/"
   install -Dm644 slimbook-service.service -t "$pkgdir/usr/lib/systemd/system/"
 
-  install -d "$pkgdir"/usr/share/{applications,icons/hicolor/scalable/apps}
+  install -d "$pkgdir"/usr/share/applications
   install -d "$pkgdir"/etc/skel/.config/autostart
   ln -s /usr/share/slimbook/slimbook-indicator.desktop "$pkgdir/usr/share/applications/"
-  ln -s /usr/share/slimbook/icons/slimbook_be1ofus_{dark,light}.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/"
-  ln -s /usr/share/slimbook/icons/slimbook-status-active-{dark,light}.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/"
-  ln -s /usr/share/slimbook/icons/slimbook-status-attention-{dark,light}.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/"
   ln -s /usr/share/slimbook/slimbook-client-autostart.desktop "$pkgdir/etc/skel/.config/autostart/"
 }

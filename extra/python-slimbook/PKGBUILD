@@ -1,5 +1,8 @@
-# Maintainer: Bernhard Landauer <bernhard@manjaro.org>
 # Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+# Slimbook OBS
+# https://build.opensuse.org/package/show/home:Slimbook/python3-slimbook
 
 pkgname=python-slimbook
 pkgver=1.21.0

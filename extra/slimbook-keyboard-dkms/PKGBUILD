@@ -1,4 +1,8 @@
-# Maintainer: Bernhard Landauer <bernhard@manjaro.org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+# Slimbook OBS
+# https://build.opensuse.org/package/show/home:Slimbook/slimbook-keyboard-dkms
 
 pkgname=slimbook-keyboard-dkms
 pkgver=0.2.8
@@ -26,4 +30,3 @@ package() {
   cd "$pkgname-$pkgver"
   install -Dm644 slimbook_keyboard-0.0/* -t "$pkgdir/usr/src/slimbook_keyboard-$pkgver/"
 }
-

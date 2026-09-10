@@ -1,7 +1,11 @@
-# Maintainer: Bernhard Landauer <bernhard@manjaro.org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
+
+# Slimbook OBS
+# https://build.opensuse.org/package/show/home:Slimbook/slimbook-qc71-dkms
 
 pkgname=slimbook-qc71-dkms
-pkgver=0.4.4.0
+pkgver=1.2.0
 pkgrel=1
 pkgdesc="Slimbook service implementation and adaptation of pobrn/qc71_laptop"
 arch=('x86_64')
@@ -9,11 +13,12 @@ url="https://github.com/Slimbook-Team/slimbook-qc71-dkms"
 license=('GPL-2.0-or-later')
 depends=('dkms')
 makedepends=('git')
-source=("git+https://github.com/Slimbook-Team/slimbook-qc71-dkms.git#tag=$pkgver"
+_commit=0c361b90d646492b9cffd430f5e058d8157b3420
+source=("git+https://github.com/Slimbook-Team/slimbook-qc71-dkms.git#commit=${_commit}"
         'git+https://github.com/Slimbook-Team/qc71_laptop.git')
 #source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+sourcefiles/$pkgname/$pkgver/${pkgname}_${pkgver}.tar.gz")
 #noextract=("${pkgname}_${pkgver}.tar.gz")
-sha256sums=('47eca7fb51e8623b003794c0621021d45e17d7f7416d552de07affdc28562507'
+sha256sums=('391c24dfc51f8ef091c7ccb34f4919dc631bc7bfbe722bdd533b369a5688381f'
             'SKIP')
 
 prepare() {

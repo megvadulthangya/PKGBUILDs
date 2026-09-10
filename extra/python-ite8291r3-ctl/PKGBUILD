@@ -1,6 +1,9 @@
-# Maintainer: Bernhard Landauer <bernhard@manjaro.org>
 # Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
 # Contributor: Jose Olivio Pedrosa <root at rwx dot ovh>
+
+# Slimbook OBS
+# https://build.opensuse.org/package/show/home:Slimbook/python3-ite8291r3-ctl
 
 pkgname=python-ite8291r3-ctl
 _name=${pkgname#python-}

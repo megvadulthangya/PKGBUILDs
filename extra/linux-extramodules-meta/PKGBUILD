@@ -1,6 +1,6 @@
 # Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
 
-pkgbase=linux-extramodules-meta
 pkgname=(
   'linux-acpi_call-meta'
   'linux-bbswitch-meta'
@@ -18,8 +18,9 @@ pkgname=(
   'linux-virtualbox-host-modules-meta'
   'linux-zfs-meta'
 )
+pkgbase=linux-extramodules-meta
 pkgdesc="Manjaro Kernel Extra Modules Meta Package"
-pkgver=7.1
+pkgver=7.2
 _pkgver="${pkgver//./}"
 pkgrel=1
 arch=('any')
@@ -62,6 +63,7 @@ _eol=(
   '617'
   '619'
   '70'
+  '71'
 )
 
 _array() {

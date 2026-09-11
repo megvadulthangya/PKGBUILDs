@@ -1,10 +1,13 @@
 # Maintainer: Philip Müller <philm[at]manjaro[dot]org>
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
+pkgname=(
+  'linux-meta'
+  'linux-headers-meta'
+)
 pkgbase=linux-meta
-pkgname=('linux-meta' 'linux-headers-meta')
 pkgdesc="Manjaro stable kernel meta package"
-pkgver=7.1
+pkgver=7.2
 _pkgver="${pkgver//./}"
 pkgrel=1
 arch=('any')
@@ -47,6 +50,7 @@ _eol=(
   '617'
   '619'
   '70'
+  '71'
 )
 
 _array() {

@@ -4,10 +4,10 @@
 
 pkgname=pacman-mirrors
 pkgver=5.3
-pkgrel=2
+pkgrel=3
 pkgdesc="Manjaro Linux mirror list generator for use by pacman"
 arch=('any')
-url="https://gitlab.manjaro.org/applications/pacman-mirrors"
+url="https://code.manjaro.org/applications/pacman-mirrors"
 license=('GPL-3.0-or-later')
 depends=(
   'python'
@@ -31,7 +31,7 @@ optdepends=(
 provides=("pacman-mirrorlist=$pkgver-$pkgrel")
 conflicts=('pacman-mirrorlist' 'reflector')
 backup=("etc/$pkgname.conf")
-source=("git+https://gitlab.manjaro.org/applications/pacman-mirrors.git#tag=v${pkgver}"
+source=("git+https://code.manjaro.org/applications/pacman-mirrors.git#tag=v${pkgver}"
         "$pkgname-install.script"
         "$pkgname-upgrade.script"
         "$pkgname-install.hook"

@@ -3,10 +3,10 @@
 
 pkgname=micro-manjaro
 pkgver=3.0
-pkgrel=5
+pkgrel=6
 pkgdesc="Manjaro settings for Micro"
 arch=('x86_64')
-url="https://gitlab.manjaro.org/packages/extra/micro-manjaro"
+url="https://code.manjaro.org/packages/PKGBUILDs/extra/micro-manjaro"
 license=('GPL-3.0-or-later')
 depends=('micro')
 install="$pkgname.install"

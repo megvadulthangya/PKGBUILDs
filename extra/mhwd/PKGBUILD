@@ -4,10 +4,10 @@
 
 pkgname=mhwd
 pkgver=0.6.6
-pkgrel=6
+pkgrel=7
 pkgdesc="Manjaro Linux Hardware Detection library and application"
 arch=('x86_64')
-url="https://gitlab.manjaro.org/applications/mhwd"
+url="https://code.manjaro.org/applications/mhwd"
 license=('GPL-3.0-or-later')
 depends=(
   'hwinfo'
@@ -25,7 +25,8 @@ optdepends=(
 )
 provides=('libmhwd.so')
 install="$pkgname.install"
-source=("git+https://gitlab.manjaro.org/applications/mhwd.git#commit=6ddcc607")
+_commit=6ddcc6072c28a067ecebe6d38245dd0748f59c0f
+source=("git+https://code.manjaro.org/applications/mhwd.git#commit=${_commit}")
 sha256sums=('5450b471ae6bb6a716b4a29cdc8e68014f0be585338de95d05a1bcf1a7c08a92')
 
 build() {

@@ -3,10 +3,10 @@
 
 pkgname=manjaro-check-repos
 pkgver=0.9.10
-pkgrel=4
+pkgrel=5
 pkgdesc="Manjaro Multi-Branch Navigator"
 arch=('any')
-url="https://gitlab.manjaro.org/applications/manjaro-check-repos"
+url="https://code.manjaro.org/applications/manjaro-check-repos"
 license=('GPL-3.0-or-later')
 depends=(
   'gtk3'
@@ -19,7 +19,7 @@ depends=(
 makedepends=('git')
 backup=("etc/${pkgname}/manjaro.conf"
         "etc/${pkgname}/archlinux.conf")
-source=("git+https://gitlab.manjaro.org/applications/manjaro-check-repos.git#tag=$pkgver")
+source=("git+https://code.manjaro.org/applications/manjaro-check-repos.git#tag=$pkgver")
 sha256sums=('b382afe3b9ae9748a0433fc11502d0e1b09d4cdbfff247cd7f582b3dd690588a')
 
 prepare() {

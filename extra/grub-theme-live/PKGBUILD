@@ -2,15 +2,19 @@
 # Contributor: artoo <artoo@manjaro.org>
 # Contributor: anex <assassin.anex[@]gmail.com>
 # Contributor: Stefano Capitani <stefano@manjaro.org>
-# Contributor: Matti Hyttinen <matti@manjaro.org> 
+# Contributor: Matti Hyttinen <matti@manjaro.org>
 
+pkgname=(
+  'grub-theme-live-common'
+  'grub-theme-live-manjaro'
+  'grub-theme-manjaro'
+)
 pkgbase=grub-theme-live
-pkgname=('grub-theme-live-common' 'grub-theme-live-manjaro' 'grub-theme-manjaro')
 pkgver=20.2
-pkgrel=16
+pkgrel=17
 pkgdesc="Manjaro Linux grub theme"
 arch=('any')
-url="https://gitlab.manjaro.org/artwork/branding/grub-theme"
+url="https://code.manjaro.org/artwork/grub-theme"
 license=('GPL-3.0-or-later')
 makedepends=('git')
 _commit=e3664f8bd83e35ad6db1e53963bffb9719bd4760

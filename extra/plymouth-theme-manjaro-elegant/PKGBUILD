@@ -1,3 +1,4 @@
+# Maintainer:
 # Contributor: Guinux <nuxgui@gmail.com>
 
 # Based on Arch-Logo Plymouth Theme by Carlos Molines (karlinux)
@@ -5,10 +6,10 @@
 
 pkgname=plymouth-theme-manjaro-elegant
 pkgver=2.0
-pkgrel=5
+pkgrel=6
 pkgdesc="Elegant Manjaro theme for Plymouth"
 arch=('any')
-url="https://gitlab.manjaro.org/packages/extra/plymouth-theme-manjaro-elegant"
+url="https://code.manjaro.org/packages/PKGBUILDs/extra/plymouth-theme-manjaro-elegant"
 license=('GPL-3.0-or-later')
 depends=('plymouth')
 install='plymouth.install'
@@ -26,5 +27,6 @@ sha256sums=('3b2d168869d1ec57918a17114566fe2ec0025678c6bdbb5a95729900a1dc6024'
             '9fd9bada1820d3e30a7d6a34fa1798f7c6e753e52474cdb402b3ff0e28ecdfcf')
 
 package() {
-  install -Dm644 *.png *.plymouth *.script -t "$pkgdir/usr/share/plymouth/themes/manjaro-elegant/"
+  install -Dm644 *.png *.plymouth *.script -t \
+    "$pkgdir/usr/share/plymouth/themes/manjaro-elegant/"
 }

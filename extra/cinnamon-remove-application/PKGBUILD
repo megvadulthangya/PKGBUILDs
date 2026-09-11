@@ -7,12 +7,15 @@
 
 pkgname=cinnamon-remove-application
 pkgver=1.1
-pkgrel=2
+pkgrel=3
 pkgdesc="Enables the uninstall option in the Cinnamon application context menu"
 arch=('any')
-url="https://gitlab.manjaro.org/packages/extra/cinnamon-remove-application"
+url="https://code.manjaro.org/packages/PKGBUILDs/extra/cinnamon-remove-application"
 license=('GPL-2.0-or-later')
-depends=('cinnamon' 'polkit')
+depends=(
+  'cinnamon'
+  'polkit'
+)
 optdepends=('mint-translations: i18n')
 source=("$pkgname.py")
 sha256sums=('9c903bda172057c34ae90df4e37f03f05e6a3f3c375da437776eb9adff69b78f')

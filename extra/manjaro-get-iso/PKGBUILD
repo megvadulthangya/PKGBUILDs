@@ -2,18 +2,21 @@
 
 pkgname='manjaro-get-iso'
 pkgver=0.21
-pkgrel=1
+pkgrel=2
 pkgdesc='A tool to download Manjaro ISO'
 arch=('any')
-url='https://gitlab.manjaro.org/applications/manjaro-get-iso'
+url='https://code.manjaro.org/applications/manjaro-get-iso'
 license=('MIT')
-depends=('python-requests' '7zip')
-source=("https://gitlab.manjaro.org/applications/manjaro-get-iso/-/archive/v${pkgver}/${pkgname}-v${pkgver}.tar.gz")
+depends=(
+  '7zip'
+  'python-requests'
+)
+makedepends=('git')
+source=("git+https://code.manjaro.org/applications/manjaro-get-iso.git#tag=v${pkgver}")
+sha256sums=('ec27410ed780ae6e155534e6301049b9a1af453ae38fbab2e22d63b5a439f0b5')
 
 package() {
-    cd "${pkgname}-v${pkgver}"
+    cd "${pkgname}"
     install -Dm755 get-iso -t "$pkgdir/usr/bin"
     install -Dm644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}"
 }
-
-sha256sums=('2b6f4bec056772f4b39372df197754470376f1dc3f2a058954e4fb49fa4b8b06')

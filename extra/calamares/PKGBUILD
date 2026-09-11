@@ -3,11 +3,11 @@
 pkgname=calamares
 pkgver=3.4.2
 _pkgver=3.4.2
-pkgrel=2
+pkgrel=3
 _commit=6ff1f97aa4db51ad1231d754c85027d8533687e0
 pkgdesc='Distribution-independent installer framework'
 arch=('x86_64')
-url="https://gitlab.manjaro.org/applications/calamares"
+url="https://code.manjaro.org/applications/calamares"
 license=(
   'BSD-2-Clause'
   'CC0-1.0'
@@ -50,16 +50,11 @@ backup=(
   'usr/share/calamares/modules/initcpio.conf'
   'usr/share/calamares/modules/unpackfs.conf'
 )
-source=(
-#  "$pkgname-$pkgver.tar.gz::$url/-/archive/v$pkgver/calamares-v$pkgver.tar.gz"
-  "$pkgname-$pkgver-$pkgrel.tar.gz::$url/-/archive/$_commit/$pkgname-$_commit.tar.gz"
-)
-sha256sums=('dc2d8c616e08fc1744cdf51d286983bd34949760311c2987746f857351e6fc8d')
+source=("git+https://code.manjaro.org/applications/calamares.git#commit=${_commit}")
+sha256sums=('0fdbb63fd220f6bb34191786eabe0bf515d6f23b239a1d250b1f98063194bc50')
 
 prepare() {
-  mv ${srcdir}/calamares-${_commit} ${srcdir}/calamares-${pkgver}
-#  mv ${srcdir}/calamares-v${pkgver} ${srcdir}/calamares-${pkgver}
-  cd ${srcdir}/calamares-${pkgver}
+  cd "$pkgname"
 
   # change version
   sed -i -e "s|$pkgver|$_pkgver|g" CMakeLists.txt
@@ -79,44 +74,46 @@ prepare() {
     src="${src%%::*}"
     src="${src##*/}"
     [[ $src = *.patch ]] || continue
-    msg2 "Applying patch: $src..."
+    echo "Applying patch: $src..."
     patch -Np1 < "../$src"
   done
 }
 
 build() {
-  cd ${srcdir}/calamares-${pkgver}
 
-  mkdir -p build
-  cd build
-  cmake .. \
-    -DCMAKE_BUILD_TYPE=Debug \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DWITH_QT6=ON \
-    -DINSTALL_CONFIG=ON \
+  local cmake_options=(
+    -B build
+    -S "$pkgname"
+    -D CMAKE_BUILD_TYPE='Debug'
+    -D CMAKE_INSTALL_PREFIX='/usr'
+    -D CMAKE_INSTALL_LIBDIR='lib'
+    -D WITH_QT6='ON'
+    -D INSTALL_CONFIG='ON'
     -DSKIP_MODULES="initramfs initramfscfg \
                     dummyprocess dummypython \
                     ummycpp dummypythonqt \
                     services-openrc"
-  make
+  )
+  cmake "${cmake_options[@]}"
+  cmake --build build
 }
 
 package() {
-  cd ${srcdir}/calamares-${pkgver}/build
-  make DESTDIR="$pkgdir" install
-  install -Dm644 "../data/manjaro-icon.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/calamares.svg"
-  install -Dm644 "../data/calamares.desktop" "$pkgdir/usr/share/applications/calamares.desktop"
-  install -Dm755 "../data/calamares_polkit" "$pkgdir/usr/bin/calamares_polkit"
-  install -Dm644 "../data/49-nopasswd-calamares.rules" "$pkgdir/etc/polkit-1/rules.d/49-nopasswd-calamares.rules"
-  chmod 750      "$pkgdir"/etc/polkit-1/rules.d
+  DESTDIR="$pkgdir" cmake --install build
+
+  cd "$pkgname"
+  install -Dm644 data/manjaro-icon.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/$pkgname.svg"
+  install -Dm644 "data/$pkgname.desktop" "$pkgdir/usr/share/applications/$pkgname.desktop"
+  install -Dm755 "data/${pkgname}_polkit" "$pkgdir/usr/bin/${pkgname}_polkit"
+  install -Dm644 "data/49-nopasswd-$pkgname.rules" "$pkgdir/etc/polkit-1/rules.d/49-nopasswd-$pkgname.rules"
+  chmod 750 "$pkgdir"/etc/polkit-1/rules.d
 
   # rename services-systemd back to services
-  mv "$pkgdir/usr/lib/calamares/modules/services-systemd" "$pkgdir/usr/lib/calamares/modules/services"
-  mv "$pkgdir/usr/share/calamares/modules/services-systemd.conf" "$pkgdir/usr/share/calamares/modules/services.conf"
-  sed -i -e 's/-systemd//' "$pkgdir/usr/lib/calamares/modules/services/module.desc"
-  sed -i -e 's/-systemd//' "$pkgdir/usr/share/calamares/settings.conf"
+  mv "$pkgdir/usr/lib/$pkgname/modules/services-systemd" "$pkgdir/usr/lib/$pkgname/modules/services"
+  mv "$pkgdir/usr/share/$pkgname/modules/services-systemd.conf" "$pkgdir/usr/share/$pkgname/modules/services.conf"
+  sed -i -e 's/-systemd//' "$pkgdir/usr/lib/$pkgname/modules/services/module.desc"
+  sed -i -e 's/-systemd//' "$pkgdir/usr/share/$pkgname/settings.conf"
 
   # fix branding install
-  cp -av "../src/branding/manjaro" "$pkgdir/usr/share/calamares/branding/"
+  cp -av src/branding/manjaro "$pkgdir/usr/share/$pkgname/branding/"
 }

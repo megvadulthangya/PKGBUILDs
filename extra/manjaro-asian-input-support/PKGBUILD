@@ -1,4 +1,5 @@
-# Maintainer: phoepsilonix <phoepsilonix at gmail dot com>
+# Maintainer:
+# Contributor: phoepsilonix <phoepsilonix at gmail dot com>
 # Contributor: Stefano Capitani <stefanoatmanjarodororg>
 # Contributor: star2000 <i@star2000.work>
 # Contributor: Sam L. Yes <manjaroyes123@outlook.com>
@@ -10,10 +11,10 @@ pkgname=(
   "$pkgbase-ibus"
 )
 pkgver=20251210
-pkgrel=1
+pkgrel=2
 pkgdesc="Manjaro Asian input support"
 arch=('any')
-url="https://gitlab.manjaro.org/packages/extra/manjaro-asian-input-support"
+url="https://code.manjaro.org/packages/PKGBUILDs/extra/manjaro-asian-input-support"
 license=('GPL-3.0-or-later')
 source=(
   'enable-fcitx5.sh'
@@ -29,11 +30,6 @@ sha256sums=('df64aa1c2f96cca6597f2fe4b09f27bb78c8bed3107122deac8d3d84959ba6a2'
             'ae82a5d89dc25c0a3c529c843eaffcf07a3fe9bf270db735a1fe4dc378ba013b'
             '2f6c0edb4cbf29d2dd1ad432c3f1f44b3e38509ad71c4fab60fe935423be8708'
             '87d7d6a0396815b3f7dbde4c3dc8714fa8055d16b1419ae3b19f86627a1899a7')
-
-pkgver() {
-#  printf "$(git show -s --format=%cd --date=format:%Y%m%d HEAD)"
-  date +%Y%m%d
-}
 
 package_manjaro-asian-input-support-ibus() {
   pkgdesc+=" for ibus"

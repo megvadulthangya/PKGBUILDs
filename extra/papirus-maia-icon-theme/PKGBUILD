@@ -2,10 +2,10 @@
 
 pkgname=papirus-maia-icon-theme
 pkgver=20201007
-pkgrel=1
+pkgrel=2
 pkgdesc="Manjaro variation of Papirus icon theme"
 arch=('any')
-url="https://gitlab.manjaro.org/artwork/icon-themes/papirus-maia-icon-theme"
+url="https://code.manjaro.org/artwork/papirus-maia-icon-theme"
 license=('GPL-3.0-or-later')
 depends=('papirus-icon-theme')
 makedepends=(
@@ -14,7 +14,7 @@ makedepends=(
 )
 options=('!strip')
 _commit=4902405a228410ace965679c324fef88bff3a723
-source=("git+https://gitlab.manjaro.org/artwork/icon-themes/papirus-maia-icon-theme.git#commit=${_commit}")
+source=("git+https://code.manjaro.org/artwork/papirus-maia-icon-theme.git#commit=${_commit}")
 sha512sums=('6f60f4ba6564bfd482ab6a37766867d7fa2b30207c1b8a96928e0ff56e92d3a81a870f683c971c4f309b5d4f655cf1661261642a4553bb6044fa3a39b37ba74c')
 
 pkgver() {

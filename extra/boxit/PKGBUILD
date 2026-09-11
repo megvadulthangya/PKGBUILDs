@@ -3,13 +3,16 @@
 # Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
 # Contributor: Helmut Stult
 
+pkgname=(
+  'boxit'
+  'boxit-server'
+)
 pkgbase=boxit
-pkgname=(boxit boxit-server)
 pkgver=2.1.3
-pkgrel=20
+pkgrel=21
 pkgdesc="Manjaro Linux repository management system"
 arch=('x86_64')
-url="https://gitlab.manjaro.org/tools/maintenance-tools/boxit"
+url="https://code.manjaro.org/tools/boxit"
 license=('GPL-3.0-or-later')
 depends=(
   'icu'
@@ -18,14 +21,18 @@ depends=(
 )
 makedepends=('git')
 _commit=8298684d4fec43beeac3154f63f320f680d55af2  # branch/master
-source=("git+https://gitlab.manjaro.org/tools/maintenance-tools/boxit.git#commit=${_commit}")
+source=("git+https://code.manjaro.org/tools/boxit.git#commit=${_commit}")
 sha256sums=('93c0bd9a78f5f16ad0d966153750108235a429ccaba0dd32ce4862a4700a3d19')
 
 build() {
-  cd "$srcdir/$pkgbase/$pkgbase/src"
+  cd "$pkgbase/$pkgbase/src"
 
   echo "build $pkgbase"
-  qmake-qt5
+  qmake-qt5 \
+    PREFIX=/usr \
+    QMAKE_CFLAGS="${CFLAGS}" \
+    QMAKE_CXXFLAGS="${CXXFLAGS}" \
+    QMAKE_LFLAGS="${LDFLAGS}"
 
   # Build fix
   make sub-DBus
@@ -36,22 +43,25 @@ build() {
   cd "$srcdir/$pkgbase/$pkgbase-server/src"
 
   echo "build $pkgbase-server"
-  qmake-qt5
-
+  qmake-qt5 \
+    PREFIX=/usr \
+    QMAKE_CFLAGS="${CFLAGS}" \
+    QMAKE_CXXFLAGS="${CXXFLAGS}" \
+    QMAKE_LFLAGS="${LDFLAGS}"
   make all
 }
 
 package_boxit() {
   pkgdesc+=" client"
 
-  cd "$srcdir/$pkgbase/$pkgname/src"
+  cd "$pkgbase/$pkgname/src"
   make INSTALL_ROOT="${pkgdir}" install
 }
 
 package_boxit-server() {
-   pkgdesc+=" server"
+  pkgdesc+=" server"
 
-  cd "$srcdir/$pkgbase/$pkgbase-server/src"
+  cd "$pkgbase/$pkgbase-server/src"
   make INSTALL_ROOT="${pkgdir}" install
 
   # TODO - convert to systemd-scripts

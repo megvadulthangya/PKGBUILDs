@@ -9,10 +9,10 @@ pkgname=(
   'manjaro-settings-manager-kstatus-notifier'
 )
 pkgver=0.6.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Manjaro Linux System Settings Tool"
 arch=('x86_64')
-url="https://gitlab.manjaro.org/applications/manjaro-settings-manager"
+url="https://code.manjaro.org/applications/manjaro-settings-manager"
 license=('GPL-3.0-or-later')
 depends=(
   'ckbcomp'
@@ -40,7 +40,7 @@ checkdepends=(
   'desktop-file-utils'
 )
 _commit=fdf755184c1bc31823ead6f442a1f8372f13d49e  # branch/qt6
-source=("git+https://gitlab.manjaro.org/applications/manjaro-settings-manager.git#commit=${_commit}")
+source=("git+https://code.manjaro.org/applications/manjaro-settings-manager.git#commit=${_commit}")
 sha256sums=('c1f112df8d939fadba16511f0fa5cfc51ca952ed06fb7d1f5d670ae657117d1b')
 
 prepare() {

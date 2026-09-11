@@ -3,10 +3,10 @@
 pkgname=calamares-git
 pkgver=3.4.3.r12440.73fc7c33b
 _ver=3.4.3
-pkgrel=3
+pkgrel=4
 pkgdesc='Distribution-independent installer framework'
 arch=('x86_64')
-url="https://gitlab.manjaro.org/applications/calamares"
+url="https://code.manjaro.org/applications/calamares"
 license=(
   'BSD-2-Clause'
   'CC0-1.0'
@@ -52,11 +52,11 @@ backup=(
   'usr/share/calamares/modules/initcpio.conf'
   'usr/share/calamares/modules/unpackfs.conf'
 )
-source=("git+https://gitlab.manjaro.org/applications/calamares.git#branch=development")
+source=("git+https://code.manjaro.org/applications/calamares.git#branch=development")
 sha256sums=('SKIP')
 
 pkgver() {
-  cd ${srcdir}/calamares
+  cd calamares
 #  _version="$(cat CMakeLists.txt | grep -m3 -e "  VERSION" | grep -o "[[:digit:]]*" | xargs | sed s'/ /./g')"
   _version=$_ver
   _git=".r$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
@@ -67,7 +67,7 @@ pkgver() {
 }
 
 prepare() {
-  cd ${srcdir}/calamares
+  cd calamares
 
   # change branding
   sed -i -e "s/default/manjaro/g" src/branding/CMakeLists.txt
@@ -84,31 +84,33 @@ prepare() {
 }
 
 build() {
-  cd ${srcdir}/calamares
 
-  mkdir -p build
-  cd build
-  cmake .. \
-    -DCMAKE_BUILD_TYPE=Debug \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DCMAKE_INSTALL_LIBDIR=lib \
-    -DWITH_QT6=ON \
-    -DINSTALL_CONFIG=ON \
+  local cmake_options=(
+    -B build
+    -S calamares
+    -D CMAKE_BUILD_TYPE='Debug'
+    -D CMAKE_INSTALL_PREFIX='/usr'
+    -D CMAKE_INSTALL_LIBDIR='lib'
+    -D WITH_QT6='ON'
+    -D INSTALL_CONFIG='ON'
     -DSKIP_MODULES="initramfs initramfscfg \
                     dummyprocess dummypython \
                     dummycpp dummypythonqt \
                     services-openrc"
-  make
+  )
+  cmake "${cmake_options[@]}"
+  cmake --build build
 }
 
 package() {
-  cd ${srcdir}/calamares/build
-  make DESTDIR="$pkgdir" install
-  install -Dm644 "../data/manjaro-icon.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/calamares.svg"
-  install -Dm644 "../data/calamares.desktop" "$pkgdir/usr/share/applications/calamares.desktop"
-  install -Dm755 "../data/calamares_polkit" "$pkgdir/usr/bin/calamares_polkit"
-  install -Dm644 "../data/49-nopasswd-calamares.rules" "$pkgdir/etc/polkit-1/rules.d/49-nopasswd-calamares.rules"
-  chmod 750      "$pkgdir"/etc/polkit-1/rules.d
+  DESTDIR="$pkgdir" cmake --install build
+
+  cd calamares
+  install -Dm644 data/manjaro-icon.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/calamares.svg"
+  install -Dm644 data/calamares.desktop "$pkgdir/usr/share/applications/calamares.desktop"
+  install -Dm755 data/calamares_polkit "$pkgdir/usr/bin/calamares_polkit"
+  install -Dm644 data/49-nopasswd-calamares.rules "$pkgdir/etc/polkit-1/rules.d/49-nopasswd-calamares.rules"
+  chmod 750 "$pkgdir"/etc/polkit-1/rules.d
 
   # rename services-systemd back to services
   mv "$pkgdir/usr/lib/calamares/modules/services-systemd" "$pkgdir/usr/lib/calamares/modules/services"
@@ -117,5 +119,5 @@ package() {
   sed -i -e 's/-systemd//' "$pkgdir/usr/share/calamares/settings.conf"
 
   # fix branding install
-  cp -av "../src/branding/manjaro" "$pkgdir/usr/share/calamares/branding/"
+  cp -av src/branding/manjaro "$pkgdir/usr/share/calamares/branding/"
 }

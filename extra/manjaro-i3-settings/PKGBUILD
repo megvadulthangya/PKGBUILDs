@@ -3,10 +3,10 @@
 
 pkgname=manjaro-i3-settings
 pkgver=20260704
-pkgrel=1
+pkgrel=2
 epoch=1
 arch=('any')
-url="https://gitlab.manjaro.org/profiles-and-settings/desktop-settings"
+url="https://code.manjaro.org/profiles/desktop-settings"
 license=('GPL-3.0-or-later')
 groups=('i3-manjaro')
 pkgdesc='Manjaro Linux i3 settings'
@@ -45,7 +45,7 @@ provides=('manjaro-desktop-settings')
 conflicts=('manjaro-desktop-settings')
 replaces=('manjaro-i3-settings-dev')
 _commit=e833bf8d27bf8f50bad6bd396f64755b07501ea7
-source=("git+https://gitlab.manjaro.org/profiles-and-settings/desktop-settings.git#commit=${_commit}")
+source=("git+https://code.manjaro.org/profiles/desktop-settings.git#commit=${_commit}")
 sha256sums=('a42e80c851ed3f91028fc2eefe8dd6fa3b4c6dc2c2be27e1211e639bb1eaf4a6')
 
 pkgver() {

@@ -104,7 +104,7 @@ package() {
   cd calamares
   install -Dm644 data/manjaro-icon.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/calamares.svg"
   install -Dm644 data/calamares.desktop "$pkgdir/usr/share/applications/calamares.desktop"
-  install -Dm755 data/calamares_polkit "$pkgdir/usr/bin/${pkgname}_polkit"
+  install -Dm755 data/calamares_polkit "$pkgdir/usr/bin/calamares_polkit"
   install -Dm644 data/49-nopasswd-calamares.rules "$pkgdir/etc/polkit-1/rules.d/49-nopasswd-calamares.rules"
   chmod 750 "$pkgdir"/etc/polkit-1/rules.d
 

@@ -11,14 +11,14 @@ pkgname=(
 )
 pkgbase=manjaro-live
 pkgver=20260802
-pkgrel=1
+pkgrel=2
 pkgdesc="Manjaro Linux live session"
 arch=('any')
-url="https://gitlab.manjaro.org/tools/development-tools/manjaro-tools-livecd"
+url="https://code.manjaro.org/tools/manjaro-tools-livecd"
 license=('GPL-3.0-or-later')
 makedepends=('git')
 _commit=d57b80a50fa8ecb901754074a226166769f30e54
-source=("git+https://gitlab.manjaro.org/tools/development-tools/manjaro-tools-livecd.git#commit=${_commit}")
+source=("git+https://code.manjaro.org/tools/manjaro-tools-livecd.git#commit=${_commit}")
 sha256sums=('cc6edcf3d6275e9647b0bd93d49cfa496dbd8c8b626bcbb09651b39fb89592d5')
 
 pkgver() {

@@ -3,10 +3,10 @@
 
 pkgname=calamares-oem-postinstall-configs
 pkgver=20221013
-pkgrel=4
+pkgrel=5
 pkgdesc="Calamares OEM setup configs"
 arch=('any')
-url="https://gitlab.manjaro.org/profiles-and-settings/calamares-oem-postinstall-configs"
+url="https://code.manjaro.org/profiles/calamares-oem-postinstall-configs"
 license=('MIT')
 depends=(
   'calamares'

@@ -3,10 +3,10 @@
 
 pkgname=manjaro-application-utility
 pkgver=1.4.1
-pkgrel=4
+pkgrel=5
 pkgdesc="A simple application utility for Manjaro Linux"
 arch=('any')
-url="https://gitlab.manjaro.org/applications/application-utility"
+url="https://code.manjaro.org/applications/application-utility"
 license=('GPL-3.0-or-later')
 depends=(
   'gtk3'

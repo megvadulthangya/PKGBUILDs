@@ -3,7 +3,7 @@
 
 pkgname=wallpapers-2018
 pkgver=1.2
-pkgrel=2
+pkgrel=3
 pkgdesc="Wallpapers for Manjaro - 2018"
 arch=('any')
 url="https://code.manjaro.org/artwork/wallpapers-2018"

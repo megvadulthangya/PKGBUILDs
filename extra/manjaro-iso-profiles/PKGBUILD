@@ -10,7 +10,7 @@ pkgname=(
 )
 pkgbase=iso-profiles
 pkgver=17.1.12
-pkgrel=2
+pkgrel=3
 pkgdesc="Manjaro Linux ISO profiles"
 arch=('any')
 url="https://code.manjaro.org/profiles/iso-profiles"

@@ -8,13 +8,13 @@ pkgname=(
 )
 pkgbase=manjaro-gnome-settings
 pkgver=20260627
-pkgrel=2
+pkgrel=3
 arch=('any')
-url="https://gitlab.manjaro.org/profiles-and-settings/manjaro-gnome-settings"
+url="https://code.manjaro.org/profiles/manjaro-gnome-settings"
 license=('GPL-3.0-or-later')
 makedepends=('git')
 _commit=cc88b79edc435ab3df14bd964a4b3f5654b68fc8
-source=("git+https://gitlab.manjaro.org/profiles-and-settings/manjaro-gnome-settings.git#commit=${_commit}?signed")
+source=("git+https://code.manjaro.org/profiles/manjaro-gnome-settings.git#commit=${_commit}?signed")
 sha256sums=('eab6558ccb63c1a6ae5e96654e38b8dc51de8371bf27da65cc0d27d1683daa7d')
 validpgpkeys=('688E8F82879D0E25CE541426150C200743ED46D8') # Mark Wagie <mark@manjaro.org>
 

@@ -9,11 +9,11 @@ pkgname=(
   'manjaro-settings-manager-knotifier'
 )
 pkgver=0.5.8
-pkgrel=10
+pkgrel=11
 _commit=95b71db3ab1e4ed74c3c320bebdc7d7fbf98c58e
 pkgdesc="Manjaro Linux System Settings Tool"
 arch=('x86_64')
-url="https://gitlab.manjaro.org/applications/manjaro-settings-manager"
+url="https://code.manjaro.org/applications/manjaro-settings-manager"
 license=('GPL-3.0-or-later')
 depends=(
   'ckbcomp'
@@ -40,8 +40,8 @@ checkdepends=(
   'appstream'
   'desktop-file-utils'
 )
-# source=("git+https://gitlab.manjaro.org/applications/manjaro-settings-manager.git#tag=$pkgver")
-source=("git+https://gitlab.manjaro.org/applications/manjaro-settings-manager.git#commit=${_commit}")
+# source=("git+https://code.manjaro.org/applications/manjaro-settings-manager.git#tag=$pkgver")
+source=("git+https://code.manjaro.org/applications/manjaro-settings-manager.git#commit=${_commit}")
 sha256sums=('a1c5aee40456e2ba4dad89a1af5e7cc25e99b9e01bb16316d7c36e27812ed29a')
 
 prepare() {

@@ -2,20 +2,16 @@
 
 pkgname=manjaro-settings-samba
 pkgver=20220924
-pkgrel=1
+pkgrel=3
 pkgdesc="Adds an smb.conf file for Manjaro and enables samba"
 arch=('any')
-url="https://gitlab.manjaro.org/packages/extra/manjaro-settings-samba"
+url="https://code.manjaro.org/packages/PKGBUILDs/extra/manjaro-settings-samba"
 license=('GPL-3.0-or-later')
 depends=('samba')
 install="$pkgname.install"
 backup=('etc/samba/smb.conf')
 source=('smb.conf')
 sha256sums=('c0ac45c4278e21634e175c5bda14a997a04100d14a1a675d1f38006d50b68506')
-
-pkgver() {
-  date +%Y%m%d
-}
 
 package() {
   install -Dm644 smb.conf -t "$pkgdir/etc/samba/"

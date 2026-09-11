@@ -3,10 +3,10 @@
 
 pkgname=manjaro-ranger-settings
 pkgver=20240626
-pkgrel=1
+pkgrel=2
 pkgdesc="Manjaro Linux ranger settings"
 arch=('any')
-url="https://gitlab.manjaro.org/profiles-and-settings/manjaro-ranger-settings"
+url="https://code.manjaro.org/profiles/manjaro-ranger-settings"
 license=('GPL-3.0-or-later')
 depends=(
   'highlight'

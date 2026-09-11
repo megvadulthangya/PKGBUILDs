@@ -2,7 +2,7 @@
 
 pkgname=wallpapers-juhraya
 pkgver=1.1
-pkgrel=3
+pkgrel=4
 pkgdesc="Community Wallpapers for the Manjarolinux 18.1 Juhraya release"
 arch=('any')
 url="https://code.manjaro.org/artwork/Community-Wallpapers"

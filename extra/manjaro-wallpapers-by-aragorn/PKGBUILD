@@ -2,10 +2,10 @@
 
 pkgname=manjaro-wallpapers-by-aragorn
 pkgver=1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Manjaro Wallpapers by Aragorn"
 arch=('any')
-url="https://gitlab.manjaro.org/artwork/wallpapers/manjaro-wallpapers-by-aragorn"
+url="https://code.manjaro.org/artwork/manjaro-wallpapers-by-aragorn"
 license=('CC-BY-SA-4.0')
 makedepends=('git')
 options=('!strip')

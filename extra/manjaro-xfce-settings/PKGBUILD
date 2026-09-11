@@ -3,14 +3,16 @@
 # Contributor: Bernhard Landauer <bernhard@manjaro.org>
 # Contributor: Ramon Buldó
 
+pkgname=(
+  'manjaro-xfce-settings'
+  'manjaro-xfce-minimal-settings'
+)
 pkgbase=manjaro-xfce-settings
-pkgname=('manjaro-xfce-settings'
-         'manjaro-xfce-minimal-settings')
 pkgver=20260221
-pkgrel=4
+pkgrel=5
 pkgdesc="Manjaro Linux Xfce settings"
 arch=('any')
-url="https://gitlab.manjaro.org/profiles-and-settings/manjaro-xfce-settings"
+url="https://code.manjaro.org/profiles/manjaro-xfce-settings"
 license=('GPL')
 depends=('breeze-cursors5'
          'illyria-wallpaper'

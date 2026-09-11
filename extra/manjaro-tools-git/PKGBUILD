@@ -12,10 +12,10 @@ pkgname=(
 )
 pkgbase=manjaro-tools-git
 pkgver=r3071.5c97abe
-pkgrel=1
+pkgrel=2
 pkgdesc="Development tools for Manjaro Linux"
 arch=('any')
-url="https://gitlab.manjaro.org/tools/development-tools/manjaro-tools"
+url="https://code.manjaro.org/tools/manjaro-tools"
 license=('GPL-2.0-or-later')
 groups=('manjaro-tools')
 makedepends=(

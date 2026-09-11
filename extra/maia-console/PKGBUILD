@@ -3,10 +3,10 @@
 
 pkgname=maia-console
 pkgver=1.2
-pkgrel=7
+pkgrel=8
 pkgdesc="Maia color scheme for the console and shell dialog"
 arch=('any')
-url="https://gitlab.manjaro.org/packages/extra/maia-console"
+url="https://code.manjaro.org/packages/PKGBUILDs/extra/maia-console"
 license=('GPL-3.0-or-later')
 depends=('systemd')
 backup=("etc/systemd/system/getty@.service.d/$pkgname.conf")

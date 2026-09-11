@@ -54,7 +54,7 @@ source=("git+https://code.manjaro.org/applications/calamares.git#commit=${_commi
 sha256sums=('0fdbb63fd220f6bb34191786eabe0bf515d6f23b239a1d250b1f98063194bc50')
 
 prepare() {
-  cd "$pkgname"
+  cd calamares
 
   # change version
   sed -i -e "s|$pkgver|$_pkgver|g" CMakeLists.txt
@@ -83,7 +83,7 @@ build() {
 
   local cmake_options=(
     -B build
-    -S "$pkgname"
+    -S calamares
     -D CMAKE_BUILD_TYPE='Debug'
     -D CMAKE_INSTALL_PREFIX='/usr'
     -D CMAKE_INSTALL_LIBDIR='lib'
@@ -91,7 +91,7 @@ build() {
     -D INSTALL_CONFIG='ON'
     -DSKIP_MODULES="initramfs initramfscfg \
                     dummyprocess dummypython \
-                    ummycpp dummypythonqt \
+                    dummycpp dummypythonqt \
                     services-openrc"
   )
   cmake "${cmake_options[@]}"
@@ -101,19 +101,19 @@ build() {
 package() {
   DESTDIR="$pkgdir" cmake --install build
 
-  cd "$pkgname"
-  install -Dm644 data/manjaro-icon.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/$pkgname.svg"
-  install -Dm644 "data/$pkgname.desktop" "$pkgdir/usr/share/applications/$pkgname.desktop"
-  install -Dm755 "data/${pkgname}_polkit" "$pkgdir/usr/bin/${pkgname}_polkit"
-  install -Dm644 "data/49-nopasswd-$pkgname.rules" "$pkgdir/etc/polkit-1/rules.d/49-nopasswd-$pkgname.rules"
+  cd calamares
+  install -Dm644 data/manjaro-icon.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/calamares.svg"
+  install -Dm644 data/calamares.desktop "$pkgdir/usr/share/applications/calamares.desktop"
+  install -Dm755 data/calamares_polkit "$pkgdir/usr/bin/${pkgname}_polkit"
+  install -Dm644 data/49-nopasswd-calamares.rules "$pkgdir/etc/polkit-1/rules.d/49-nopasswd-calamares.rules"
   chmod 750 "$pkgdir"/etc/polkit-1/rules.d
 
   # rename services-systemd back to services
-  mv "$pkgdir/usr/lib/$pkgname/modules/services-systemd" "$pkgdir/usr/lib/$pkgname/modules/services"
-  mv "$pkgdir/usr/share/$pkgname/modules/services-systemd.conf" "$pkgdir/usr/share/$pkgname/modules/services.conf"
-  sed -i -e 's/-systemd//' "$pkgdir/usr/lib/$pkgname/modules/services/module.desc"
-  sed -i -e 's/-systemd//' "$pkgdir/usr/share/$pkgname/settings.conf"
+  mv "$pkgdir/usr/lib/calamares/modules/services-systemd" "$pkgdir/usr/lib/calamares/modules/services"
+  mv "$pkgdir/usr/share/calamares/modules/services-systemd.conf" "$pkgdir/usr/share/calamares/modules/services.conf"
+  sed -i -e 's/-systemd//' "$pkgdir/usr/lib/calamares/modules/services/module.desc"
+  sed -i -e 's/-systemd//' "$pkgdir/usr/share/calamares/settings.conf"
 
   # fix branding install
-  cp -av src/branding/manjaro "$pkgdir/usr/share/$pkgname/branding/"
+  cp -av src/branding/manjaro "$pkgdir/usr/share/calamares/branding/"
 }

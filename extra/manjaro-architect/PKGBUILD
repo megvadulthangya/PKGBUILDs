@@ -2,13 +2,16 @@
 # Contributor: Chrysostomus <forum.manjaro.org/u/Chrysostomus>
 # Contributor: Bernhard Landauer <bernhard@manjaro.org>
 
+pkgname=(
+  'manjaro-architect'
+  'manjaro-architect-launcher'
+)
 pkgbase=manjaro-architect
-pkgname=('manjaro-architect' 'manjaro-architect-launcher')
 pkgver=0.9.39
-pkgrel=1
-pkgdesc="Manjaro CLI net-installer, forked from the Archlinux Architect"
+pkgrel=2
+pkgdesc="Manjaro CLI net-installer"
 arch=('any')
-url="https://gitlab.manjaro.org/applications/manjaro-architect"
+url="https://code.manjaro.org/applications/manjaro-architect"
 license=('GPL-2.0-or-later')
 depends=(
   'bash'
@@ -17,20 +20,21 @@ depends=(
   'git'
   'manjaro-tools-base'
 )
+makedepends=('git')
 optdepends=(
   'maia-console'
   'terminus-font'
 )
-source=("$url/-/archive/$pkgver/$pkgbase-$pkgver.tar.gz")
-sha256sums=('5ad796d98e7ceac70228dce73be2bbabd7b4a9bfd335da8e8d5feb65e44c2d32')
+source=("git+https://code.manjaro.org/applications/manjaro-architect.git#tag=$pkgver")
+sha256sums=('313e5788d46a9457bb31e7049ef1e26b9f585b561146fc90ef19d5c90f528c07')
 
 prepare() {
-  cd "$pkgbase-$pkgver"
+  cd "$pkgbase"
   sed -i "s/Version .*/Version = $pkgver/" Makefile
 }
 
 build() {
-  cd "$pkgbase-$pkgver"
+  cd "$pkgbase"
   make
 }
 
@@ -47,11 +51,13 @@ package_manjaro-architect() {
     'profile-validate'
   )
 
-  cd "$pkgbase-$pkgver"
+  cd "$pkgbase"
   make DESTDIR="$pkgdir" install
 }
 
 package_manjaro-architect-launcher() {
-  cd "$pkgbase-$pkgver"
+  pkgdesc="Manjaro Architect launcher"
+
+  cd "$pkgbase"
   install -Dm755 bin/setup "$pkgdir"/usr/bin/setup
 }

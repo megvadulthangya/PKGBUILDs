@@ -4,9 +4,9 @@
 
 pkgname=manjaro-cinnamon-settings
 pkgver=20260704
-pkgrel=1
+pkgrel=2
 arch=('any')
-url="https://gitlab.manjaro.org/profiles-and-settings/desktop-settings"
+url="https://code.manjaro.org/profiles/desktop-settings"
 license=('GPL')
 pkgdesc='Manjaro Linux Cinnamon settings'
 depends=(

@@ -1,20 +1,24 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
-pkgname=('manjaro-gnome-backgrounds'
-#         'manjaro-kde-wallpapers'
-#         'manjaro-hd4kmm-wallpapers'
-         )
+pkgname=(
+  'manjaro-gnome-backgrounds'
+  # 'manjaro-kde-wallpapers'
+  # 'manjaro-hd4kmm-wallpapers'
+)
 pkgbase=manjaro-wallpapers
 pkgver=20221208
-pkgrel=1
+pkgrel=2
 pkgdesc="Background images and data for Manjaro"
 arch=('any')
-url="https://gitlab.manjaro.org/artwork/wallpapers/manjaro-wallpapers"
+url="https://code.manjaro.org/artwork/manjaro-wallpapers"
 license=('CC BY-SA 3.0')
-#makedepends=('git' 'python-pillow' 'python-yaml')
-makdepends=('git')
+makedepends=(
+  'git'
+  # 'python-pillow'
+  # 'python-yaml'
+)
 _commit=2ac29593f252f57b0fe35c38acc3d01d724b3fc4
-source=("git+https://gitlab.manjaro.org/artwork/wallpapers/manjaro-wallpapers.git#commit=$_commit"
+source=("git+https://code.manjaro.org/artwork/manjaro-wallpapers.git#commit=${_commit}"
         'LICENSE'
         'abstract.xml'
         'beehive4k.xml'
@@ -22,7 +26,7 @@ source=("git+https://gitlab.manjaro.org/artwork/wallpapers/manjaro-wallpapers.gi
         'ostpv1.xml'
         'ostpv2.xml'
         'ostpv3.xml')
-sha256sums=('SKIP'
+sha256sums=('058d13cf53ea8d268466722b37b099570841a1419a567b02b1491775d05bd2d1'
             '87c3a8509e1cd25bf3620f882af1be78d041a0cbbd60b0f3532a7fa10284b792'
             '8dc71481b9e8385b2d6d04aa6c677eb2649a2d05d42cbbaf10833317842cbc4f'
             'ea1d1aaf22e3748f3cfd6d44daf60b8898a994390bd3b011d1d6abce356c2fe4'
@@ -32,14 +36,14 @@ sha256sums=('SKIP'
             '5b7ef73aa9b640743b2e551e8bedbe7f2c1ac8d6ebce3df4f5da2678d8f9d701')
 
 pkgver() {
-  cd "$srcdir/$pkgbase"
+  cd "$pkgbase"
   printf "$(git show -s --format=%cd --date=format:%Y%m%d HEAD)"
 }
 
 package_manjaro-gnome-backgrounds() {
   pkgdesc="Background images and data for Manjaro GNOME"
 
-  cd "$srcdir/$pkgbase"
+  cd "$pkgbase"
 
   # Abstract
   install -Dm644 Abstract\ Dark/image.png \
@@ -88,54 +92,48 @@ package_manjaro-gnome-backgrounds() {
     "$pkgdir/usr/share/backgrounds/manjaro/ostpv3-l.png"
   install -Dm644 "$srcdir/ostpv3.xml" -t \
     "$pkgdir/usr/share/gnome-background-properties/"
-
-  install -Dm644 "$srcdir/LICENSE" -t "$pkgdir/usr/share/licenses/$pkgname/"
 }
 
-#package_manjaro-kde-wallpapers() {
-#  pkgdesc="Background images and data for Manjaro KDE"
+package_manjaro-kde-wallpapers() {
+  pkgdesc="Background images and data for Manjaro KDE"
 
-#  cd "$srcdir/$pkgbase"
-#  python package_wallpapers.py
+  cd "$pkgbase"
+  python package_wallpapers.py
+}
 
-# install -Dm644 "$srcdir/LICENSE" -t "$pkgdir/usr/share/licenses/$pkgname/"
-#}
+package_manjaro-hd4kmm-wallpapers() {
+  pkgdesc="Manjaro HD, 4K & multi-monitor wallpapers"
 
-#package_manjaro-hd4kmm-wallpapers() {
-#  pkgdesc="Manjaro HD, 4K & multi-monitor wallpapers"
-
-#  cd "$srcdir/$pkgbase"
-#  install -Dm644 Carbon\ 4K/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/carbon4k.png"
-#  install -Dm644 Drought\ Dunes\ 4KHeX\ 3M/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/drought-dunes-4khex-3m.png"
-#  install -Dm644 Four\ Seasons\ Autumn/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/four-seasons-autumn.png"
-#  install -Dm644 Four\ Seasons\ Spring/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/four-seasons-spring.png"
-#  install -Dm644 Four\ Seasons\ Summer/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/four-seasons-summer.png"
-#  install -Dm644 Four\ Seasons\ Winter/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/four-seasons-winter.png"
-#  install -Dm644 Isometry/image.jpg \
-#    "$pkgdir/usr/share/backgrounds/manjaro/isometry.jpg"
-#  install -Dm644 Mist/image.png "$pkgdir/usr/share/backgrounds/manjaro/mist.png"
-#  install -Dm644 Panorama\ HeX\ 3M/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/panorama-hex-3m.png"
-#  install -Dm644 River\ 4KHeX\ 3M/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/river-4khex-3m.png"
-#  install -Dm644 Shore\ Bridge\ HeX\ 3M/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/shore-bridge-hex-3m.png"
-#  install -Dm644 Shore\ HeX\ 3M/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/shore-hex-3m.png"
-#  install -Dm644 Snowy\ Mountains\ 4KHeX\ 3M/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/snowy-mountains-hex-3m.png"
-#  install -Dm644 Spiral/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/spiral.png"
-#  install -Dm644 Spiral2/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/spiral2.png"
-#  install -Dm644 The\ Islands\ 4KHeX\ 3M/image.png \
-#    "$pkgdir/usr/share/backgrounds/manjaro/the-islands-4khex-3m.png"
-
-#  install -Dm644 "$srcdir/LICENSE" -t "$pkgdir/usr/share/licenses/$pkgname/"
-#}
+  cd "$pkgbase"
+  install -Dm644 Carbon\ 4K/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/carbon4k.png"
+  install -Dm644 Drought\ Dunes\ 4KHeX\ 3M/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/drought-dunes-4khex-3m.png"
+  install -Dm644 Four\ Seasons\ Autumn/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/four-seasons-autumn.png"
+  install -Dm644 Four\ Seasons\ Spring/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/four-seasons-spring.png"
+  install -Dm644 Four\ Seasons\ Summer/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/four-seasons-summer.png"
+  install -Dm644 Four\ Seasons\ Winter/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/four-seasons-winter.png"
+  install -Dm644 Isometry/image.jpg \
+    "$pkgdir/usr/share/backgrounds/manjaro/isometry.jpg"
+  install -Dm644 Mist/image.png "$pkgdir/usr/share/backgrounds/manjaro/mist.png"
+  install -Dm644 Panorama\ HeX\ 3M/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/panorama-hex-3m.png"
+  install -Dm644 River\ 4KHeX\ 3M/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/river-4khex-3m.png"
+  install -Dm644 Shore\ Bridge\ HeX\ 3M/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/shore-bridge-hex-3m.png"
+  install -Dm644 Shore\ HeX\ 3M/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/shore-hex-3m.png"
+  install -Dm644 Snowy\ Mountains\ 4KHeX\ 3M/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/snowy-mountains-hex-3m.png"
+  install -Dm644 Spiral/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/spiral.png"
+  install -Dm644 Spiral2/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/spiral2.png"
+  install -Dm644 The\ Islands\ 4KHeX\ 3M/image.png \
+    "$pkgdir/usr/share/backgrounds/manjaro/the-islands-4khex-3m.png"
+}

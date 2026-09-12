@@ -9,7 +9,7 @@ arch=('x86_64')
 url="https://penguins-eggs.net"
 license=('GPL3')
 source=("$pkgname-$pkgver.tar.gz::https://github.com/pieroproietti/penguins-eggs/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('ac30e39ee8f332ec33e5d0975ed3f4d8253378807383014c6ff3c6c37d7461bf')
+sha256sums=('c7aaf0df418dbb4bec8b90e09e4d7f44a6a47c517a71ae514309eecf5556c7f8')
 options=('!debug')
 depends=(
     'arch-install-scripts'

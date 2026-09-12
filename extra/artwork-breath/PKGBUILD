@@ -11,9 +11,9 @@ pkgname=(
   'sddm-breath-theme'
 )
 pkgver=24.0.0
-pkgrel=6
+pkgrel=7
 arch=('x86_64' 'aarch64')
-url="https://gitlab.manjaro.org/artwork/themes/breath"
+url="https://code.manjaro.org/artwork/breath"
 license=(
   'CC-BY-SA-4.0'
   'GPL-2.0-or-later'

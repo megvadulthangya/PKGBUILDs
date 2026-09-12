@@ -4,7 +4,7 @@
 
 pkgname=manjaro-hello
 pkgver=0.8.1
-pkgrel=3
+pkgrel=7
 pkgdesc="A tool providing access to documentation and support for new Manjaro users."
 url="https://gitlab.manjaro.org/applications/manjaro-hello"
 arch=('any')
@@ -26,10 +26,18 @@ sha256sums=('5524e01f3d52d398937efd8f7b4bf7e604cb33659800da6965f934faca29ca1e')
 
 prepare() {
   cd "$pkgname"
-  # Update Release Notes 25.0
+  # Update Release Notes 26.0
   git cherry-pick --mainline 1 --no-commit d06f5921b5f8919d682958af34b66421d6bd93ba
   git cherry-pick --mainline 1 --no-commit a10bffe047c4fc0d767aef829ce4ecf0d8ade199
   git cherry-pick --mainline 1 --no-commit f2a5dbcbea4e26dbd47551d9fb78f8c7cfef719c
+  git cherry-pick --mainline 1 --no-commit 92c7bf187a9b8f8a222d459ae0656debe36487b3
+  git cherry-pick --mainline 1 --no-commit c3c0e925034cc9c818e0580e595da5bdc382efad
+  # Update Release Notes 26.1
+  git cherry-pick --mainline 1 --no-commit 9973d9e2c70860ba9a8badcd9d5e0bc7158e1b03
+  git cherry-pick --mainline 1 --no-commit 75410c861c8a81d0eecfb19e4673f3e41025f0d4
+  git cherry-pick --mainline 1 --no-commit 4e801423a943cd93b8859af9f2e7a5bb5a75a1e6
+  git cherry-pick --mainline 1 --no-commit 11245458b8aa97f533e790e3c7629f489405c131
+  git cherry-pick --mainline 1 --no-commit 96f1623e76828c30bb922501b64fe22a644fd573
 }
 
 package() {

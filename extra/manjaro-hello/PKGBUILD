@@ -1,12 +1,12 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
-# Contributor: Bernhard Landauer <oberon@manjaro.org>
+# Contributor: Bernhard Landauer <bernhard@manjaro.org>
 # Contributor: Stefano Capitani <stefano@manjaro.org>
 
 pkgname=manjaro-hello
 pkgver=0.8.1
-pkgrel=7
+pkgrel=8
 pkgdesc="A tool providing access to documentation and support for new Manjaro users."
-url="https://gitlab.manjaro.org/applications/manjaro-hello"
+url="https://code.manjaro.org/applications/manjaro-hello"
 arch=('any')
 license=('GPL-3.0-or-later')
 depends=(
@@ -21,7 +21,7 @@ optdepends=(
   'timeshift: System restore utility'
 )
 makedepends=('git')
-source=("git+https://gitlab.manjaro.org/applications/manjaro-hello.git#tag=$pkgver")
+source=("git+https://code.manjaro.org/applications/manjaro-hello.git#tag=$pkgver")
 sha256sums=('5524e01f3d52d398937efd8f7b4bf7e604cb33659800da6965f934faca29ca1e')
 
 prepare() {

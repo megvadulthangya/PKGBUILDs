@@ -5,10 +5,10 @@
 
 pkgname=gnome-layout-switcher
 pkgver=0.8.40
-pkgrel=2
+pkgrel=3
 pkgdesc="A simple GUI for choosing GNOME desktop layout"
 arch=('any')
-url="https://gitlab.manjaro.org/Chrysostomus/gnome-layout-switcher"
+url="https://code.manjaro.org/applications/gnome-layout-switcher"
 license=('GPL-3.0-or-later')
 depends=(
   'accent-color-change'
@@ -38,7 +38,7 @@ makedepends=(
   'python-setuptools'
   'python-wheel'
 )
-source=("git+https://gitlab.manjaro.org/Chrysostomus/gnome-layout-switcher.git#tag=$pkgver?signed")
+source=("git+https://code.manjaro.org/applications/gnome-layout-switcher.git#tag=$pkgver?signed")
 sha256sums=('ba884e921559a4607521615313d6fc29585195478e17bd2855935d85488d9c69')
 validpgpkeys=('688E8F82879D0E25CE541426150C200743ED46D8') # Mark Wagie <mark@manjaro.org>
 

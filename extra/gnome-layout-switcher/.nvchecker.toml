@@ -1,0 +1,3 @@
+[gnome-layout-switcher]
+source = "git"
+git = "https://code.manjaro.org/applications/gnome-layout-switcher.git"

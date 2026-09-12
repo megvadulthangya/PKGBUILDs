@@ -1,17 +1,24 @@
-# Maintainer: Chrysostomus @forum.manjaro.org
+# Maintainer:
+# Contributor: Chrysostomus <forum.manjaro.org/u/Chrysostomus>
+
 pkgname=profile-validate
 pkgver=0.6
-pkgrel=1
+pkgrel=2
 pkgdesc="A CLI utility to test ISO profiles for Manjaro Architect"
 arch=('any')
-url="https://gitlab.manjaro.org/Chrysostomus/profile-validate"
-license=('none')
-depends=('bash' 'expac' 'git' 'sed')
+url="https://code.manjaro.org/applications/profile-validate"
+license=('GPL-3.0-or-later')
+depends=(
+  'bash'
+  'expac'
+  'git'
+  'sed'
+)
 _commit=f05378a39bb6b3eff8d01d6dc743025a781c100c
-source=("git+https://gitlab.manjaro.org/Chrysostomus/profile-validate.git#commit=$_commit")
-sha256sums=('SKIP')
+source=("git+https://code.manjaro.org/applications/profile-validate.git#commit=${_commit}")
+sha256sums=('720dbdd87d3555e1b25460000991f484e26731c7add9035af93a8b9ed8c949cd')
 
-package () {
-  cd "$srcdir/$pkgname"
+package() {
+  cd "$pkgname"
   install -Dm755 "$pkgname" -t "$pkgdir/usr/bin/"
 }

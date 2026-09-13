@@ -8,8 +8,8 @@ pkgname=(
   rog-control-center
 )
 _app_id=org.opengamingcollective.rog-control-center
-pkgver=6.4.0
-pkgrel=2
+pkgver=6.5.0
+pkgrel=1
 pkgdesc="Daemon and tools to control your ASUS ROG laptop."
 arch=('x86_64')
 url="https://asus-linux.org"
@@ -24,7 +24,7 @@ checkdepends=(
   'desktop-file-utils'
 )
 source=("git+https://github.com/OpenGamingCollective/asusctl.git#tag=$pkgver")
-sha256sums=('cf14551d40d3317d09a2f655198045aa47d4d70360a11aadeef405a6f06983bc')
+sha256sums=('1fdffbcfbac1a6b2316869ab653643a9a2e4d140bbbe5bd20e4ab84e9ad5e21d')
 
 prepare() {
   cd "${pkgbase}"

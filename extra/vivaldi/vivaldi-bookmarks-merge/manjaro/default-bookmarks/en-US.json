@@ -1,0 +1,34 @@
+{
+  "version": "38",
+  "children": [
+    {
+      "name": "Home",
+      "title": "Home",
+      "children": [
+        {
+          "name": "Manjaro",
+          "children": [
+            {
+          "name": "manjaro.org",
+          "url": "https://manjaro.org",
+          "title": "Manjaro",
+          "description": "Manjaro Homepage"
+            },
+            {
+          "name": "forum.manjaro.org",
+          "url": "https://forum.manjaro.org/",
+          "title": "Manjaro Forum",
+          "description": "Manjaro Forum"
+            },
+            {
+          "name": "wiki.manjaro.org",
+          "url": "https://wiki.manjaro.org/index.php?title=Main_Page",
+          "title": "Manjaro Wiki",
+          "description": "Manjaro wiki pages"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

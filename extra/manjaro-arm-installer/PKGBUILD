@@ -4,10 +4,10 @@
 
 pkgname=manjaro-arm-installer
 pkgver=1.5.4
-pkgrel=1
+pkgrel=2
 pkgdesc="Scripts to install Manjaro ARM directly to SD/eMMC cards"
 arch=('x86_64' 'aarch64')
-url="https://gitlab.manjaro.org/manjaro-arm/applications/manjaro-arm-installer"
+url="https://code.manjaro.org/applications/manjaro-arm-installer"
 license=('GPL-3.0-or-later')
 depends_x86_64=('dialog'
   'gawk'
@@ -31,6 +31,7 @@ depends_aarch64=(
   'dosfstools'
   'polkit'
 )
+makedepends=('git')
 optdepends=(
   'btrfs-progs: btrfs filesystem utilities'
   'f2fs-tools: f2fs filesystem utilities'
@@ -40,10 +41,10 @@ optdepends=(
 #  'grub-efi-arm64: for generic-efi support (only needed when script is run from other architectures than aarch64)' # AUR
 #)
 install="$pkgname.install"
-source=("$url/-/archive/$pkgver/$pkgname-$pkgver.tar.gz")
-sha256sums=('058504a1c047bf8732bddf743d971aaa46a24ffcae6859a01ed282d10f5221ba')
+source=("git+https://code.manjaro.org/applications/manjaro-arm-installer.git#tag=$pkgver")
+sha256sums=('59351f1d40dd2bc3dfb43e201bcfc9fdf09c18f46f33f28a4a9b8daae178270c')
 
 package() {
-  cd "$pkgname-$pkgver"
+  cd "$pkgname"
   install -Dm755 "$pkgname" "$pkgdir/usr/bin/$pkgname"
 }

@@ -1,33 +1,46 @@
-# Maintainer: Bernhard Landauer <bernhard[at]manjaro[dot]org>
-# Contributor: Helmut Stult
+# Contributor: Dan Johansen
 
 pkgname=manjaro-arm-tools
-pkgver=2.11.0
+pkgver=2.11.3+19+gb1cc171
 pkgrel=1
 pkgdesc="Scripts for building Manjaro-ARM packages and images"
 arch=('any')
 url="https://gitlab.manjaro.org/manjaro-arm/applications/manjaro-arm-tools"
-license=('GPL3')
+license=('GPL-3.0-or-later')
 backup=("etc/$pkgname/$pkgname.conf")
-depends=('arch-install-scripts'
-         'gawk'
-         'git'
-         'gptfdisk'
-         'manjaro-arm-qemu-static'
-         'parted'
-         'xz'
-         'zip')
-optdepends=('bmap-tools: create bmap files')
-source=("$url/-/archive/$pkgver/$pkgname-$pkgver.tar.gz")
-sha256sums=('75ab1145a5f2916316de7e5c7be73b1b1ec13449ff99187a9c54346d7d8bec5f')
+depends=(
+  'btrfs-progs'
+  'dosfstools'
+  'git'
+  'gnupg'
+  'parted'
+  'polkit'
+  'wget'
+  'zstd'
+)
+optdepends=(
+  'bmap-tools: for bmap support in buildarmimg'
+  'docker: for builddockerimg'
+  'mktorrent: for torrent support in deployarmimg'
+  'qemu-user-static-binfmt: Needed on x86_64'
+  'rsync: for deployarmimg'
+)
+_commit=b1cc171c19027e459be810e4ca89ab7974b5fe4a  # branch/master
+source=("git+https://gitlab.manjaro.org/manjaro-arm/applications/manjaro-arm-tools.git#commit=${_commit}")
+sha256sums=('c43cadd8b7677b74f74af22b9d20181007af3492184a3c549d13d3c0a1d997a7')
+
+pkgver() {
+  cd "$pkgname"
+  git describe --tags --abbrev=7 | sed 's/-/+/g'
+}
 
 package() {
-    cd "$pkgname-$pkgver"
-    install -dm777 "$pkgdir/usr/share/$pkgname/lib"
-    install -dm777 "$pkgdir/usr/share/$pkgname/profiles"
-    install -dm777 "$pkgdir/var/lib/$pkgname"/{img,pkg,tmp}
-    install -dm777 "$pkgdir/var/cache/$pkgname"/{img,pkg,pkg/pkgcache}
-    install -Dm755 lib/* -t "$pkgdir/usr/share/$pkgname/lib/"
-    install -Dm755 bin/* -t "$pkgdir/usr/bin/"
-    install -Dm644 "lib/$pkgname.conf" -t "$pkgdir/etc/$pkgname/"
+  cd "$pkgname"
+  install -dm777 "$pkgdir/usr/share/$pkgname/lib"
+  install -dm777 "$pkgdir/usr/share/$pkgname/profiles"
+  install -dm777 "$pkgdir/var/lib/$pkgname"/{img,pkg,tmp}
+  install -dm777 "$pkgdir/var/cache/$pkgname"/{img,pkg,pkg/pkgcache}
+  install -Dm755 lib/* -t "$pkgdir/usr/share/$pkgname/lib/"
+  install -Dm755 bin/* -t "$pkgdir/usr/bin/"
+  install -Dm644 "lib/$pkgname.conf" -t "$pkgdir/etc/$pkgname/"
 }

@@ -1,11 +1,12 @@
+# Maintainer:
 # Contributor: Dan Johansen
 
 pkgname=manjaro-arm-tools
 pkgver=2.11.3+19+gb1cc171
-pkgrel=1
+pkgrel=2
 pkgdesc="Scripts for building Manjaro-ARM packages and images"
 arch=('any')
-url="https://gitlab.manjaro.org/manjaro-arm/applications/manjaro-arm-tools"
+url="https://code.manjaro.org/applications/manjaro-arm-tools"
 license=('GPL-3.0-or-later')
 backup=("etc/$pkgname/$pkgname.conf")
 depends=(
@@ -26,7 +27,7 @@ optdepends=(
   'rsync: for deployarmimg'
 )
 _commit=b1cc171c19027e459be810e4ca89ab7974b5fe4a  # branch/master
-source=("git+https://gitlab.manjaro.org/manjaro-arm/applications/manjaro-arm-tools.git#commit=${_commit}")
+source=("git+https://code.manjaro.org/applications/manjaro-arm-tools.git#commit=${_commit}")
 sha256sums=('c43cadd8b7677b74f74af22b9d20181007af3492184a3c549d13d3c0a1d997a7')
 
 pkgver() {

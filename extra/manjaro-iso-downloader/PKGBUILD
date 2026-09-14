@@ -2,10 +2,10 @@
 
 pkgname=manjaro-iso-downloader
 pkgver=0.3.6
-pkgrel=2
+pkgrel=3
 pkgdesc="Download and verify Manjaro ISOs"
 arch=('any')
-url="https://gitlab.manjaro.org/ste74/manjaro-iso-downloader"
+url="https://code.manjaro.org/applications/manjaro-iso-downloader"
 license=('GPL-3.0-or-later')
 depends=(
   'aria2'
@@ -15,13 +15,14 @@ depends=(
   'yad'
   'zenity'
 )
+makedepends=('git')
 conflicts=('manjaro-downloader-images')
 replaces=('manjaro-downloader-images')
-source=("$url/-/archive/$pkgver/$pkgname-$pkgver.tar.gz")
-sha256sums=('86a7fa97858d2dae312f5b3ce063b73c472bd0d9f66efc705358c2b612f8c08f')
+source=("git+https://code.manjaro.org/applications/manjaro-iso-downloader.git#tag=$pkgver")
+sha256sums=('f738dce480b4d14ca8f98d7848891be46fe04d6d0211ca622bafb0bbe3e6ce27')
 
 package() {
-	cd "$pkgname-$pkgver"
+	cd "$pkgname"
 	install -Dm755 "$pkgname.sh" "$pkgdir/usr/bin/$pkgname"
 	install -Dm644 "$pkgname.desktop" -t "$pkgdir/usr/share/applications/"
 	cp -Rf icons "$pkgdir/usr/share"

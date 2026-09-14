@@ -1,3 +1,3 @@
 [manjaro-iso-downloader]
 source = "git"
-git = "https://gitlab.manjaro.org/ste74/manjaro-iso-downloader.git"
+git = "https://code.manjaro.org/applications/manjaro-iso-downloader.git"

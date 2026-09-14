@@ -87,7 +87,7 @@ index 455f6e50960e..641dc1c84119 100644
  	unsigned char kbd_func;
  	int ret;
  
-@@ -945,6 +948,15 @@ static int asus_kbd_register_leds(struct
+@@ -948,19 +948,21 @@ static int asus_kbd_register_leds(struct
  	if (!(kbd_func & SUPPORT_KBD_BACKLIGHT))
  		return -ENODEV;
  
@@ -103,6 +103,19 @@ index 455f6e50960e..641dc1c84119 100644
  	if (dmi_match(DMI_PRODUCT_FAMILY, "ProArt P16")) {
  		ret = asus_kbd_disable_oobe(hdev);
  		if (ret < 0)
+ 			return ret;
+ 	}
+ 
+-	if ((drvdata->quirks & QUIRK_ROG_ALLY_XPAD) && hid_is_usb(hdev)) {
+-		intf = to_usb_interface(hdev->dev.parent);
+-		udev = interface_to_usbdev(intf);
+-		validate_mcu_fw_version(hdev,
+-			le16_to_cpu(udev->descriptor.idProduct));
+-	}
+-
+ 	drvdata->listener.brightness_set = asus_kbd_backlight_set;
+ 	ret = asus_hid_register_listener(&drvdata->listener);
+ 	if (ret < 0) {
 diff --git a/drivers/hid/hid-asus.h b/drivers/hid/hid-asus.h
 index 789a4ff3662c..f67dd5a3a1bc 100644
 --- a/drivers/hid/hid-asus.h

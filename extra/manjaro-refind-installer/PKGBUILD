@@ -2,7 +2,7 @@
 
 pkgname='manjaro-refind-installer'
 pkgver=0.2
-pkgrel=6
+pkgrel=7
 _commit=2961e0ab6e5719c4584ce8315601b16e620fc4ce
 pkgdesc="Manjaro rEFInd GUI installer"
 arch=('any')

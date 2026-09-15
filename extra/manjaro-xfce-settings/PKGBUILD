@@ -64,7 +64,7 @@ package_manjaro-xfce-settings() {
   "
 
   sed "${_subst}" "${pkgbase}.hook" |
-    install -Dm644 /dev/stdin "${pkgdir}/usr/share/libalpm/hooks/${pkgbase}.hook"
+    install -Dm644 /dev/stdin "${pkgdir}/usr/share/libalpm/hooks/${pkgname}.hook"
   install -Dm755 mxs-bgd-sym "${pkgdir}/usr/bin/mxs-bgd-sym"
   install -Dm755 xfce-pbw.sh "${pkgdir}/etc/skel/.config/autostart/xfce-pbw.sh"
   install -Dm644 xfce-panel-workaround.desktop "${pkgdir}/etc/skel/.config/autostart/xfce-panel-workaround.desktop"
@@ -85,7 +85,7 @@ package_manjaro-xfce-minimal-settings() {
   "
 
   sed "${_subst}" "${pkgbase}.hook" |
-    install -Dm644 /dev/stdin "${pkgdir}/usr/share/libalpm/hooks/manjaro-xfce-minimal-settings.hook"
+    install -Dm644 /dev/stdin "${pkgdir}/usr/share/libalpm/hooks/${pkgname}.hook"
   install -Dm755 mxs-bgd-sym "${pkgdir}/usr/bin/mxms-bgd-sym"
   install -Dm755 xfce-pbw.sh "${pkgdir}/etc/skel/.config/autostart/xfce-pbw.sh"
   install -Dm644 xfce-panel-workaround.desktop "${pkgdir}/etc/skel/.config/autostart/xfce-panel-workaround.desktop"

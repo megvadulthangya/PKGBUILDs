@@ -3,8 +3,8 @@
 
 pkgname=heroic-games-launcher
 _app_id=com.heroicgameslauncher.hgl
-pkgver=2.22.1
-pkgrel=2
+pkgver=2.22.2
+pkgrel=1
 _nodeversion=24
 _electronversion=43
 pkgdesc="Native GOG, Epic Games and Amazon games launcher for Linux"
@@ -32,11 +32,9 @@ optdepends=(
   'umu-launcher: Proton support'
 )
 source=("git+https://github.com/Heroic-Games-Launcher/HeroicGamesLauncher.git#tag=v$pkgver"
-        'heroic.sh'
-        'fix-exec-heroic.patch')
-sha256sums=('cabb6f90e46f34f4af7388e3ab7c40ddd3502cda73fbeb145d40080d8f76d995'
-            '965e1df4608e665cafa60d17b180d2522cd6241cfa9b50a21c3b2f2b389d97a0'
-            'd97ad2117acda5e0b8b94728c571af43b54d405533d0cd2da99f397a0c948e50')
+        'heroic.sh')
+sha256sums=('60bcefddbbb5daf47ea86a8a05c3565db695c5d91b9f66f16894fb3291312e5a'
+            '965e1df4608e665cafa60d17b180d2522cd6241cfa9b50a21c3b2f2b389d97a0')
 
 _ensure_local_nvm() {
   # let's be sure we are starting clean
@@ -57,9 +55,6 @@ prepare() {
   export PNPM_HOME="$srcdir/pnpm-home"
   pnpm install --frozen-lockfile
 
-  # Fix Add-to-Steam
-  patch -Np1 -i $srcdir/fix-exec-heroic.patch
-
   # Set Exec
   desktop-file-edit --set-key=Exec --set-value="heroic %U" \
     "flatpak/${_app_id}.desktop"
@@ -76,7 +71,7 @@ build() {
   electronVer="$(sed s/^v// /usr/lib/electron${_electronversion}/version)"
   _ensure_local_nvm
   pnpm download-helper-binaries
-  pnpm electron-vite build
+  pnpm build
   pnpm electron-builder --linux --x64 --dir \
     ${dist} -c.electronDist=${electronDist} -c.electronVersion=${electronVer}
 
@@ -89,7 +84,7 @@ build() {
 package() {
   cd HeroicGamesLauncher
 
-  # Upstream requested installation in /opt/Heroic/ instead of /usr/lib/heroic
+  # Upstream requested installation in /opt/Heroic/ instead of /usr/lib/heroic/
   install -Dm644 dist/linux-unpacked/resources/app.asar -t "$pkgdir/opt/Heroic/"
   cp -r dist/linux-unpacked/resources/app.asar.unpacked "$pkgdir/opt/Heroic"
 

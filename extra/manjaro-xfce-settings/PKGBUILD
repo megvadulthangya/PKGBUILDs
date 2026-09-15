@@ -9,7 +9,7 @@ pkgname=(
 )
 pkgbase=manjaro-xfce-settings
 pkgver=20260221
-pkgrel=5
+pkgrel=6
 pkgdesc="Manjaro Linux Xfce settings"
 arch=('any')
 url="https://code.manjaro.org/profiles/manjaro-xfce-settings"

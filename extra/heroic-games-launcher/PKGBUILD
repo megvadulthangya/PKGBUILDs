@@ -3,7 +3,7 @@
 
 pkgname=heroic-games-launcher
 _app_id=com.heroicgameslauncher.hgl
-pkgver=2.22.2
+pkgver=2.22.3
 pkgrel=1
 _nodeversion=24
 _electronversion=43
@@ -13,15 +13,16 @@ url="https://heroicgameslauncher.com/"
 license=('GPL-3.0-only')
 depends=(
   "electron${_electronversion}"
+  'python'
   'rsync'
   'which'
+  'zlib'
 )
 makedepends=(
   'git'
   'imagemagick'
   'nvm'
   'pnpm'
-  'python'
 )
 optdepends=(
   'gamemode: GameMode support'
@@ -33,7 +34,7 @@ optdepends=(
 )
 source=("git+https://github.com/Heroic-Games-Launcher/HeroicGamesLauncher.git#tag=v$pkgver"
         'heroic.sh')
-sha256sums=('60bcefddbbb5daf47ea86a8a05c3565db695c5d91b9f66f16894fb3291312e5a'
+sha256sums=('0846c998e8a39dc146f1273f4e7a587f172e3075f7de42dc936fe845b70b2f10'
             '965e1df4608e665cafa60d17b180d2522cd6241cfa9b50a21c3b2f2b389d97a0')
 
 _ensure_local_nvm() {

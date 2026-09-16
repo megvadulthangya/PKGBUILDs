@@ -1,0 +1,5 @@
+["element.io"]
+source = "git"
+git = "https://github.com/element-hq/element-web.git"
+prefix = "v"
+exclude_regex = ".*(beta|rc).*"

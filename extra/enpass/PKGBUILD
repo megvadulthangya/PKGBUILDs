@@ -7,7 +7,7 @@
 # curl -so- https://apt.enpass.io/dists/stable/main/binary-amd64/Packages.gz | zcat | grep -E "Package|Version|SHA256" | head -n 3
 
 pkgname=enpass
-pkgver=6.11.13.1957
+pkgver=6.12.6.2258
 pkgrel=1
 pkgdesc="A cross-platform, complete password management solution"
 arch=('x86_64')
@@ -30,11 +30,10 @@ optdepends=(
   'libxdg-basedir: Open links in the default browser'
   'libqtxdg: Open links in the default browser (Qt implementation)'
 )
-options=('!strip') # Disable strip as otherwise the browser extension will not work
 install="$pkgname.install"
 source=("https://apt.enpass.io/pool/main/e/enpass/${pkgname}_${pkgver}_amd64.deb"
         'Terms-of-Use_Enpass.html')
-sha256sums=('2d8c90643851591aff41057b380a7e87bb839bf5c5aa0ca1456144e9996c902a'
+sha256sums=('a98d2ff0d6ad392311022453598e59dcc2b9042cf9a001f0bf35e95aed5c3457'
             'da4b860c8132add975fbe4214677e7a9546d2f394c4b6e292562c6b865de00ff')
 
 package() {
@@ -51,7 +50,13 @@ package() {
   chmod 0644 "${pkgdir}/usr/share/mime/packages/application-${pkgname}.xml"
   find "${pkgdir}/usr/share/icons/" -type f -exec chmod 644 {} \;
 
-  # Symlink binary to "/usr/bin" so it is accessible via cli
+  # GNOME Shell Extension
+  _uuid=_uuid=$(jq -r .uuid "$pkgdir/usr/share/enpass/gnome-extension/modern/metadata.json")
+  install -Dvm644 "$pkgdir/usr/share/enpass/gnome-extension/modern"/* -t \
+    "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}"
+  rm -rfv "$pkgdir/usr/share/enpass/"
+
+  # Symlink binary to "/usr/bin" so it is accessible via CLI
   install -d "${pkgdir}/usr/bin"
   ln -s /opt/enpass/Enpass "${pkgdir}/usr/bin/$pkgname"
 

@@ -8,7 +8,7 @@
 
 pkgname=enpass
 pkgver=6.12.6.2258
-pkgrel=1
+pkgrel=2
 pkgdesc="A cross-platform, complete password management solution"
 arch=('x86_64')
 url="http://enpass.io/"
@@ -52,7 +52,7 @@ package() {
   find "${pkgdir}/usr/share/icons/" -type f -exec chmod 644 {} \;
 
   # GNOME Shell Extension
-  _uuid=_uuid=$(jq -r .uuid "$pkgdir/usr/share/enpass/gnome-extension/modern/metadata.json")
+  _uuid=$(jq -r .uuid "$pkgdir/usr/share/enpass/gnome-extension/modern/metadata.json")
   install -Dvm644 "$pkgdir/usr/share/enpass/gnome-extension/modern"/* -t \
     "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}"
   rm -rfv "$pkgdir/usr/share/enpass/"

@@ -26,6 +26,7 @@ depends=(
   'xcb-util-renderutil'
   'xcb-util-wm'
 )
+makedepends=('jq')
 optdepends=(
   'libxdg-basedir: Open links in the default browser'
   'libqtxdg: Open links in the default browser (Qt implementation)'

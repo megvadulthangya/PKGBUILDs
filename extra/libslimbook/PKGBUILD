@@ -5,7 +5,7 @@
 # https://build.opensuse.org/package/show/home:Slimbook/libslimbook
 
 pkgname=libslimbook
-pkgver=1.26.0
+pkgver=1.26.1
 pkgrel=1
 pkgdesc="Core functionality for Slimbook apps"
 arch=('x86_64')
@@ -16,15 +16,13 @@ depends=(
   'libgcc'
   'libstdc++'
   'lsb-release'
-  'procps-ng'
-  'util-linux'
 )
 makedepends=('meson')
 provides=('libslimbook.so=1')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 #source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+sourcefiles/$pkgname/$pkgver/${pkgname}_${pkgver}.tar.xz")
 #noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('6192972563e2de5f1914368590b0698ecca40b101cd824e3e8c6cc4fbf1fa5ca')
+sha256sums=('2344925eb221d8d72b54f7d64a983b972e3a2bfa0654c57d1ff36bbebbdc94cf')
 
 prepare() {
 #  mkdir -p "$pkgname-$pkgver"

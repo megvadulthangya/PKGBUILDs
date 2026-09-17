@@ -8,23 +8,22 @@
 
 pkgname=enpass
 pkgver=6.12.6.2258
-pkgrel=2
+pkgrel=3
 pkgdesc="A cross-platform, complete password management solution"
 arch=('x86_64')
 url="http://enpass.io/"
 license=('LicenseRef-custom')
 depends=(
   'gtk3'
-  'libxkbcommon-x11'
-  'libice'
-  'libpulse'
+  'libbsd'
+  'libegl'
+  'libopengl'
+  'libpsl'
   'libsm'
-  'libxss'
+  'libx11'
+  'libxkbcommon'
   'lsof'
-  'xcb-util-image'
-  'xcb-util-keysyms'
-  'xcb-util-renderutil'
-  'xcb-util-wm'
+  'wayland'
 )
 makedepends=('jq')
 optdepends=(

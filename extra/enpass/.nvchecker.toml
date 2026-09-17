@@ -5,13 +5,9 @@ source = "apt"
 mirror = "https://apt.enpass.io"
 pkg = "enpass"
 suite = "stable"
-repo = "main"
-strip_release = "true"
 
 # X11
 # source = "apt"
 # mirror = "https://apt.enpass.io"
 # pkg = "enpass"
 # suite = "x11"
-# repo = "main"
-# strip_release = "true"

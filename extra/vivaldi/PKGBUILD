@@ -5,8 +5,8 @@
 # Contributor: TZ86
 
 pkgname=vivaldi
-_rpmversion=8.1.4087.62-1
-pkgver=8.1.4087.62
+_rpmversion=8.2.4133.64-1
+pkgver=8.2.4133.64
 pkgrel=0.1
 pkgdesc='An advanced browser made with the power user in mind.'
 url="https://vivaldi.com"
@@ -51,8 +51,8 @@ source=('0001-add-support-for-user-flags.patch')
 source_x86_64=("https://downloads.vivaldi.com/stable/vivaldi-stable-${_rpmversion}.x86_64.rpm")
 source_aarch64=("https://downloads.vivaldi.com/stable/vivaldi-stable-${_rpmversion}.aarch64.rpm")
 sha512sums=('6e18b8d5a15143a36998beae7ecc6d446ec5ec86fedf2396d2a0e609e6e1218b2ede60f818414eab374809f646595b6640cc7898d785d7fb6e3b18d8791c43d4')
-sha512sums_x86_64=('1068ad6bed630a2207cfb36dd06944cded74cfc533314aaea96a2551313dcf61976042fcc757cc96298af047aff7fda5e4ce27cd689487514c30758be2bae925')
-sha512sums_aarch64=('4ede4889038bb461d1ed0db1ddf0c33018c9fa53b88137bd36bdef081d80b18c60de709344f346cda3ce5c5739bd1663bdebddc9f483b7f30767935cb71de4c2')
+sha512sums_x86_64=('77291b6440a203cbc60f64130c882c3bf431353917d1f9ac5e0e576fa65bd1574f45b557e882fba7ca7c08361ba8068700b94c9200cf80c0f4e5262c2f60c960')
+sha512sums_aarch64=('1cd83d229ab69149a6af24843036093990888b27ee84e02c312e45f5711a524980c939f4ef004a94991c7d74a8bfa8968b9033a132574e29f09820c61cbc602c')
 
 package() {
     cp --parents -a {opt,usr/bin,usr/share} "$pkgdir"
@@ -83,7 +83,7 @@ package() {
     # Vivaldi has different design for each size of icons. Avoid using them.
     # hicolor xdg fallback
     install -Dm644 "$pkgdir/opt/$pkgname/resources/vivaldi/resources/welcomepage-vivaldi.svg" \
-        "$pkgdir/usr/share/icons/hicolor/scalable/${pkgname}.svg"
+        "$pkgdir/usr/share/icons/hicolor/scalable/apps/${pkgname}.svg"
     install -Dm644 "$pkgdir/opt/$pkgname/product_logo_256.png" \
         "$pkgdir/usr/share/icons/hicolor/256x256/apps/$pkgname.png"
     for _res in 128 64 48 32 22; do
@@ -103,7 +103,6 @@ package() {
     # license
     install -dm755 "$pkgdir/usr/share/licenses/$pkgname"
     w3m -dump "$pkgdir/opt/$pkgname/LICENSE.html" \
-        | head -n 5 \
         > "$pkgdir/usr/share/licenses/$pkgname/license.txt"
 
     # https://archlinux.org/todo/legacy-path-for-metainfo-files/

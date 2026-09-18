@@ -1,7 +1,7 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=gnome-shell-extension-gtk4-desktop-icons-ng
-pkgver=100.29
+pkgver=100.29.1
 pkgrel=1
 epoch=1
 pkgdesc="Desktop Icons NG fork ported to Libadwaita and Gtk4 with several enhancements."
@@ -24,7 +24,7 @@ optdepends=(
 provides=('gnome-shell-extension-desktop-icons' 'gnome-shell-extension-desktop-icons-ng')
 conflicts=('gnome-shell-extension-desktop-icons' 'gnome-shell-extension-desktop-icons-ng')
 source=("git+https://gitlab.com/smedius/desktop-icons-ng.git#tag=Gtk4-$pkgver")
-sha256sums=('25d159d06f584c22ae37a001d606bf747c1d9fca0fbee1f4b5e1d71f898bec59')
+sha256sums=('99832bad8005131538fc2fe6b3459aa96a02d28ed3c8e85b6c09a49341b98296')
 
 build() {
   arch-meson desktop-icons-ng build

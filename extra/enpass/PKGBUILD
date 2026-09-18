@@ -8,7 +8,7 @@
 
 pkgname=enpass
 pkgver=6.12.6.2258
-pkgrel=3
+pkgrel=4
 pkgdesc="A cross-platform, complete password management solution"
 arch=('x86_64')
 url="http://enpass.io/"
@@ -16,8 +16,7 @@ license=('LicenseRef-custom')
 depends=(
   'gtk3'
   'libbsd'
-  'libegl'
-  'libopengl'
+  'libglvnd'
   'libpsl'
   'libsm'
   'libx11'

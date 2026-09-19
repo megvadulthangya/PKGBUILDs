@@ -8,7 +8,7 @@
 
 pkgname=enpass
 pkgver=6.12.6.2258
-pkgrel=5
+pkgrel=4
 pkgdesc="A cross-platform, complete password management solution"
 arch=('x86_64')
 url="http://enpass.io/"
@@ -24,6 +24,7 @@ depends=(
   'lsof'
   'wayland'
 )
+makedepends=('jq')
 optdepends=(
   'libxdg-basedir: Open links in the default browser'
   'libqtxdg: Open links in the default browser (Qt implementation)'
@@ -47,6 +48,12 @@ package() {
   chmod 0644 "${pkgdir}/usr/share/applications/${pkgname}.desktop"
   chmod 0644 "${pkgdir}/usr/share/mime/packages/application-${pkgname}.xml"
   find "${pkgdir}/usr/share/icons/" -type f -exec chmod 644 {} \;
+
+  # GNOME Shell Extension
+  _uuid=$(jq -r .uuid "$pkgdir/usr/share/enpass/gnome-extension/modern/metadata.json")
+  install -Dvm644 "$pkgdir/usr/share/enpass/gnome-extension/modern"/* -t \
+    "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}"
+  rm -rfv "$pkgdir/usr/share/enpass/"
 
   # Symlink binary to "/usr/bin" so it is accessible via CLI
   install -d "${pkgdir}/usr/bin"

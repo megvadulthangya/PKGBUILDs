@@ -16,18 +16,6 @@ makedepends=("${_linuxprefix}-headers" "zfs-dkms=${pkgver}")
 provides=("zfs=${pkgver}" "ZFS-MODULE=${pkgver}")
 options=('!strip')
 
-prepare() {
-    mkdir -p zfs/${pkgver}/source_patched
-    cp -av /usr/src/zfs-${pkgver}/* zfs/${pkgver}/source_patched
-    cd zfs/${pkgver}/source_patched
-    # 7.3 compat
-    sed -i -e 's/Linux-Maximum: 7.2/Linux-Maximum: 7.3/' META
-    # patch needed for: None of the expected "iops->create()" interfaces were detected.
-    cd ..
-    rm -fv source
-    ln -sfv source_patched source
-}
-
 build() {
     _kernver="$(cat /usr/src/${_linuxprefix}/version)"
 

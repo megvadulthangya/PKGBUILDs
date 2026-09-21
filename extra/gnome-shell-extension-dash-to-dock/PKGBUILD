@@ -7,7 +7,7 @@
 # Contributor: Christopher Krooß <didi2002 at web.de>
 
 pkgname=gnome-shell-extension-dash-to-dock
-pkgver=106
+pkgver=108
 pkgrel=1
 pkgdesc="A dock for the GNOME Shell"
 arch=('any')
@@ -18,10 +18,10 @@ makedepends=(
   'git'
   'sassc'
 )
-checkdepends=('eslint') ## Tests not compatible with 10.x
+checkdepends=('eslint')
 install='dash-to-dock.install'
 source=("git+https://github.com/micheleg/dash-to-dock.git#tag=extensions.gnome.org-v$pkgver?signed")
-sha256sums=('769a400216d535db65ecf61eb55fe069f6c862ca5e736e6bb3ef2faa9012c422')
+sha256sums=('6bec4a582aca3fb805710074edfbbbb41ae6e13c8e9250332dc989326a8942c0')
 validpgpkeys=('D4C501DA48EB797A081750939449C2F50996635F') # Marco Trevisan <marco@trevi.me>
 
 build() {
@@ -29,10 +29,12 @@ build() {
   make
 }
 
-# check() {
-#   cd dash-to-dock
-#   make check
-# }
+check() {
+  cd dash-to-dock
+
+  ## Tests not compatible with eslint 10.x
+  # make check
+}
 
 package() {
   cd dash-to-dock

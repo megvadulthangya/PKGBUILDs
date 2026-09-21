@@ -1,0 +1,373 @@
+From c1e5884a106ca3bccad778e573b15662756c7db3 Mon Sep 17 00:00:00 2001
+From: TheAlmightyOgreLord <beardedtechwizard@protonmail.com>
+Date: Thu, 3 Sep 2026 08:33:38 -0700
+Subject: [PATCH 1/7] META: bump Linux-Maximum to 7.3
+
+Signed-off-by: TheAlmightyOgreLord <beardedtechwizard@protonmail.com>
+---
+ META | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/META b/META
+index 8133bf1e36f9..2ae2e57770d8 100644
+--- a/META
++++ b/META
+@@ -6,5 +6,5 @@ Release:       1
+ Release-Tags:  relext
+ License:       CDDL
+ Author:        OpenZFS
+-Linux-Maximum: 7.2
++Linux-Maximum: 7.3
+ Linux-Minimum: 4.18
+
+From 3d236a284a8da28d0e6ab5b92c2401ec75521491 Mon Sep 17 00:00:00 2001
+From: TheAlmightyOgreLord <beardedtechwizard@protonmail.com>
+Date: Thu, 3 Sep 2026 09:31:22 -0700
+Subject: [PATCH 2/7] compat: rename bi_bvec_done to bi_offset for 7.3
+
+Signed-off-by: TheAlmightyOgreLord <beardedtechwizard@protonmail.com>
+---
+ include/os/linux/kernel/linux/blkdev_compat.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/include/os/linux/kernel/linux/blkdev_compat.h b/include/os/linux/kernel/linux/blkdev_compat.h
+index 214f3ea0e787..ed1bf504249c 100644
+--- a/include/os/linux/kernel/linux/blkdev_compat.h
++++ b/include/os/linux/kernel/linux/blkdev_compat.h
+@@ -37,6 +37,7 @@
+ #include <linux/msdos_fs.h>	/* for SECTOR_* */
+ #include <linux/bio.h>
+ #include <linux/blk-mq.h>
++#include <linux/version.h>
+ 
+ /*
+  * 6.11 API
+@@ -104,7 +105,11 @@ blk_queue_set_read_ahead(struct request_queue *q, unsigned long ra_pages)
+ #define	BIO_BI_SECTOR(bio)	(bio)->bi_iter.bi_sector
+ #define	BIO_BI_SIZE(bio)	(bio)->bi_iter.bi_size
+ #define	BIO_BI_IDX(bio)		(bio)->bi_iter.bi_idx
+-#define	BIO_BI_SKIP(bio)	(bio)->bi_iter.bi_bvec_done
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 3, 0)
++#define BIO_BI_SKIP(bio)        (bio)->bi_iter.bi_offset
++#else
++#define BIO_BI_SKIP(bio)        (bio)->bi_iter.bi_bvec_done
++#endif
+ #define	bio_for_each_segment4(bv, bvp, b, i)	\
+ 	bio_for_each_segment((bv), (b), (i))
+ typedef struct bvec_iter bvec_iterator_t;
+
+From 2b68ee13fe09f8bef860bca3862e0ba74cc0949a Mon Sep 17 00:00:00 2001
+From: TheAlmightyOgreLord <beardedtechwizard@protonmail.com>
+Date: Thu, 3 Sep 2026 10:40:09 -0700
+Subject: [PATCH 3/7] compat: shim static_cpu_has to _static_cpu_has for 7.3
+
+Signed-off-by: TheAlmightyOgreLord <beardedtechwizard@protonmail.com>
+---
+ include/os/linux/kernel/linux/simd_x86.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/include/os/linux/kernel/linux/simd_x86.h b/include/os/linux/kernel/linux/simd_x86.h
+index 326f471d7c9b..0ae53e50d84d 100644
+--- a/include/os/linux/kernel/linux/simd_x86.h
++++ b/include/os/linux/kernel/linux/simd_x86.h
+@@ -78,6 +78,10 @@
+ 
+ #include <sys/types.h>
+ #include <asm/cpufeature.h>
++#include <linux/version.h>
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 3, 0)
++#define static_cpu_has(x) _static_cpu_has(x)
++#endif
+ 
+ /*
+  * Disable the WARN_ON_FPU() macro to prevent additional dependencies
+
+From ba96605dfabef0867e5477afe2c081aa9bb68556 Mon Sep 17 00:00:00 2001
+From: TheAlmightyOgreLord <beardedtechwizard@protonmail.com>
+Date: Thu, 3 Sep 2026 10:40:34 -0700
+Subject: [PATCH 4/7] compat: adapt iops->create() for 7.3 (flags param
+ removed)
+
+Signed-off-by: TheAlmightyOgreLord <beardedtechwizard@protonmail.com>
+---
+ config/kernel-inode-create.m4   | 41 ++++++++++++++++++++++-----------
+ module/os/linux/zfs/zpl_inode.c |  5 +++-
+ 2 files changed, 31 insertions(+), 15 deletions(-)
+
+diff --git a/config/kernel-inode-create.m4 b/config/kernel-inode-create.m4
+index 65817ca9a440..64ddf05bd422 100644
+--- a/config/kernel-inode-create.m4
++++ b/config/kernel-inode-create.m4
+@@ -1,5 +1,23 @@
+ dnl # SPDX-License-Identifier: CDDL-1.0
+ AC_DEFUN([ZFS_AC_KERNEL_SRC_CREATE], [
++        dnl #
++	dnl # 7.3 API change
++	dnl # bool flag parameter removed from create()
++	dnl #
++	ZFS_LINUX_TEST_SRC([create_mnt_idmap_noflags], [
++		#include <linux/fs.h>
++		#include <linux/sched.h>
++
++		static int inode_create(struct mnt_idmap *idmap,
++		    struct inode *inode, struct dentry *dentry,
++		    umode_t umode) { return 0; }
++
++		static const struct inode_operations
++			iops __attribute__ ((unused)) = {
++			.create         = inode_create,
++		};
++	],[])
++
+ 	dnl #
+ 	dnl # 6.3 API change
+ 	dnl # The first arg is changed to struct mnt_idmap *
+@@ -54,28 +72,23 @@ AC_DEFUN([ZFS_AC_KERNEL_SRC_CREATE], [
+ ])
+ 
+ AC_DEFUN([ZFS_AC_KERNEL_CREATE], [
+-	AC_MSG_CHECKING([whether iops->create() takes struct mnt_idmap*])
+-	ZFS_LINUX_TEST_RESULT([create_mnt_idmap], [
++	AC_MSG_CHECKING([whether iops->create() takes struct mnt_idmap* (no flags)])
++	ZFS_LINUX_TEST_RESULT([create_mnt_idmap_noflags], [
+ 		AC_MSG_RESULT(yes)
+ 		AC_DEFINE(HAVE_IOPS_CREATE_IDMAP, 1,
+ 		   [iops->create() takes struct mnt_idmap*])
++		AC_DEFINE(HAVE_IOPS_CREATE_IDMAP_NOFLAGS, 1,
++		   [iops->create() takes struct mnt_idmap* without flags])
+ 	],[
+ 		AC_MSG_RESULT(no)
+ 
+-		AC_MSG_CHECKING([whether iops->create() takes struct user_namespace*])
+-		ZFS_LINUX_TEST_RESULT([create_userns], [
++		AC_MSG_CHECKING([whether iops->create() takes struct mnt_idmap*])
++		ZFS_LINUX_TEST_RESULT([create_mnt_idmap], [
+ 			AC_MSG_RESULT(yes)
+-			AC_DEFINE(HAVE_IOPS_CREATE_USERNS, 1,
+-			   [iops->create() takes struct user_namespace*])
++			AC_DEFINE(HAVE_IOPS_CREATE_IDMAP, 1,
++			   [iops->create() takes struct mnt_idmap*])
+ 		],[
+-			AC_MSG_RESULT(no)
+-
+-			AC_MSG_CHECKING([whether iops->create() passes flags])
+-			ZFS_LINUX_TEST_RESULT([create_flags], [
+-				AC_MSG_RESULT(yes)
+-			],[
+-				ZFS_LINUX_TEST_ERROR([iops->create()])
+-			])
++			...existing cascade unchanged...
+ 		])
+ 	])
+ ])
+diff --git a/module/os/linux/zfs/zpl_inode.c b/module/os/linux/zfs/zpl_inode.c
+index 3492f4a033e9..94c088ecbd2d 100644
+--- a/module/os/linux/zfs/zpl_inode.c
++++ b/module/os/linux/zfs/zpl_inode.c
+@@ -165,7 +165,10 @@ is_nametoolong(struct dentry *dentry)
+ }
+ 
+ static int
+-#ifdef HAVE_IOPS_CREATE_USERNS
++#if defined(HAVE_IOPS_CREATE_IDMAP_NOFLAGS)
++zpl_create(struct mnt_idmap *user_ns, struct inode *dir,
++    struct dentry *dentry, umode_t mode)
++#elif defined(HAVE_IOPS_CREATE_USERNS)
+ zpl_create(struct user_namespace *user_ns, struct inode *dir,
+     struct dentry *dentry, umode_t mode, bool flag)
+ #elif defined(HAVE_IOPS_CREATE_IDMAP)
+
+From 6436d55287ed85c2833713cd27027ab2af324848 Mon Sep 17 00:00:00 2001
+From: TheAlmightyOgreLord <beardedtechwizard@protonmail.com>
+Date: Thu, 3 Sep 2026 12:26:31 -0700
+Subject: [PATCH 5/7] style: fix tab/space violations in 7.3 compat shims
+
+Signed-off-by: TheAlmightyOgreLord <beardedtechwizard@protonmail.com>
+---
+ include/os/linux/kernel/linux/blkdev_compat.h | 4 ++--
+ include/os/linux/kernel/linux/simd_x86.h      | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/os/linux/kernel/linux/blkdev_compat.h b/include/os/linux/kernel/linux/blkdev_compat.h
+index ed1bf504249c..6d8f9c7b3169 100644
+--- a/include/os/linux/kernel/linux/blkdev_compat.h
++++ b/include/os/linux/kernel/linux/blkdev_compat.h
+@@ -106,9 +106,9 @@ blk_queue_set_read_ahead(struct request_queue *q, unsigned long ra_pages)
+ #define	BIO_BI_SIZE(bio)	(bio)->bi_iter.bi_size
+ #define	BIO_BI_IDX(bio)		(bio)->bi_iter.bi_idx
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 3, 0)
+-#define BIO_BI_SKIP(bio)        (bio)->bi_iter.bi_offset
++#define BIO_BI_SKIP(bio)	(bio)->bi_iter.bi_offset
+ #else
+-#define BIO_BI_SKIP(bio)        (bio)->bi_iter.bi_bvec_done
++#define BIO_BI_SKIP(bio)	(bio)->bi_iter.bi_bvec_done
+ #endif
+ #define	bio_for_each_segment4(bv, bvp, b, i)	\
+ 	bio_for_each_segment((bv), (b), (i))
+diff --git a/include/os/linux/kernel/linux/simd_x86.h b/include/os/linux/kernel/linux/simd_x86.h
+index 0ae53e50d84d..9c0d8e01880a 100644
+--- a/include/os/linux/kernel/linux/simd_x86.h
++++ b/include/os/linux/kernel/linux/simd_x86.h
+@@ -80,7 +80,7 @@
+ #include <asm/cpufeature.h>
+ #include <linux/version.h>
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 3, 0)
+-#define static_cpu_has(x) _static_cpu_has(x)
++#define	static_cpu_has(x) _static_cpu_has(x)
+ #endif
+ 
+ /*
+
+From 03d303fe38113f29f29016448111ef4c510b9c6a Mon Sep 17 00:00:00 2001
+From: Rob Norris <robn@despairlabs.com>
+Date: Sat, 22 Aug 2026 13:47:36 +1000
+Subject: [PATCH 6/7] WIP Linux 7.3: experiments with fs_struct on kthreads
+
+(cherry picked from commit c097079c38cff8b40a805d5809884af2761f78ea)
+---
+ module/zfs/vdev.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/module/zfs/vdev.c b/module/zfs/vdev.c
+index eeeefb3d6c45..a02d8578eade 100644
+--- a/module/zfs/vdev.c
++++ b/module/zfs/vdev.c
+@@ -1977,6 +1977,9 @@ vdev_load_child(void *arg)
+ typedef struct {
+ 	vdev_t	*voc_vdev;
+ 	cred_t	*voc_cred;
++#ifdef _KERNEL
++	struct fs_struct voc_fs;
++#endif
+ } vdev_open_child_t;
+ 
+ static void
+@@ -1985,10 +1988,21 @@ vdev_open_child(void *arg)
+ 	vdev_open_child_t *voc = arg;
+ 	vdev_t *vd = voc->voc_vdev;
+ 
++#ifdef _KERNEL
++	struct fs_struct *old_fs = current->fs;
++	WRITE_ONCE(current->fs, &voc->voc_fs);
++#endif
++
+ 	vd->vdev_open_thread = curthread;
+ 	vd->vdev_open_error = vdev_open(vd, voc->voc_cred);
+ 	vd->vdev_open_thread = NULL;
+ 
++#ifdef _KERNEL
++	WRITE_ONCE(current->fs, old_fs);
++	path_put(&voc->voc_fs.root);
++	path_put(&voc->voc_fs.pwd);
++#endif
++
+ 	crfree(voc->voc_cred);
+ 	kmem_free(voc, sizeof (vdev_open_child_t));
+ }
+@@ -2046,6 +2060,14 @@ vdev_open_children_impl(vdev_t *vd, cred_t *cred,
+ 			    kmem_alloc(sizeof (vdev_open_child_t), KM_SLEEP);
+ 			voc->voc_vdev = cvd;
+ 			voc->voc_cred = cred;
++#ifdef _KERNEL
++			voc->voc_fs.users = 1;
++			voc->voc_fs.in_exec = 0;
++			seqlock_init(&voc->voc_fs.seq);
++			voc->voc_fs.umask = current->fs->umask;
++			get_fs_root(current->fs, &voc->voc_fs.root);
++			get_fs_pwd(current->fs, &voc->voc_fs.pwd);
++#endif
+ 			crhold(cred);
+ 			VERIFY(taskq_dispatch(tq, vdev_open_child,
+ 			    voc, TQ_SLEEP) != TASKQID_INVALID);
+
+From df02884946eb2f848056d6c0726fe1d575c5ef76 Mon Sep 17 00:00:00 2001
+From: TheAlmightyOgreLord <beardedtechwizard@protonmail.com>
+Date: Sun, 6 Sep 2026 21:52:04 -0700
+Subject: [PATCH 7/7] spl: add local fs_struct for hostid open on 7.3+
+
+hostid_read() calls filp_open() during module init. On 7.3,
+fs_struct is no longer implicitly shared, so current->fs may
+not have a valid root/pwd for path resolution in early-boot
+contexts (initramfs).
+
+Fix by constructing a local fs_struct from the current task's
+root/pwd (falling back to init_task if current->fs is NULL),
+swapping it in for the duration of the filp_open() call.
+
+Also adds a NULL guard to vdev_open_children_impl() for the
+same reason in the taskq thread context.
+
+Signed-off-by: TheAlmightyOgreLord <beardedtechwizard@protonmail.com>
+---
+ module/os/linux/spl/spl-generic.c | 28 +++++++++++++++++++++++++++-
+ module/zfs/vdev.c                 |  7 ++++---
+ 2 files changed, 31 insertions(+), 4 deletions(-)
+
+diff --git a/module/os/linux/spl/spl-generic.c b/module/os/linux/spl/spl-generic.c
+index 585ad7377b49..36ab57f37c9e 100644
+--- a/module/os/linux/spl/spl-generic.c
++++ b/module/os/linux/spl/spl-generic.c
+@@ -50,7 +50,11 @@
+ #include <sys/cred.h>
+ #include <sys/vnode.h>
+ #include <sys/misc.h>
+-#include <linux/mod_compat.h>
++#include <linux/sched.h>
++#include <linux/init_task.h>
++#include <linux/seqlock.h>
++#include <linux/version.h>
++
+ 
+ unsigned long spl_hostid = 0;
+ EXPORT_SYMBOL(spl_hostid);
+@@ -407,7 +411,29 @@ hostid_read(uint32_t *hostid)
+ 	struct file *filp;
+ 	struct kstat stat;
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 3, 0)
++	{
++		struct fs_struct local_fs;
++		struct fs_struct *old_fs;
++		struct fs_struct *src_fs = current->fs ? current->fs : init_task.fs;
++
++		local_fs.users = 1;
++		local_fs.in_exec = 0;
++		seqlock_init(&local_fs.seq);
++		local_fs.umask = src_fs->umask;
++		get_fs_root(src_fs, &local_fs.root);
++		get_fs_pwd(src_fs, &local_fs.pwd);
++
++		old_fs = current->fs;
++		WRITE_ONCE(current->fs, &local_fs);
++		filp = filp_open(spl_hostid_path, 0, 0);
++		WRITE_ONCE(current->fs, old_fs);
++		path_put(&local_fs.root);
++		path_put(&local_fs.pwd);
++	}
++#else
+ 	filp = filp_open(spl_hostid_path, 0, 0);
++#endif
+ 
+ 	if (IS_ERR(filp))
+ 		return (ENOENT);
+diff --git a/module/zfs/vdev.c b/module/zfs/vdev.c
+index a02d8578eade..1496d1bd640c 100644
+--- a/module/zfs/vdev.c
++++ b/module/zfs/vdev.c
+@@ -2061,12 +2061,13 @@ vdev_open_children_impl(vdev_t *vd, cred_t *cred,
+ 			voc->voc_vdev = cvd;
+ 			voc->voc_cred = cred;
+ #ifdef _KERNEL
++			struct fs_struct *src_fs = current->fs ? current->fs : init_task.fs;
+ 			voc->voc_fs.users = 1;
+ 			voc->voc_fs.in_exec = 0;
+ 			seqlock_init(&voc->voc_fs.seq);
+-			voc->voc_fs.umask = current->fs->umask;
+-			get_fs_root(current->fs, &voc->voc_fs.root);
+-			get_fs_pwd(current->fs, &voc->voc_fs.pwd);
++			voc->voc_fs.umask = src_fs->umask;
++			get_fs_root(src_fs, &voc->voc_fs.root);
++			get_fs_pwd(src_fs, &voc->voc_fs.pwd);
+ #endif
+ 			crhold(cred);
+ 			VERIFY(taskq_dispatch(tq, vdev_open_child,

@@ -12,7 +12,7 @@ url="http://zfsonlinux.org/"
 license=('CDDL-1.0')
 groups=("${_linuxprefix}-extramodules")
 depends=("${_linuxprefix}" "zfs-utils=${pkgver}")
-makedepends=("${_linuxprefix}-headers" "zfs-dkms=${pkgver}")
+makedepends=("${_linuxprefix}-headers" "zfs-dkms-7.3-compat=${pkgver}")
 provides=("zfs=${pkgver}" "ZFS-MODULE=${pkgver}")
 options=('!strip')
 

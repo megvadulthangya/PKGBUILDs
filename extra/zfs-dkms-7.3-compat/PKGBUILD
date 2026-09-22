@@ -1,0 +1,74 @@
+# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
+# Maintainer: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+
+# Arch credits:
+# Maintainer: Kevin Stolp <kevinstolp@gmail.com>
+# Contributor: Eli Schwartz <eschwartz@archlinux.org>
+# Contributor: Iacopo Isimbaldi <isiachi@rhye.it>
+
+pkgname=zfs-dkms-7.3-compat
+_pkgname=zfs-dkms
+pkgver=2.4.4
+pkgrel=1
+pkgdesc="Kernel modules for the Zettabyte File System."
+arch=('x86_64')
+url="https://zfsonlinux.org/"
+license=('CDDL-1.0')
+depends=("zfs-utils=${pkgver}" 'dkms')
+provides=("ZFS-MODULE=${pkgver}" 'zfs-dkms')
+# ambiguous, provided for backwards compat, pls don't use
+provides+=('zfs')
+conflicts=('zfs-dkms')
+source=("https://github.com/zfsonlinux/zfs/releases/download/zfs-${pkgver/_/-}/zfs-${pkgver/_/-}.tar.gz"{,.asc}
+        '0001-only-build-the-module-in-dkms.conf.patch'
+        'kernel-7.3-compat.patch')
+sha256sums=('2a3c70d55a37cc71618a95a60e81ad66530201eb118d37741dc92efcf848c8b1'
+            'SKIP'
+            '8d5c31f883a906ab42776dcda79b6c89f904d8f356ade0dab5491578a6af55a5'
+            '6d504724b6d384ad8b9b64a457efc5352d1870815b6fd5346915c55f9ae919d7')
+b2sums=('dd18ce2274009c723e5e331de4eb68d435f161807cd4d7cc129b37ebe196ccd072fa8eb43514bdebefb6b3067a9c0e742bc4128975bb3740f6be96acf6c31b0b'
+        'SKIP'
+        '58dc2494e71b50833d44c126b72acad52e9817626542afbc245b7ba82009e8c8252ebde6023592aac42d9942207e7655c0a421da9067fbdd619746ebc372d791'
+        '51ebc156426ef1c14d7faf8910dfb58dca94dc835102ad4799879bf58e70fdf5daa77fb90471adeab8a2f2a4b4c46d544d281e7a2d0b7422b9c233d944afbfa1')
+validpgpkeys=('4F3BA9AB6D1F8D683DC2DFB56AD860EED4598027'  # Tony Hutter (GPG key for signing ZFS releases) <hutter2@llnl.gov>
+              'C33DF142657ED1F7C328A2960AB9E991C6AF658B') # Brian Behlendorf <behlendorf1@llnl.gov>
+
+prepare() {
+  cd "${_pkgname%-dkms}-${pkgver}"
+
+  patch -p1 -i ../0001-only-build-the-module-in-dkms.conf.patch
+  patch -p1 -i ../kernel-7.3-compat.patch
+
+  # remove unneeded sections from module build
+  sed -ri "/^AC_CONFIG_FILES\(\[$/,/^\]\)$/{
+/^AC_CONFIG_FILES\(\[$/p
+/^\]\)$/p
+/^\s*(module\/.+|${_pkgname%-dkms}.release|Makefile)$/!d
+}
+/^AC_CONFIG_FILES\(\[.*\]\)$/d
+" configure.ac
+
+  autoreconf -fi
+}
+
+build() {
+  cd "${_pkgname%-dkms}-${pkgver}"
+
+  ./scripts/dkms.mkconf -n ${_pkgname%-dkms} -v ${pkgver} -f dkms.conf
+  ./scripts/make_gitrev.sh include/zfs_gitrev.h
+}
+
+package() {
+  cd "${_pkgname%-dkms}-${pkgver}"
+  local dkmsdir="${pkgdir}/usr/src/${_pkgname%-dkms}-${pkgver}"
+
+  install -d "${dkmsdir}"/{config,scripts}
+  cp -a configure dkms.conf Makefile.in META ${_pkgname%-dkms}_config.h.in ${_pkgname%-dkms}.release.in include/ module/ "${dkmsdir}"/
+  cp config/compile config/config.* config/missing config/*sh "${dkmsdir}"/config/
+  
+  # permissions and delete unwanted files
+  chmod 644 "${dkmsdir}"/config/config.*
+  chmod 755 "${dkmsdir}"/config/*sh
+  #rm -v "${dkmsdir}"/config/config.*~
+  cp scripts/dkms.postbuild "${dkmsdir}"/scripts/
+}

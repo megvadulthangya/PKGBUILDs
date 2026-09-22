@@ -8,7 +8,7 @@
 
 pkgname=zfs-dkms
 pkgver=2.4.4
-pkgrel=2
+pkgrel=3
 pkgdesc="Kernel modules for the Zettabyte File System."
 arch=('x86_64')
 url="https://zfsonlinux.org/"
@@ -35,7 +35,7 @@ prepare() {
   cd "${pkgname%-dkms}-${pkgver}"
 
   patch -p1 -i ../0001-only-build-the-module-in-dkms.conf.patch
-  patch -p1 -i ../kernel-7.3-compat.patch
+  #patch -p1 -i ../kernel-7.3-compat.patch
 
   # remove unneeded sections from module build
   sed -ri "/^AC_CONFIG_FILES\(\[$/,/^\]\)$/{

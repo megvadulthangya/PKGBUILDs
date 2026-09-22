@@ -5,8 +5,8 @@
 # Contributor: Nate Simon <njsimon10@gmail.com>
 
 pkgname=xviewer
-pkgver=3.4.16
-pkgrel=3
+pkgver=3.4.17
+pkgrel=1
 pkgdesc="Simple image viewer"
 arch=('x86_64')
 url="https://github.com/linuxmint/xviewer"
@@ -40,7 +40,6 @@ makedepends=(
   'gobject-introspection'
   'gtk-doc'
   'itstool'
-  'librsvg'
   'meson'
 )
 checkdepends=(
@@ -50,21 +49,16 @@ checkdepends=(
 optdepends=(
   'libavif: AVIF support'
   'libheif: HEIF support'
-  'librsvg: for scaling svg images'
   'webp-pixbuf-loader: webp support'
   'xviewer-plugins: Extra plugins'
   'yelp: for viewing the help manual'
 )
-source=("git+https://github.com/linuxmint/xviewer.git#tag=$pkgver"
-        '0001-libpeas-1.38.patch')
-sha256sums=('391f5e5033c1356b006682bfd5c68d22c32f3a6d3645befa7d5cab176effa9fc'
+source=("git+https://github.com/linuxmint/xviewer.git#tag=$pkgver")
+sha256sums=('98e475cf04360b72380a1868f273f712c9732291ce953118a4b15b4e364cf2f4'
             'c6dd5fc2d9cdc75786b814d57ea0254b64f8f4e7c13891b54c1ee9b0438b6bfb')
 
 prepare() {
   cd "$pkgname"
-
-  # Fix build with libpeas 1.38
-  git apply -3 ../0001-libpeas-1.38.patch
 
   # Update state after opening images
   # https://github.com/linuxmint/xviewer/pull/238

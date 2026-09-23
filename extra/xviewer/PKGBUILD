@@ -6,7 +6,7 @@
 
 pkgname=xviewer
 pkgver=3.4.17
-pkgrel=1
+pkgrel=1.0
 pkgdesc="Simple image viewer"
 arch=('x86_64')
 url="https://github.com/linuxmint/xviewer"
@@ -53,16 +53,17 @@ optdepends=(
   'xviewer-plugins: Extra plugins'
   'yelp: for viewing the help manual'
 )
-source=("git+https://github.com/linuxmint/xviewer.git#tag=$pkgver")
+source=("git+https://github.com/linuxmint/xviewer.git#tag=$pkgver"
+        'xviewer-update-state.patch')
 sha256sums=('98e475cf04360b72380a1868f273f712c9732291ce953118a4b15b4e364cf2f4'
-            'c6dd5fc2d9cdc75786b814d57ea0254b64f8f4e7c13891b54c1ee9b0438b6bfb')
+            'f99aa8e1b1ecb897a7e7356771a788aec12e854fcdb393dbcba6bd8b2e0e4456')
 
 prepare() {
   cd "$pkgname"
 
   # Update state after opening images
   # https://github.com/linuxmint/xviewer/pull/238
-  sed -i '/xviewer_window_display_image (window, job->image);/a\		update_action_groups_state (window);' src/xviewer-window.c
+  git apply -3 ../xviewer-update-state.patch
 }
 
 build() {

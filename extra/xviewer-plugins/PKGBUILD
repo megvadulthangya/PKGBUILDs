@@ -4,19 +4,20 @@
 
 pkgname=xviewer-plugins
 pkgver=3.4.4
-pkgrel=1
-pkgdesc="Plugins for xviewer. X-Apps Project."
+pkgrel=1.0
+pkgdesc="Plugins for Xviewer"
 arch=('x86_64')
 url="https://github.com/linuxmint/xviewer-plugins"
 license=('GPL-2.0-or-later')
 groups=('x-apps')
 depends=(
   'cinnamon-desktop'
+  'gtk3'
   'lcms2'
   'libexif'
   'libpeas'
-  'librsvg'
   'osm-gps-map'
+  'python-gobject'
   'xviewer'
 )
 makedepends=(

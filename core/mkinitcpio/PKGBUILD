@@ -9,13 +9,13 @@
 
 pkgname=mkinitcpio
 pkgver=42
-pkgrel=2
+pkgrel=3
 pkgdesc="Modular initramfs image creation utility"
 arch=('any')
 url='https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio'
 license=('GPL-2.0-only')
 depends=('awk' 'mkinitcpio-busybox' 'kmod' 'util-linux' 'libarchive' 'coreutils'
-         'bash' 'binutils' 'diffutils' 'findutils' 'grep' 'gzip' 'filesystem' 'zstd' 'systemd' 'systemd-sysvcompat')
+         'bash' 'binutils' 'diffutils' 'findutils' 'grep' 'gzip' 'filesystem' 'zstd' 'systemd')
 checkdepends=('bats' 'bats-assert' 'lzop')
 makedepends=('asciidoctor' 'git' 'meson')
 optdepends=('xz: Use lzma or xz compression for the initramfs image'
@@ -54,6 +54,10 @@ prepare() {
       echo "Applying patch $src..."
       patch -Np1 < "../$src"
   done
+
+  # https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio/-/work_items/311
+  # https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio/-/merge_requests/496
+  git cherry-pick -n 7b72ad4379b5befbffe3cc07bc05bcf883fd6556
 }
 
 build(){

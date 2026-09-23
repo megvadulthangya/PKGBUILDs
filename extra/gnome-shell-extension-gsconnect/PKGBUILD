@@ -1,7 +1,7 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=gnome-shell-extension-gsconnect
-pkgver=72
+pkgver=73
 pkgrel=1
 pkgdesc="KDE Connect implementation with GNOME Shell integration"
 arch=('any')
@@ -17,13 +17,13 @@ checkdepends=(
   'desktop-file-utils'
 )
 optdepends=(
-  'evolution-data-server: access contacts in GNOME Online Accounts, Evolution or the local address book.'
-  'gsound: sound effects'
-  'nautilus-python: share files from Nautilus'
-  'nemo-python: share files from Nemo'
+  'evolution-data-server: Use contacts from GNOME Online Accounts or Evolution'
+  'gsound: Sound effects'
+  'nautilus-python: Share files from Nautilus'
+  'nemo-python: Share files from Nemo'
 )
 source=("git+https://github.com/GSConnect/gnome-shell-extension-gsconnect#tag=v$pkgver")
-sha256sums=('0e09f3b361a7f12c9cb2178113874c912702a2c4989cc1f0fab9708c82bd281f')
+sha256sums=('577bdbe829dd7bf333c6366977c4657bcf4d947ac2158f46ed761ce18114de76')
 
 build() {
   local meson_options=(

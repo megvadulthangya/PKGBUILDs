@@ -3,7 +3,7 @@
 # Contributor: Balló György <ballogyor+arch at gmail dot com>
 
 pkgname=gnome-shell-extension-arc-menu
-pkgver=69.2
+pkgver=70.0
 pkgrel=1
 pkgdesc="Application menu extension for GNOME Shell"
 arch=('any')
@@ -17,7 +17,7 @@ makedepends=('git')
 conflicts=('gnome-shell-extension-arcmenu')
 replaces=('gnome-shell-extension-arcmenu')
 source=("git+https://gitlab.com/arcmenu/ArcMenu.git#tag=v$pkgver")
-sha256sums=('f1dd5b4d9ea78c4d1de05e67b939c13c2ad80961a0fa3ffe5b8b43e2adc36b18')
+sha256sums=('65eab04eb4ca08ab748103ac0ec57cb497a574cdf829e5b6c9375df9f8f56163')
 
 prepare() {
   cd ArcMenu

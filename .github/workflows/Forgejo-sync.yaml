@@ -1,0 +1,48 @@
+name: Sync main from Manjaro Forgejo (PKGBUILDs)
+
+on:
+  schedule:
+    - cron: '0 5 * * *'   # naponta 05:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    env:
+      GIT_HTTP_TIMEOUT: 300
+      GIT_HTTP_LOW_SPEED_LIMIT: 500
+      GIT_HTTP_LOW_SPEED_TIME: 60
+
+    steps:
+      - name: Checkout GitHub repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Add Forgejo remote
+        run: |
+          git remote remove forgejo 2>/dev/null || true
+          git remote add forgejo https://code.manjaro.org/packages/PKGBUILDs.git
+
+      - name: Fetch Forgejo with retry
+        uses: nick-fields/retry@v4
+        with:
+          timeout_minutes: 5
+          max_attempts: 100
+          retry_wait_seconds: 30
+          command: git fetch forgejo
+
+      - name: Configure git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync main branch
+        run: |
+          git checkout -B main origin/main
+          git merge forgejo/main --no-edit || true
+          git push origin main

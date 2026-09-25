@@ -157,7 +157,7 @@ prepare() {
   echo "Fix OS naming FS#33393..."
   sed 's|GNU/Linux|Linux|' -i "util/grub.d/10_linux.in"
 
-  # https://github.com/calamares/calamares/issues/918
+  # https://codeberg.org/calamares/calamares/issues/918
   echo "Use efivarfs modules"
   patch -Np1 -i "${srcdir}/grub-use-efivarfs.patch"
 

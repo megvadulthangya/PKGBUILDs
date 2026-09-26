@@ -157,7 +157,7 @@ prepare() {
   echo "Fix OS naming FS#33393..."
   sed 's|GNU/Linux|Linux|' -i "util/grub.d/10_linux.in"
 
-  # https://github.com/calamares/calamares/issues/918
+  # https://codeberg.org/calamares/calamares/issues/918
   echo "Use efivarfs modules"
   patch -Np1 -i "${srcdir}/grub-use-efivarfs.patch"
 
@@ -223,6 +223,9 @@ _platform=(
   x86_64-efi
 )
 
+# disable cross-compilation when building for aarch64
+[[ $CARCH == "aarch64" ]] && _platform=(aarch64-efi)
+
 build() {
   for i in ${_platform[@]}; do
     echo "Unset CFLAGS for build..."
@@ -258,6 +261,36 @@ build() {
 }
 
 package_grub() {
+  backup=(
+    etc/default/grub
+    etc/grub.d/40_custom
+  )
+  install="${pkgname}.install"
+  conflicts=(
+    grub-common
+    grub-emu
+    grub-legacy
+  )
+  conflicts_x86_64=(
+    grub-bios
+    grub-efi-x86_64
+  )
+  replaces=(
+    grub-common
+    grub-emu
+  )
+  replaces_x86_64=(
+    grub-bios
+    grub-efi-x86_64
+  )
+  provides=(
+    grub-common
+    grub-emu
+  )
+  provides_x86_64=(
+    grub-bios
+    grub-efi-x86_64
+  )
   optdepends=(
     'dosfstools: For grub-mkrescue FAT FS and EFI support'
     'efibootmgr: For grub-install EFI support'
@@ -271,30 +304,6 @@ package_grub() {
     'sdl: For grub-emu SDL support'
     'update-grub: Script to update Grub Menu on Linux Kernel updates'
     'install-grub: Script to install Grub after package updates'
-  )
-  backup=(
-    etc/default/grub
-    etc/grub.d/40_custom
-  )
-  install="${pkgname}.install"
-  conflicts=(
-    grub-bios
-    grub-common
-    grub-efi-${CARCH}
-    grub-emu
-    grub-legacy
-  )
-  replaces=(
-    grub-common
-    grub-bios
-    grub-emu
-    grub-efi-${CARCH}
-  )
-  provides=(
-    grub-bios
-    grub-common
-    grub-efi-${CARCH}
-    grub-emu
   )
 
   for i in ${_platform[@]}; do

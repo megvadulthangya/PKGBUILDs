@@ -9,7 +9,7 @@ _commit=
 _rc=rc4
 pkgbase=linux${_basever}
 pkgver=7.3.0rc4
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=(GPL-2.0-only)
@@ -80,7 +80,7 @@ else
 fi
 
 sha256sums=('c27dd1eb568b70e07fa8807e22fdb5cbe17c1338d3c781ca3159f7a6f13cd0dd'
-            '2b839a07d5cf35a638c0d88fd3a3b0e81a3cd06ddfee078efb2c4c00359275f6'
+            'a8dd6d419196fea8e5dacbef4197a50d2256ec0a6ed569198a2bb565a53eff05'
             'ccbd1a83d4f25020b9a19cf6d7a16d9d0b3d50543082dd233f514fb655bf042c'
             'c21170eba77438abb8b8ab02aeccf16bfb2467a01303509945aa6b3a0fd16d31'
             '37f3222fafbe67dec3740933be37867e0c378468f71e9a6d5d6a07c2a2a568fe'

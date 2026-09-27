@@ -1,17 +1,21 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=hunspell-sk
-pkgver=2.4.8
+pkgver=2.4.9
 pkgrel=1
 pkgdesc="Slovak dictionary for Hunspell"
 arch=('any')
-url="https://github.com/sk-spell/hunspell-sk"
-license=('GPL-2.0-only AND LGPL-2.1-only AND MPL-1.1')
+url="https://www.sk-spell.sk.cx"
+license=(
+  'GPL-2.0-only'
+  'LGPL-2.1-only'
+  'MPL-1.1'
+)
 makedepends=('qt6-webengine')
 optdepends=('hunspell: the spell checking libraries and apps')
 provides=('hunspell-dictionary')
 source=("https://github.com/sk-spell/hunspell-sk/releases/download/v$pkgver/$pkgver-sk@dictionaries.addons.mozilla.org.xpi")
-sha256sums=('68c360b35ca02c2a0d99389d7558de380206ee1a6b571cc8a68c402c4f15f73e')
+sha256sums=('a5511087a7ed6e2230cbda8626b5fb8137e1d6205c4642696153c182f18ce372')
 
 package() {
   cd dictionaries

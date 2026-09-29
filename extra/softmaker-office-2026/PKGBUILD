@@ -7,9 +7,9 @@
 ## https://www.softmaker.com/download/servicepacks
 
 pkgname=softmaker-office-2026
-_revision=1502
+_revision=1504
 pkgver=2026.${_revision}
-pkgrel=2
+pkgrel=1
 pkgdesc="GDPR-compliant alternative to Microsoft Office"
 arch=('x86_64')
 url="https://www.softmaker.com/"
@@ -37,7 +37,7 @@ source=( "https://www.softmaker.net/down/${pkgname}-${_revision}-amd64.tgz"
         'presentations26'
         'textmaker26'
         "${pkgname}.xml")
-sha256sums=('d36f39cf6500bcad8d9605947bfb1e6084e951285447202ce0205be98d00ec1d'
+sha256sums=('bdfdebfcc3730d117b6cf20350ad14aa5cb6eda2d9c29a69f5f6afce70b610ef'
             'a859406ea51ae91f7043ad11e129cfe43dc79703b3b437175d603f770db70780'
             'ee40d6f6b9ac2908c2566529ec9c69d043a0b35ba00af61ec518a572618ed46b'
             '9d3a56f7ca745f827d1312ff1f9b2ed8231d580f66d7f9f3cf5c12817f9490a5'

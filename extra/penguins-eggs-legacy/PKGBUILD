@@ -5,7 +5,7 @@
 _bootloadersver=26.1.16
 
 pkgname=penguins-eggs-legacy
-pkgver=26.7.18
+pkgver=26.9.29
 pkgrel=1
 pkgdesc="A console tool that allows you to remaster your system and redistribute it as live images on USB sticks or via PXE"
 arch=('any')
@@ -56,7 +56,7 @@ options=('!strip')
 source=("git+https://github.com/pieroproietti/penguins-eggs-legacy.git#tag=v$pkgver"
         "bootloaders.tar.gz::https://github.com/pieroproietti/penguins-bootloaders/releases/download/v$_bootloadersver/bootloaders.tar.gz")
 
-sha256sums=('95319b7e31274d360a6f0f57aded0f00701bdbd8dd274099596b42aceb0c865c'
+sha256sums=('fcd64f6bf3b8112f6721fcf431ceeb4572e0915681fa5e0dfa5989ac6c8226ff'
             'ec50a56a513e40c4b1f731452d08b9cd82ddd8c70a4d94ef502c80a1fa4ea504')
 
 build() {

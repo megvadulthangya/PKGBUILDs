@@ -5,7 +5,7 @@
 # https://build.opensuse.org/package/show/home:Slimbook/python3-slimbook
 
 pkgname=python-slimbook
-pkgver=1.21.0
+pkgver=1.27.0
 pkgrel=1
 pkgdesc="Python bindings for libslimbook and some extra goodies for Slimbook python based apps"
 arch=('any')
@@ -24,7 +24,7 @@ makedepends=(
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 #source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+sourcefiles/$pkgname/$pkgver/${pkgname}_${pkgver}.tar.xz")
 #noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('546370f71f89eed86a3aa2899ab3d55b27e0e536051a693c212b7dedaf5c55b2')
+sha256sums=('65065420d42f26ae0fd35aa1545fa765b7e11eb2a04abe44a50bc3ff2738bfd9')
 
 prepare() {
 #  mkdir -p "$pkgname-$pkgver"

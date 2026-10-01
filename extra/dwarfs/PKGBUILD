@@ -2,7 +2,7 @@
 # Contributor: KokaKiwi <kokakiwi+aur@kokakiwi.net>
 
 pkgname=dwarfs
-pkgver=0.15.7
+pkgver=0.15.8
 pkgrel=1
 pkgdesc="A fast high compression read-only file system"
 arch=('x86_64' 'aarch64')
@@ -37,7 +37,7 @@ makedepends=(
   'utf8cpp'
 )
 source=("https://github.com/mhx/dwarfs/releases/download/v$pkgver/$pkgname-$pkgver.tar.xz")
-sha256sums=('363c7fdbf7bad490a6b8d63186da8643c1aeb17ca54cce1193d7b0ebc57bc6bd')
+sha256sums=('a2382a2d06f4539b1c53b8b4f800776945e2f13f71c0a3226d3bab3e1b25fe04')
 
 build() {
   local cmake_options=(

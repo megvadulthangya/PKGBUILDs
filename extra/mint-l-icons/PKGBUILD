@@ -2,21 +2,18 @@
 # Contributor: Sam Burgos <santiago.burgos1089@gmail.com>
 
 pkgname=mint-l-icons
-pkgver=1.8.3
+pkgver=1.8.4
 pkgrel=1
 pkgdesc="A flat, colorful, and modern theme based on Paper and Moka (legacy)."
 arch=('any')
 url="https://github.com/linuxmint/mint-l-icons"
 license=('GPL-3.0-or-later AND CC-BY-SA-4.0')
-depends=(
-  'gtk-update-icon-cache'
-  'xapp-symbolic-icons'
-)
+depends=('xapp-symbolic-icons')
 makdepends=('git')
 options=('!strip')
 source=("http://packages.linuxmint.com/pool/main/m/$pkgname/${pkgname}_${pkgver}.tar.xz")
 noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('db5287b6cfcb51de4ea76fe9b8aef7a04f10cf16660e570f2e58ed5b0625f736')
+sha256sums=('3b010dcead010d62f46e7326e1b4bf44f4c2ed839ae3d089c1f4b591d83ed694')
 
 prepare() {
   mkdir -p "$pkgname-$pkgver"

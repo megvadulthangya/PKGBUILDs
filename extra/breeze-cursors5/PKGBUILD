@@ -20,9 +20,7 @@ sha256sums=('b20443f360164a070416b642215e71ac4df89f544f27805907e7fc074e18fb6f'
             '44d34ea2c1a31747d282a50b6c35641c03030f3d104adf56ffa0244860958da9'
             'cfd4dcfb513271bd74a042c41f53d1f25102f963123df4d830c366d399c25cb6')
 validpgpkeys=('E0A3EB202F8E57528E13E72FD7574483BB57B18D'  # Jonathan Esk-Riddell <jr@jriddell.org>
-              '0AAC775BB6437A8D9AF7A3ACFE0784117FBCE11D'  # Bhushan Shah <bshah@kde.org>
-              'D07BD8662C56CB291B316EB2F5675605C74E02CF'  # David Edmundson <davidedmundson@kde.org>
-              '1FA881591C26B276D7A5518EEAAF29B42A678C20') # Marco Martin <notmart@gmail.com>
+              '0AAC775BB6437A8D9AF7A3ACFE0784117FBCE11D') # Bhushan Shah <bshah@kde.org>
 
 package() {
   cd "breeze-$pkgver"

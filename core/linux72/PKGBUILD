@@ -8,8 +8,8 @@ _kernelname=-MANJARO
 _commit=
 _rc=
 pkgbase=linux${_basever}
-pkgver=7.2.8
-pkgrel=2
+pkgver=7.2.9
+pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=(GPL-2.0-only)
@@ -101,7 +101,7 @@ else
 fi
 
 sha256sums=('f9fef3d14c0df53819026f4be74459835c2a0b0dcbf5b5bbd9ea19f0829402b3'
-            'b509067e26487f23795b30640bbfdff0afba0c48290f1100fe880c9bdf369776'
+            '2e2d0cb6764865726c37315e04ddfc405553bf9ac59929a72e037591d75fd21a'
             'c9d84bb378602d8a21f7895095f101227db6248c96e85eb54fd07fc96b14e8a3'
             'e5e98d62b63704cecdf32dbe6a9bafea6e70b23fa8e01fe96ca220ac6036392e'
             'c21170eba77438abb8b8ab02aeccf16bfb2467a01303509945aa6b3a0fd16d31'

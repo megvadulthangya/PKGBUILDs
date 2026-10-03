@@ -22,8 +22,7 @@ makedepends=(extra-cmake-modules
 source=(https://download.kde.org/stable/$pkgname/$pkgname-$pkgver.tar.xz{,.sig})
 sha256sums=('b423461aa9c6dc0a7c96170261114ee9ecfe6296c97c9be8522d1942d125a5ad'
             'SKIP')
-validpgpkeys=(39FFA93CAE9C6AFC212AD00202325448204E452A  # Carl Schwan <carl@carlschwan.eu>
-              0AAC775BB6437A8D9AF7A3ACFE0784117FBCE11D) # Bhushan Shah (mykolab address) <bshah@mykolab.com>
+validpgpkeys=(0AAC775BB6437A8D9AF7A3ACFE0784117FBCE11D) # Bhushan Shah (mykolab address) <bshah@mykolab.com>
 
 build() {
   unset LDFLAGS

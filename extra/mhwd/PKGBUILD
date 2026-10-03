@@ -4,7 +4,7 @@
 
 pkgname=mhwd
 pkgver=0.6.6
-pkgrel=7
+pkgrel=8
 pkgdesc="Manjaro Linux Hardware Detection library and application"
 arch=('x86_64')
 url="https://code.manjaro.org/applications/mhwd"

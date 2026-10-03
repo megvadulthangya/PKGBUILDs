@@ -9,7 +9,7 @@ pkgname=(
   'manjaro-settings-manager-kstatus-notifier'
 )
 pkgver=0.6.0
-pkgrel=4
+pkgrel=5
 pkgdesc="Manjaro Linux System Settings Tool"
 arch=('x86_64')
 url="https://code.manjaro.org/applications/manjaro-settings-manager"

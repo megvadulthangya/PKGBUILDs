@@ -3,7 +3,7 @@
 # Contributor: Luke Street <luke.street@encounterpc.com>
 
 pkgname=gnome-shell-extension-gamemode
-pkgver=21.0
+pkgver=22.0
 pkgrel=1
 pkgdesc="GameMode Status Indicator for GNOME Shell"
 arch=('any')
@@ -18,7 +18,7 @@ makedepends=(
   'meson'
 )
 source=("git+https://github.com/Trsnaqe/gamemode-shell-extension.git#tag=V$pkgver")
-sha256sums=('aaa602b596717e10c5fe4dcca0506d07e1b1f33be95ff94e127c42f4302470e7')
+sha256sums=('cde9192e3124bbe9a36274d465c1d41ab7629d231f39c115d3bd1e2e20a94b45')
 
 build() {
   arch-meson gamemode-shell-extension build

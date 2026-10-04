@@ -12,7 +12,7 @@
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'nvidia-390xx-dkms' 'mhwd-nvidia-390xx')
 pkgver=390.157
-pkgrel=33
+pkgrel=34
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('custom')
@@ -23,6 +23,7 @@ source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.r
         'nvidia-drm-outputclass.conf'
         'nvidia-390xx-utils.sysusers'
         'nvidia-390xx.rules'
+        'nvidia-390xx-utils.conf'
         'systemd-homed-override.conf'
         'systemd-suspend-override.conf'
         'kernel-6.1-flag.patch'
@@ -52,7 +53,8 @@ sha256sums=('162317a49aa5a521eb888ec12119bfe5a45cec4e8653efc575a2d04fb05bf581'
             '11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
             '089d6dc247c9091b320c418b0d91ae6adda65e170934d178cdd4e9bd0785b182'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
-            '0e54249a7754b668b436f0f7aa7e95fff68edbb12a93dbee4660e09a8c695f84'
+            'e30714f9b473d810c28763d067e0b85c75f86f23618d968b49b9d1fced9a1dd6'
+            'aa3106f169f1640a9f73af1e7bf5346800eecb030078b646a860d4994d0e0992'
             'c5aa7b8abe69e72bfdc6b9ee8afbfd350bcc557e894558f2e6e4087fa9aa0dd8'
             '1d053c5078387021338cfc3a732bed61be1a20a549775573788e9134775c8149'
             '4720a28debfec358b9f4f8abd36c05215bcba99b0eae241ea99ee16f046f9a29'
@@ -293,9 +295,7 @@ package_nvidia-390xx-utils() {
     install -Dm644 "${srcdir}/nvidia-390xx-utils.sysusers" "${pkgdir}/usr/lib/sysusers.d/$pkgname.conf"
 
     install -Dm644 "${srcdir}/nvidia-390xx.rules" "$pkgdir"/usr/lib/udev/rules.d/60-nvidia-390xx.rules
-
-    echo "blacklist nouveau" | install -Dm644 /dev/stdin "${pkgdir}/usr/lib/modprobe.d/${pkgname}.conf"
-    echo "nvidia-uvm" | install -Dm644 /dev/stdin "${pkgdir}/usr/lib/modules-load.d/${pkgname}.conf"
+    install -Dm644 "${srcdir}/nvidia-390xx-utils.conf" "$pkgdir"/usr/lib/modprobe.d/nvidia-390xx-utils.conf
 
     create_links
 }

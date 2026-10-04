@@ -8,7 +8,7 @@ _linuxprefix=linux73
 
 pkgname="${_linuxprefix}-nvidia-open"
 pkgver=615.71.09
-pkgrel=0.6
+pkgrel=0.7
 pkgdesc="NVIDIA open kernel modules for ${_linuxprefix}"
 arch=('x86_64')
 url="https://www.nvidia.com/"
@@ -19,17 +19,6 @@ makedepends=("${_linuxprefix}-headers" "nvidia-open-dkms=$pkgver")
 provides=("nvidia=${pkgver}" 'NVIDIA-MODULE')
 conflicts=("${_linuxprefix}-nvidia")
 options=('!strip' '!debug')
-source=('0003-Pass-dmem_cgroup_init-to-dmem_cgroup_register_region.patch')
-sha256sums=('97d226aaddd54bdd2d4e3ae8e28f8eb23d053c48845cf8d051d2342e97546d9c')
-
-prepare() {
-    mkdir -p nvidia/${pkgver}/source_patched
-    cp -av /usr/src/nvidia-${pkgver}/* nvidia/${pkgver}/source_patched
-    cd nvidia/${pkgver}/source_patched/kernel-open
-    patch -p2 -i $srcdir/0003-Pass-dmem_cgroup_init-to-dmem_cgroup_register_region.patch
-    cd ../..
-    ln -sfv source_patched source
-}
 
 build() {
     _kernver="$(cat /usr/src/${_linuxprefix}/version)"

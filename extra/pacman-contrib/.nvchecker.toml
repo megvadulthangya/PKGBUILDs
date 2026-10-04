@@ -1,5 +1,0 @@
-[pacman-contrib]
-source="archpkg"
-#source = "git"
-#git = "https://gitlab.archlinux.org/pacman/pacman-contrib.git"
-#prefix = "v"

@@ -45,10 +45,7 @@ source=(
 b2sums=('85ef8077172eb7fe181f2b3ab1585e7d8e467cec5acc163c9438364d4f8f127d4c582141a91899c859689b08a7b8c470668f9fd883f1457254b6cf913b75ce2e'
         'afa272ad0b3f5b417326269ff55cb943a8c811860f13a48867e0673ebcb58df8a4b91756a0aceace9860f8754880b95328d6670fd9c0420f81d859db4631b19c'
         '71589207f5125d6f5ef352a5007d162aef3c702b14d46660fa724a25bc47dd8bf355de7e9246f56c18fd4bcd33d211d12567bb25ad0dc279b900dfde8d77ffd9')
-validpgpkeys=(
-  8307C0A224BABDA1BABD0EB9A6EEEC9E0136164A # Jonas Ådahl <jadahl@gmail.com>
-  9038F70CA72FAC9D10C6327B89AFE307C861D158 # Georges Basile Stavracas Neto (Primary Key) <georges.stavracas@gmail.com>
-)
+validpgpkeys=(9038F70CA72FAC9D10C6327B89AFE307C861D158) # Georges Basile Stavracas Neto (Primary Key) <georges.stavracas@gmail.com>
 
 prepare() {
   cd $pkgname
@@ -74,4 +71,3 @@ package() {
 }
 
 # vim:set sw=2 sts=-1 et:
-

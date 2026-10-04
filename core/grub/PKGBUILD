@@ -47,9 +47,9 @@ depends=(
 )
 
 validpgpkeys=(
-  'E53D497F3FA42AD8C9B4D1E835A93B74E82E4209'  # Vladimir 'phcoder' Serbinenko <phcoder@gmail.com>
-  'BE5C23209ACDDACEB20DB0A28C8189F1988C2166'  # Daniel Kiper <dkiper@net-space.pl>
-  '95D2E9AB8740D8046387FD151A09227B1F435A33') # Paul Hardy <unifoundry@unifoundry.com>
+  '95D2E9AB8740D8046387FD151A09227B1F435A33' # Paul Hardy <unifoundry@unifoundry.com>
+  'DFB62CC1A987E6C76EBF8143916EC0708CDFDDFD' # Leonardo Sandoval Gonzalez <lsandova@redhat.com>
+)
 source=(
   "git+https://gitlab.freedesktop.org/gnu-grub/grub.git#tag=grub-${_pkgver}?signed"
   "git+https://git.savannah.gnu.org/git/gnulib.git"

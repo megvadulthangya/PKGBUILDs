@@ -53,8 +53,7 @@ sha256sums=('2ca1f17051a430f6fed1196e4952717507171acfd97d96577212502703b25deb'
 if [[ ! "$_sub" == "0" ]]; then
   source+=("$url/pub/linux/kernel/v6.x/patch-${_pkgver}.xz")
 fi
-validpgpkeys=('64254695FFF0AA4466CC19E67B96E8162A8CF5D1' # Sebastian Andrzej Siewior
-            '4FE5E3262872E4CC')
+
 pkgver() {
   echo "${_pkgver}_${_rtpatchver}"
 }

@@ -3,22 +3,26 @@
 # Contributor: Dušan Simić <dusan.simic1810@gmail.com>
 
 pkgname=morewaita-icon-theme
-pkgver=50
+pkgver=50.1
 pkgrel=1
 pkgdesc="An expanded Adwaita-styled companion icon theme with extra icons"
 arch=('any')
 url="https://github.com/somepaulo/MoreWaita"
 license=('GPL-3.0-or-later')
 depends=('adwaita-icon-theme')
-makedepends=('git')
+makedepends=(
+  'git'
+  'meson'
+)
 options=('!strip')
 source=("git+https://github.com/somepaulo/MoreWaita#tag=v$pkgver")
-sha256sums=('5bd97240b74bc86c401fdb01a5b9afb1ca0bd69b6a0637d31c84a6e1d5fd0d6f')
+sha256sums=('c86cd92b7772ee1a6ebf2bc2adc73c54fb25b226ad5b8391b2a25fd6f49a2acd')
+
+build() {
+  arch-meson MoreWaita build
+  meson compile -C build
+}
 
 package() {
-  cd MoreWaita
-  install -Dm644 index.theme -t "$pkgdir/usr/share/icons/MoreWaita/"
-  cp -a 16x16 scalable symbolic "$pkgdir/usr/share/icons/MoreWaita"
-
-  find "$pkgdir/usr/share/icons/MoreWaita" -name 'meson.build' -type f | xargs rm -v
+  meson install -C build --no-rebuild --destdir "$pkgdir"
 }

@@ -7,7 +7,7 @@
 
 pkgname=plymouth
 pkgver=26.134.222
-pkgrel=3
+pkgrel=4
 pkgdesc="Graphical boot splash screen"
 arch=('x86_64' 'aarch64')
 url="https://www.freedesktop.org/wiki/Software/Plymouth/"
@@ -43,7 +43,7 @@ backup=(
 )
 install="$pkgname.install"
 source=("git+https://gitlab.freedesktop.org/plymouth/$pkgname.git#tag=$pkgver"
-        "0001-Revert-src-Hide-console-text-when-splash-is-requeste.patch"
+        "$pkgname-font-file.c"
         "$pkgname.initcpio_hook"
         "$pkgname.initcpio_install"
         "$pkgname-shutdown.initcpio_install"
@@ -53,10 +53,10 @@ source=("git+https://gitlab.freedesktop.org/plymouth/$pkgname.git#tag=$pkgver"
         "sddm-$pkgname.service"
         "$pkgname-deactivate.service")  # needed for sddm
 sha256sums=('3c645362756f906e2b78ad9a079b085da651765bc831de8c0a9dcbceecddc39c'
-            'a1a4c4174fedc7805e7e84ef48bc8f09f7cddad6d6a6d03b97fba3f86cce2a4f'
+            '1c7a9147730bb55ab75e2ccd0a517555b4536b6ce6b34476a9bb6b9c29ded6f5'
             'de852646e615e06d4125eb2e646d0528d1e349bd9e9877c08c5d32c43d288b6f'
-            'f8800f97902862434c1d69e321d9b466669e32485cdc7341d1d2f09ffd655ea9'
-            '5b518e8cb90b230be5d5151ff77171340e5148c687b8b0833b7f9716a52637d5'
+            'b1e4db8e55e35f44e1fb8918285a3a8fd3681567a30f57c1f4d3c0d6461e1d2f'
+            'a954c7c4e322fdb18bd4f8cb552a7d4bb9707469eb759720ee39ecfbae547e1e'
             'f895de71fce0cbf480527cd7f1bd9d2c81b255e0848cfb64e8fc4b37dc599d17'
             '06b31999cf60f49e536c7a12bc1c4f75f2671feb848bf5ccb91a963147e2680d'
             '86d0230d9393c9d83eb7bb430e6b0fb5e3f32e78fcd30f3ecd4e6f3c30b18f71'
@@ -85,11 +85,17 @@ build() {
   arch-meson build "$pkgname" \
    -Dlogo=/usr/share/pixmaps/manjaro-logo.png
   meson compile -C build
+
+  # Compile font helper script
+  gcc -o plymouth-font-file plymouth-font-file.c $CFLAGS $LDFLAGS $(pkg-config --cflags --libs pangoft2)
 }
 
 package() {
   meson install -C build --destdir "$pkgdir"
   rm -r "$pkgdir/run"
+
+  # Install font helper script
+  install -Dm755 plymouth-font-file "$pkgdir/usr/lib/plymouth/plymouth-font-file"
 
   # Install mkinitcpio hook
   install -Dm644 "$pkgname.initcpio_hook" "$pkgdir/usr/lib/initcpio/hooks/$pkgname"

@@ -4,11 +4,11 @@
 # Contributor: Patrick Brisbin <pbrisbin@gmail.com>
 
 pkgname=manjaro-downgrade
-pkgver=3.0
+pkgver=3.1
 pkgrel=1
 pkgdesc="Bash script for downgrading one or more packages to a version in your cache or the M.L.A."
 arch=('any')
-url="https://codeberg.org/Ste74/manjaro-downgrade/$pkgname"
+url="https://codeberg.org/Ste74/$pkgname"
 license=('GPL')
 backup=(etc/xdg/manjaro-downgrade/manjaro-downgrade.conf)
 source=("https://codeberg.org/Ste74/$pkgname/archive/v$pkgver.tar.gz")	
@@ -21,4 +21,4 @@ package() {
   make DESTDIR="$pkgdir" PREFIX=/usr install
 }
 
-sha256sums=('28bf8cd2b32453eaa4e4f164b64ae74a90778545edbd228635339d5260ffff60')
+sha256sums=('fd957165ec7a7676e5e63d2a4fb35c89b12fdce8f53ec657daa59929e7797faf')

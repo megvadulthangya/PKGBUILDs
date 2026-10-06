@@ -3,7 +3,7 @@
 
 pkgname=plymouth-theme-manjaro
 pkgver=2.2
-pkgrel=6
+pkgrel=7
 pkgdesc="Plymouth theme for Manjaro"
 arch=('any')
 url="https://code.manjaro.org/artwork/plymouth-manjaro"
@@ -11,9 +11,9 @@ license=('GPL-3.0-or-later')
 depends=('plymouth')
 makedepends=('git')
 install='plymouth.install'
-_commit=6cd9021070932fbcf6f9ba3f7c650e38973664cd
+_commit=7d66c15c592642473267098c44853bec16e45845
 source=("git+https://code.manjaro.org/artwork/plymouth-manjaro.git#commit=${_commit}")
-sha256sums=('c67e79b70df7b2a87cf8142706660d6cc464dff1c83576959331f8e8ad911bfe')
+sha256sums=('6a4f34d48a352944e07419d20f7888f6f8041097167fd8b5593ed6d6047a3cb7')
 
 package() {
   cd plymouth-manjaro

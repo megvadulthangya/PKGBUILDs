@@ -3,16 +3,20 @@
 # Contributor: Helmut Stult
 
 pkgbase=mint-artwork
-pkgname=('cinnamon-sounds' 'mint-artwork-styles')
-pkgver=1.9.3
+pkgname=(
+  'cinnamon-sounds'
+  'mint-artwork-styles'
+)
+pkgver=1.9.4
 pkgrel=1
+pkgdesc="Linux Mint Artwork and Resources"
 epoch=1
 arch=('any')
 url="https://www.linuxmint.com"
 license=('GPL-3.0-or-later')
 source=("http://packages.linuxmint.com/pool/main/m/$pkgbase/${pkgbase}_${pkgver}.tar.xz")
 noextract=("${pkgbase}_${pkgver}.tar.xz")
-sha256sums=('5c7dd166af65b347bd98cedc66109290d314c0c27205e15375f9f4d3a3daa8d8')
+sha256sums=('1a87e41a001a2ecbd9db331ed3cd0eab72529766759b92f5a0672dc3f2c52a1c')
 
 prepare() {
   mkdir -p "$pkgbase-$pkgver"
@@ -25,7 +29,8 @@ package_cinnamon-sounds() {
 
   cd "$pkgbase-$pkgver"
   install -Dm644 usr/share/$pkgbase/sounds/* -t \
-    "${pkgdir}/usr/share/sounds/LinuxMint/stereo/"
+    "${pkgdir}/usr/share/$pkgbase/sounds/"
+  install -d "${pkgdir}/usr/share/sounds"
   cp -r usr/share/sounds/* "${pkgdir}/usr/share/sounds/"
 }
 

@@ -161,7 +161,6 @@ prepare() {
   #echo "fgrep is obsolescent using grep -F"
   #patch -Np1 -i "${srcdir}/fgrep-is-obsolescent-using-grep-F.patch"
 
-
   echo "Add Ubuntu patches"
   echo "Grub should be maybe quiet"
   patch -Np1 -i "${srcdir}/0001-grub-maybe-quiet.patch"

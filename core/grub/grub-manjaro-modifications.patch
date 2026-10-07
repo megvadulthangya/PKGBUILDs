@@ -12,38 +12,40 @@ Patch modified based on ideas from Felix aka fstirlitz,
 given at https://bugs.archlinux.org/task/37904?getfile=11257
 ---
 
-diff --git a/util/grub-mkconfig.in b/util/grub-mkconfig.in
-index d3e879b8e..4a56a5958 100644
---- a/util/grub-mkconfig.in
-+++ b/util/grub-mkconfig.in
-@@ -263,7 +263,8 @@ export GRUB_DEFAULT \
-   GRUB_BADRAM \
-   GRUB_OS_PROBER_SKIP_LIST \
-   GRUB_DISABLE_SUBMENU \
--  GRUB_FORCE_EFI_ALL_VIDEO
-+  GRUB_FORCE_EFI_ALL_VIDEO \
+diff -Npur a/util/grub-mkconfig.in b/util/grub-mkconfig.in
+--- a/util/grub-mkconfig.in	2026-10-06 14:02:08.637184625 -0600
++++ b/util/grub-mkconfig.in	2026-10-06 14:06:08.579177305 -0600
+@@ -285,7 +285,8 @@ export GRUB_DEFAULT \
+   GRUB_SIMPLE_ACCESS_LEVEL \
+   GRUB_ADVANCED_ACCESS_LEVEL \
+   GRUB_RECOVERY_ACCESS_LEVEL \
+-  GRUB_BOOTNEXT_OMIT_INACTIVE
++  GRUB_BOOTNEXT_OMIT_INACTIVE \
 +  GRUB_ROOT_FS_RO
  
  if test "x${grub_cfg}" != "x"; then
    rm -f "${grub_cfg}.new"
-diff --git a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
-index e8b01c0d0..c3dd34a59 100644
---- a/util/grub.d/10_linux.in
-+++ b/util/grub.d/10_linux.in
-@@ -92,9 +92,11 @@ linux_entry ()
+diff -Npur a/util/grub.d/10_linux.in b/util/grub.d/10_linux.in
+--- a/util/grub.d/10_linux.in	2026-10-06 13:23:35.699732104 -0600
++++ b/util/grub.d/10_linux.in	2026-10-06 13:39:18.854635633 -0600
+@@ -100,11 +100,15 @@ linux_entry ()
    if [ x$type != xsimple ] ; then
        case $type in
  	  recovery)
--	      title="$(gettext_printf "%s, with Linux %s (recovery mode)" "${os}" "${version}")" ;;
-+	      title="$(gettext_printf "%s (Kernel: %s - recovery mode)" "${os}" "${version}")" ;;
+-	      title="$(gettext_printf "%s, with Linux %s (recovery mode)" "${os}" "${version}")"
++	      title="$(gettext_printf "%s (Kernel: %s - recovery mode)" "${os}" "${version}")"
++	      allowed_user_list="$(grub_get_auth_user_list $GRUB_RECOVERY_ACCESS_LEVEL)"
++	      ;;
 +	  fallback)
-+	      title="$(gettext_printf "%s (Kernel: %s - fallback initramfs)" "${os}" "${version}")" ;;
++	      title="$(gettext_printf "%s (Kernel: %s - fallback initramfs)" "${os}" "${version}")"
+ 	      allowed_user_list="$(grub_get_auth_user_list $GRUB_RECOVERY_ACCESS_LEVEL)"
+ 	      ;;
  	  *)
--	      title="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")" ;;
-+	      title="$(gettext_printf "%s (Kernel: %s)" "${os}" "${version}")" ;;
+-	      title="$(gettext_printf "%s, with Linux %s" "${os}" "${version}")"
++	      title="$(gettext_printf "%s (Kernel: %s)" "${os}" "${version}")"
+ 	      allowed_user_list="$(grub_get_auth_user_list $GRUB_ADVANCED_ACCESS_LEVEL)"
+ 	      ;;
        esac
-       if [ x"$title" = x"$GRUB_ACTUAL_DEFAULT" ] || [ x"Previous Linux versions>$title" = x"$GRUB_ACTUAL_DEFAULT" ]; then
- 	  replacement_title="$(echo "Advanced options for ${OS}" | sed 's,>,>>,g')>$(echo "$title" | sed 's,>,>>,g')"
 @@ -106,7 +108,7 @@ linux_entry ()
    else
        echo "menuentry '$(echo "$os" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-simple-$boot_device_id' {" | sed "s/^/$submenu_indentation/"

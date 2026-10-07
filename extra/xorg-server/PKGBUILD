@@ -7,7 +7,7 @@
 pkgbase=xorg-server
 pkgname=('xorg-server' 'xorg-server-xephyr' 'xorg-server-xvfb' 'xorg-server-xnest'
          'xorg-server-common' 'xorg-server-devel' 'xorg-server-src')
-pkgver=21.1.24
+pkgver=21.1.25
 pkgrel=1
 arch=('x86_64')
 license=('LicenseRef-Adobe-Display-PostScript'
@@ -44,7 +44,7 @@ validpgpkeys=('3C2C43D9447D5938EF4551EBE23B7E70B467F0BF'  # Peter Hutterer (Who-
               '67DC86F2623FC5FD4BB5225D14706DBE1E4B4540'  # Olivier Fourdan <fourdan@xfce.org>
               'FD0004A26EADFE43A4C3F249C6F7AE200374452D'  # Povilas Kanapickas <povilas@radix.lt>
               '3BB639E56F861FA2E86505690FDD682D974CA72A') # Matt Turner <mattst88@gmail.com>
-sha512sums=('7c3ffcd3c73e7f3efc18ad36807297d5ed84fb2d7aecbec877422e1619d03f8c27435ec42b9cea8a4b7699281ee10d54a1ada236f2ed15ae34978550eb40d4d1'
+sha512sums=('c961aeadb92ab7330f4c99257063e037502a2255f4e3a44ff884b5145b58264fed582581d121154731c6f6b1bd42d938fd8d24fd73cf4c81125bec5f6914c880'
             '12e70d32f09430f23b2ff3ab3c0b4835c96666bd79d6edb4c48a35be0b8ec6e161957de7bbfc7746752107b56ee52ec702ba0d9fa4a9270971bbde14011ac37e'
             'c54aee40a7709f66d938ff9bc595d4a9819f81fb5ac27c24a6742775140b47f001b75801622d2cf077afbfca93428a6375d4a95895c28c36d0bdcfee33358e95'
             '3c895cb2c3bbec1772984c699ade36b78b98625a6b656968b1cba1e897a89e21b212594d02c3c1e61e35c1937ffb39b2a26bb623c1a1fbaf65d21c7ef8192758'

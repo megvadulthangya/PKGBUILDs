@@ -1,11 +1,12 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 # Contributor: Filipe Laíns (FFY00) <lains@archlinux.org>
 # Contributor: Maxime Gauduin <alucryd@archlinux.org>
+# Contributor: Robin Candau <antiz@archlinux.org>
 # Contributor: Frederik “Freso” S. Olesen <freso.dk@gmail.com>
 
 pkgname=lutris
 pkgver=0.5.22
-pkgrel=1
+pkgrel=2
 pkgdesc="Open Gaming Platform"
 arch=('any')
 url="https://lutris.net"
@@ -15,7 +16,6 @@ depends=(
   'cabextract'
   'curl'
   'glib2'
-  'gnome-desktop'
   'gtk3'
   'hicolor-icon-theme'
   'libnotify'
@@ -86,6 +86,11 @@ prepare() {
   # https://github.com/lutris/lutris/issues/5659
   protoc --proto_path=galaxy_blizzard_plugin/src --python_out=. product_db.proto
   cp -vf product_db_pb2.py "$pkgname/$pkgname/util/battlenet/product_db_pb2.py"
+
+  cd lutris
+  # Deprecated/removed attributes in GnomeDesktop
+  # https://github.com/lutris/lutris/pull/6833
+  git cherry-pick -n fd91646fbae9b0f7ce90fb5d7dda34e8f13856fe
 }
 
 build() {
@@ -98,7 +103,7 @@ check() {
 
   cd "$pkgname"
 
-  # Python tests: Disabled because either they're querying hardware 
+  # Python tests: Disabled because either they're querying hardware
   # or trying to spawn processes
   pytest \
     --ignore=tests/test_{api,dialogs,installer}.py \

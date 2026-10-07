@@ -9,8 +9,8 @@
 
 pkgbase=nvidia-utils
 pkgname=('nvidia-utils' 'opencl-nvidia' 'nvidia-dkms' 'nvidia-open-dkms' 'nvidia-settings' 'mhwd-nvidia')
-pkgver=615.71.09
-pkgrel=2
+pkgver=615.78.08
+pkgrel=1
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('LicenseRef-NVIDIA-Driver-License-Agreement')
@@ -30,8 +30,7 @@ source=('mhwd-nvidia'
         "https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run"
         "https://download.nvidia.com/XFree86/NVIDIA-kernel-module-source/${_pkg_open}.tar.xz"
         'limit-vram-usage'
-        'cuda-no-stable-perf-limit'
-        '0003-Pass-dmem_cgroup_init-to-dmem_cgroup_register_region.patch')
+        'cuda-no-stable-perf-limit')
 
 sha512sums=('5c641465a7c5e9e55eb5ee93f3a601d1d8fbe61134d3f8ca5013e35d4ce9422a0523f0cd3acbdef34a65de0e5eaddf99554d2f3bfd8aba57882ae501c98c7395'
             'de7116c09f282a27920a1382df84aa86f559e537664bb30689605177ce37dc5067748acf9afd66a3269a6e323461356592fdfc624c86523bf105ff8fe47d3770'
@@ -42,11 +41,10 @@ sha512sums=('5c641465a7c5e9e55eb5ee93f3a601d1d8fbe61134d3f8ca5013e35d4ce9422a052
             'b19bba1f6f96ce745f8e91091a29c9abac19daf923951d65af26163d7f792cd3328175d2d55bbdcb3be35aaec43ec5ec2e864c8a00adf6fdc8c40e29ffd84b8f'
             '704dad990eff6635625bd64be314a72d13fc7149e25463d9deef4a077f86c558589aa31f292c18b6c7022d0d0ad5b1dff638ee4f1daa73cada2e7fefa36db52a'
             '2ce46e6cd7be6e6bfb7e84889568d162d52d70c6c29d62cebab323830fd5f55072670b345b62cc06c07a24a3649cd055f5380d06a194bd47505556139d8d45ba'
-            '446091ef413d815ecc2de0253b1c0065cb12f623a219a3a5c38e48a0084aa73adbb7426c3c334a52f42520da8c6b2186b84f8fbf96a2260d13a320123f804bc0'
-            '0b32c1aaa5ed261bdee7232d5e5d293e53c42ac9896f49c4be4e6b9b6bce1370cb69a7f7fde5531a7537d5e925d651c36bcb512a2f827c2d2cb26ede33f7c057'
+            'fb0c16c9812e60ac1f5ca663f03dd84f386ae4ad55beab4655c65fe8d094c98246c5acbcf9e385e93e38dbfb340472712fc80593a8bf0be47f34ff871bf4d83d'
+            '5ced2c7e3e9df21f8494ea439ac2103307fcbcb295a3f11e5fdf4f1dbeda3f0b13800a06f8147ebd064f98897c24e92f5de82023a8ca43a582694d951c9620c9'
             '9bb16a0d77bc66c6f885e31542d3e616aa3f778a3e693cb93d77ef76d112d05c89c3c3fc39723840f138a15fb33870840f3b61e57f8d0fc5688d41785dcc4cb9'
-            'e8bfc46134e9121e0375c841ee02513b9b55c861d8af57090fc4d43791a2481b3c1d282f02bc93b7d25026a2f2bcb6e1730365e64c9ca1e6db69b67b0e54051a'
-            '18d7911ad06ebf1c800376b711ce2dd190b2d0154fc44bdfc42ef8e9a6bcb6a397c9af933621dae4cc9c956553a24fc8038803d93a54b1f6cde35a2c3a3adc41')
+            'e8bfc46134e9121e0375c841ee02513b9b55c861d8af57090fc4d43791a2481b3c1d282f02bc93b7d25026a2f2bcb6e1730365e64c9ca1e6db69b67b0e54051a')
 
 
 create_links() {
@@ -63,9 +61,6 @@ prepare() {
     sh "${_pkg}.run" --extract-only
     cd "${_pkg}"
     bsdtar -xf nvidia-persistenced-init.tar.bz2
-
-    # Linux 7.3 support
-    patch -Np1 -i "${srcdir}/0003-Pass-dmem_cgroup_init-to-dmem_cgroup_register_region.patch" -d "${srcdir}/${_pkg_open}/"
 
     # With 595+ open kernel modules, video memory preservation is handled by
     # kernel suspend notifiers, making the nvidia suspend/hibernate services unnecessary.

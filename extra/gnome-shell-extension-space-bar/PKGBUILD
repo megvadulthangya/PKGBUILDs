@@ -1,7 +1,7 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=gnome-shell-extension-space-bar
-pkgver=38
+pkgver=40
 pkgrel=1
 pkgdesc="GNOME Shell extension that shows workspaces buttons in top panel"
 arch=('any')
@@ -12,11 +12,10 @@ makedepends=(
   'git'
   'jq'
   'pnpm'
-  'typescript'
   'zip'
 )
 source=("git+https://github.com/christopher-l/space-bar.git#tag=v$pkgver")
-sha256sums=('3897be8f82022e9139f6a0650907d8407b08df71beb4d102147777499801b998')
+sha256sums=('f24a2670175e1c568dc250b64bafacf0c2d361dfb2a07a1a8ec41322e296e800')
 
 prepare() {
   cd space-bar

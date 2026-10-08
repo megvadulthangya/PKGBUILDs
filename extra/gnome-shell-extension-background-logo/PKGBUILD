@@ -3,7 +3,7 @@
 # Manjaro logo by Bogdan Covaciu
 
 pkgname=gnome-shell-extension-background-logo
-pkgver=50.1
+pkgver=51.alpha
 pkgrel=1
 pkgdesc="GNOME Shell extension to overlay a logo over the default background"
 arch=('any')
@@ -16,13 +16,13 @@ makedepends=(
 )
 source=("git+https://forge.fedoraproject.org/workstation/background-logo-extension.git#tag=$pkgver"
         'manjaro-wm-gnome.svg')
-sha256sums=('3b76823a229a66e56bf3c455ecb9e0318521bcb8e24f65597f6d4609072a1e05'
+sha256sums=('ca65d666b2a0c54076e2c4d951e17503d6c8fe8308b3a132449577ee3f2fb988'
             '59de2a63919e789b6f8ba7694ce05242e01a9c3eb7c7c4ecc3edafe83bd1cbd8')
 
 prepare() {
   cd background-logo-extension
   sed -i "s|fedora-logos/fedora_|manjaro-logos/manjaro_|g" \
-    schemas/org.fedorahosted.background-logo-extension.gschema.xml
+    schemas/org.gnome.shell.extensions.background-logo.gschema.xml
 }
 
 build() {

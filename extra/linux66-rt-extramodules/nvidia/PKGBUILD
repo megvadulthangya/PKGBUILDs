@@ -7,7 +7,7 @@
 _linuxprefix=linux66-rt
 
 pkgname="${_linuxprefix}-nvidia"
-pkgver=615.71.09
+pkgver=615.78.08
 pkgrel=1
 pkgdesc="NVIDIA kernel modules for ${_linuxprefix}"
 arch=('x86_64')

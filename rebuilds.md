@@ -45,6 +45,7 @@ icu
 - calamares
 - calamares-git
 - manjaro-settings-manager
+- manjaro-settings-manager-qt6
 
 
 hwinfo
@@ -52,6 +53,7 @@ hwinfo
 - calamares
 - calamares-git
 - manjaro-settings-manager
+- manjaro-settings-manager-qt6
 - mhwd
 
 
@@ -152,6 +154,7 @@ qt6-base
 
 - calamares
 - calamares-git
+- manjaro-settings-manager-qt6
 - octopi
 - qt-sudo
 

@@ -1,42 +1,40 @@
-diff --unified --recursive --text a/panels/system/cc-system-panel.c b/panels/system/cc-system-panel.c
---- a/panels/system/cc-system-panel.c	2024-03-23 18:30:20.794963345 -0600
-+++ b/panels/system/cc-system-panel.c	2024-03-23 21:06:31.171600242 -0600
-@@ -69,6 +69,13 @@
+diff -Npur a/panels/system/cc-system-panel.c b/panels/system/cc-system-panel.c
+--- a/panels/system/cc-system-panel.c	2026-10-07 09:55:24.651188221 -0600
++++ b/panels/system/cc-system-panel.c	2026-10-07 10:08:10.953467697 -0600
+@@ -73,6 +73,13 @@ gnome_software_allows_updates (void)
  }
  
  static gboolean
 +pamac_manager_exists (void)
 +{
-+  g_autofree gchar *path = g_find_program_in_path ("pamac-manager");
-+  return path != NULL;
++    g_autofree gchar *path = g_find_program_in_path ("pamac-manager");
++    return path != NULL;
 +}
 +
 +static gboolean
  gnome_software_exists (void)
  {
-   g_autofree gchar *path = g_find_program_in_path ("gnome-software");
-@@ -85,7 +92,8 @@
+     g_autofree gchar *path = g_find_program_in_path ("gnome-software");
+@@ -89,7 +96,7 @@ gpk_update_viewer_exists (void)
  static gboolean
  show_software_updates_group (CcSystemPanel *self)
  {
--  return (gnome_software_exists () && gnome_software_allows_updates ()) ||
-+  return (pamac_manager_exists () ||
-+         gnome_software_exists () && gnome_software_allows_updates ()) ||
-          gpk_update_viewer_exists ();
+-    return (gnome_software_exists () && gnome_software_allows_updates ()) || gpk_update_viewer_exists ();
++    return (pamac_manager_exists () || gnome_software_exists () && gnome_software_allows_updates ()) || gpk_update_viewer_exists ();
  }
  
-@@ -96,6 +104,14 @@
-   gboolean ret;
-   char *argv[3];
+ static void
+@@ -99,6 +106,13 @@ cc_system_page_open_software_update (CcS
+     gboolean ret;
+     char *argv[3];
  
-+  if (pamac_manager_exists ())
-+    {
-+      argv[0] = "pamac-manager";
-+      argv[1] = "--updates";
-+      argv[2] = NULL;
++    if (pamac_manager_exists ()) {
++        argv[0] = "pamac-manager";
++        argv[1] = "--updates";
++        argv[2] = NULL;
 +    }
-+  else
++    else
 +
-   if (gnome_software_exists ())
-     {
-       argv[0] = "gnome-software";
+     if (gnome_software_exists ()) {
+         argv[0] = "gnome-software";
+         argv[1] = "--mode=updates";

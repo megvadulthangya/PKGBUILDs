@@ -1,7 +1,8 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=gnome-shell-extension-cardwire-toggle
-pkgver=1.3
+_uuid=cardwire-toggle@chrispouliot.github.io
+pkgver=1.4
 pkgrel=1
 pkgdesc="Quick Settings toggle for Cardwire, the eBPF-based Linux GPU manager."
 arch=('any')
@@ -11,22 +12,26 @@ depends=(
   'cardwire'
   'gnome-shell'
 )
-makedepends=('jq')
-source=("cardwire-toggle-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('1f15052642b0b22e679010b84314fcd1604b90a0de5a6129848903207c53e68e')
+# makedepends=('jq')
 
-build() {
-  cd "cardwire-toggle-$pkgver"
-  gnome-extensions pack src/ \
-    --extra-source=icons/ \
-    --force
-}
+# Source code does not contain changes
+# source=("cardwire-toggle-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+source=("cardwire-toggle-$pkgver-shell-extension.zip::$url/releases/download/v$pkgver/${_uuid}.shell-extension.zip")
+noextract=('*.shell-extension.zip')
+sha256sums=('dc4d1687f80b7e04f8038fd0ee464b398d4175bfacf3ad2465dc38184c52e9bc')
+
+# build() {
+#   cd "cardwire-toggle-$pkgver"
+#   gnome-extensions pack src/ \
+#     --extra-source=icons/ \
+#     --force
+# }
 
 package() {
-  cd "cardwire-toggle-$pkgver"
-  _uuid=$(jq -r .uuid src/metadata.json)
+  # cd "cardwire-toggle-$pkgver"
+  # _uuid=$(jq -r .uuid src/metadata.json)
 
   install -d "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}"
-  bsdtar -xvf "${_uuid}.shell-extension.zip" -C \
+  bsdtar -xvf "cardwire-toggle-$pkgver-shell-extension.zip" -C \
     "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}/" --no-same-owner
 }

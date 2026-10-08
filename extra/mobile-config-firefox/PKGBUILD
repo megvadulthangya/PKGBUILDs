@@ -2,7 +2,7 @@
 # Contributor: Danct12 <danct12@disroot.org>
 
 pkgname=mobile-config-firefox
-pkgver=5.5.0
+pkgver=5.5.1
 pkgrel=1
 pkgdesc="Mobile and privacy friendly configuration for Firefox"
 arch=('any')
@@ -10,7 +10,7 @@ url="https://gitlab.postmarketos.org/postmarketOS/mobile-config-firefox"
 license=('MPL-2.0')
 depends=('firefox')
 source=("$url/-/archive/$pkgver/$pkgname-$pkgver.tar.gz")
-sha256sums=('de1f3ad27947b0466a20fd3cd48486ea121f3ab5969835eaa844ba49e54b84e8')
+sha256sums=('ae5aecc6c7753e70aa6fb94fd8910e7cf941b200fee693af67dad9f1725f0d55')
 
 package() {
   cd "$pkgname-$pkgver"

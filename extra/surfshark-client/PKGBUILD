@@ -5,7 +5,7 @@
 # https://ocean.surfshark.com/debian/dists/stretch/main/binary-arm64/Packages
 
 pkgname=surfshark-client
-pkgver=3.13.0
+pkgver=3.14.0
 pkgrel=1
 pkgdesc="Surfshark VPN client"
 arch=('x86_64' 'aarch64')
@@ -40,8 +40,8 @@ replaces=('surfshark-gui-bin')
 install=surfshark.install
 source_x86_64=("https://ocean.surfshark.com/debian/pool/main/s/surfshark_${pkgver}_amd64.deb")
 source_aarch64=("https://ocean.surfshark.com/debian/pool/main/s/surfshark_${pkgver}_arm64.deb")
-sha256sums_x86_64=('6754219b04dd31a97a7433d8d0a04780c91c3518c12166f37655fdbb0583fcc0')
-sha256sums_aarch64=('c59cd1bfc2c1676171a2e88e538d13a06b435899d728af56809e581ec21edac3')
+sha256sums_x86_64=('61e20cf567da917a038f40dc6e4a3cb0006a32cac3e212a62f8cb7fe349540b6')
+sha256sums_aarch64=('8f94d761277e88953d117f16b9b742a472f852af805bc544a5e28e0d5e6b19fb')
 
 package(){
 

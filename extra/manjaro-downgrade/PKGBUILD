@@ -4,7 +4,7 @@
 # Contributor: Patrick Brisbin <pbrisbin@gmail.com>
 
 pkgname=manjaro-downgrade
-pkgver=3.1
+pkgver=3.2
 pkgrel=1
 pkgdesc="Bash script for downgrading one or more packages to a version in your cache or the M.L.A."
 arch=('any')
@@ -21,4 +21,4 @@ package() {
   make DESTDIR="$pkgdir" PREFIX=/usr install
 }
 
-sha256sums=('fd957165ec7a7676e5e63d2a4fb35c89b12fdce8f53ec657daa59929e7797faf')
+sha256sums=('2f518503d54427d087f6959067acac3016d271a547a03320e3bc633421a6a1cf')

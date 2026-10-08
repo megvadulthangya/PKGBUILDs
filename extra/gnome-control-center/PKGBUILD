@@ -81,6 +81,7 @@ makedepends=(
   modemmanager
 )
 checkdepends=(
+  appstream
   python-dbusmock
   python-gobject
   xorg-server-xvfb

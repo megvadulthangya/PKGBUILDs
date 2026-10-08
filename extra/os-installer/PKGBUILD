@@ -22,7 +22,11 @@ makedepends=(
   'git'
   'meson'
 )
-checkdepends=('appstream-glib')
+checkdepends=(
+  'appstream'
+  'appstream-glib'
+  'desktop-file-utils'
+)
 optdepends=(
   'epiphany: online assistance'
   'gnome-control-center: Wi-Fi setup'

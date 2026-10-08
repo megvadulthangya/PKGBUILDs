@@ -29,13 +29,12 @@ makedepends=(
   'vala'
 )
 options=('debug')
-source=("git+https://github.com/manjaro/pamac.git#tag=v$pkgver"
-        'gnome51.patch')
-sha256sums=('a1e82520739403d1b769c87731355ac5f5710b5626fbf77dce8eabea8506c4c1'
-            '1407a09cb44357d5752df0f92afc8ab242cc22a92b517bb00e49188b979d5246')
+source=("git+https://github.com/manjaro/pamac.git#tag=v$pkgver")
+sha256sums=('a1e82520739403d1b769c87731355ac5f5710b5626fbf77dce8eabea8506c4c1')
 
 _backports=(
   f94121cf99a4b1e10eb5ccd83098a08ba029c40e
+  90053f8aff07002864b5196380e10503640c53f0
 )
 
 _reverts=(

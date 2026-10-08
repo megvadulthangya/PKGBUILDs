@@ -3,7 +3,7 @@
 pkgname=calamares-git
 pkgver=3.4.3.r12440.73fc7c33b
 _ver=3.4.3
-pkgrel=5
+pkgrel=6
 pkgdesc='Distribution-independent installer framework'
 arch=('x86_64')
 url="https://code.manjaro.org/applications/calamares"

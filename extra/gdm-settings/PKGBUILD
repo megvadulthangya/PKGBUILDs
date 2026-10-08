@@ -20,6 +20,10 @@ makedepends=(
   'git'
   'meson'
 )
+checkdepends=(
+  'appstream'
+  'desktop-file-utils'
+)
 _commit=32eb7d2c0984fc66dff712fbe51dcf8555788c45
 source=("git+https://github.com/gdm-settings/gdm-settings.git#commit=${_commit}"
         'maia-color.patch'

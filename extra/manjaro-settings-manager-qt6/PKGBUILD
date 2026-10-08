@@ -1,5 +1,4 @@
-# Maintainer: Philip Müller <philm[at]manjaro[dot]org>
-# Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgbase=manjaro-settings-manager
 pkgname=(
@@ -9,7 +8,7 @@ pkgname=(
   'manjaro-settings-manager-kstatus-notifier'
 )
 pkgver=0.6.0
-pkgrel=5
+pkgrel=6
 pkgdesc="Manjaro Linux System Settings Tool"
 arch=('x86_64')
 url="https://code.manjaro.org/applications/manjaro-settings-manager"

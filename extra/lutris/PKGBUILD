@@ -45,7 +45,7 @@ makedepends=(
   'protobuf'
 )
 checkdepends=(
-  'appstream'
+  'appstream-glib'
   'desktop-file-utils'
   'python-pytest'
 )

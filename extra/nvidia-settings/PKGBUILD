@@ -10,7 +10,7 @@ pkgname=(
   'libxnvctrl'
 )
 pkgver=615.78.08
-pkgrel=1
+pkgrel=2
 pkgdesc='Tool for configuring the NVIDIA graphics driver'
 url='https://github.com/NVIDIA/nvidia-settings'
 arch=('x86_64')
@@ -24,11 +24,13 @@ sha512sums=('8636d3512f3e1d7d00b482ceb14e1904d4fe416ab1b499acfb9a4bb75ece7719254
             '0303fe615d6ef4e14112998c531a17613b94776f9a6a027ddb81e400fddd5f2ff15583da8b8631c2306aca854edf2f54a8007eb36f1732b4c064c857aaf268ae'
             '92aaddab8a2aa65be7e29468070d7165832b7bd14bd912e7f5b5c981c38c7c7532f07c1338fabaf1a5cbc2d8b7ef8b849aec824fc51192ab83f1c60f0883e398')
 
-prepare() {
-  export PREFIX=/usr
-  export NV_USE_BUNDLED_LIBJANSSON=0
-  export OUTPUTDIR=out
+_make_opts=(
+  PREFIX=/usr
+  OUTPUTDIR=out
+  NV_USE_BUNDLED_LIBJANSSON=0
+)
 
+prepare() {
   cd ${pkgbase}-${pkgver}
   patch -Np1 -i "${srcdir}"/nvidia-settings-libxnvctrl_so.patch
 
@@ -41,14 +43,14 @@ prepare() {
 build() {
   cd ${pkgbase}-${pkgver}
   export CFLAGS+=" -ffat-lto-objects"
-  make
+  make "${_make_opts[@]}"
 }
 
 package_nvidia-settings() {
-  depends=('jansson' 'gtk3' 'libxv' 'libvdpau' 'nvidia-utils' 'libxnvctrl')
+  depends=('jansson' 'gtk3' 'libxv' 'libvdpau' 'nvidia-utils')
 
   cd ${pkgbase}-${pkgver}
-  DESTDIR="${pkgdir}" make install
+  make "${_make_opts[@]}" DESTDIR="${pkgdir}" install
 
   install -D -m644 doc/nvidia-settings.desktop "${pkgdir}/usr/share/applications/nvidia-settings.desktop"
   install -D -m644 doc/nvidia-settings.png "${pkgdir}/usr/share/pixmaps/nvidia-settings.png"
@@ -63,6 +65,7 @@ package_nvidia-settings() {
 package_libxnvctrl() {
   depends=('libxext')
   pkgdesc='NVIDIA NV-CONTROL X extension'
+  license=('MIT')
   provides=('libXNVCtrl.so')
 
   cd ${pkgbase}-${pkgver}
@@ -72,6 +75,10 @@ package_libxnvctrl() {
   install -Dm 644 src/libXNVCtrl/*.h -t "${pkgdir}/usr/include/NVCtrl"
   install -d "${pkgdir}/usr/lib"
   cp -Pr src/out/libXNVCtrl.* -t "${pkgdir}/usr/lib"
+
+  install -d "${pkgdir}/usr/share/licenses/${pkgname}"
+  sed -n '/Copyright/,/^ \*\//{/^ \*\//d;s/^ \*\( \|$\)//;p}' src/libXNVCtrl/NVCtrl.c \
+    > "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
 
 # vim: ts=2 sw=2 et:

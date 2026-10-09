@@ -21,6 +21,10 @@ makedepends=(
   'meson'
   'pandoc'
 )
+checkdepends=(
+  'appstream'
+  'desktop-file-utils'
+)
 source=("git+https://gitlab.gnome.org/GabMus/HydraPaper.git#tag=$pkgver")
 sha256sums=('979949d75d89618b26ca765a5c2b6273506087e1b7b00db2a51a53cacca709fe')
 
@@ -31,6 +35,7 @@ build() {
 
 check() {
   meson test -C build --no-rebuild --print-errorlogs || :
+  desktop-file-validate build/data/org.gabmus.hydrapaper.service.desktop
 }
 
 package() {

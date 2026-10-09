@@ -18,7 +18,10 @@ makedepends=(
   'meson'
   'nvm'
 )
-checkdepends=('appstream-glib')
+checkdepends=(
+  'desktop-file-utils'
+  'appstream-glib'
+)
 provides=('libtouche.so=0')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 sha256sums=('e9e5eaed3e92bdd341acaeb0c4296f52464e6bb57dc34265c1a689c92e8439de')

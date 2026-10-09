@@ -5,7 +5,7 @@
 # https://build.opensuse.org/package/show/home:Slimbook/slimbook-qc71-dkms
 
 pkgname=slimbook-qc71-dkms
-pkgver=1.3.0
+pkgver=1.3.1
 pkgrel=1
 pkgdesc="Slimbook service implementation and adaptation of pobrn/qc71_laptop"
 arch=('x86_64')
@@ -13,12 +13,11 @@ url="https://github.com/Slimbook-Team/slimbook-qc71-dkms"
 license=('GPL-2.0-or-later')
 depends=('dkms')
 makedepends=('git')
-_commit=280c7541b7eec0adb328aca5e78a91eb7acb0f97
-source=("git+https://github.com/Slimbook-Team/slimbook-qc71-dkms.git#commit=${_commit}"
+source=("git+https://github.com/Slimbook-Team/slimbook-qc71-dkms.git#tag=$pkgver"
         'git+https://github.com/Slimbook-Team/qc71_laptop.git')
 #source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+sourcefiles/$pkgname/$pkgver/${pkgname}_${pkgver}.tar.gz")
 #noextract=("${pkgname}_${pkgver}.tar.gz")
-sha256sums=('f91e546444c53b1c92795df2149c128de25492776d91a09969c8288f588a23e8'
+sha256sums=('568076370cc86d74bc74cdfec9d5065a16c1b4dc4af8fceb188407222a988d87'
             'SKIP')
 
 prepare() {

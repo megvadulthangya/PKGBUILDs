@@ -46,6 +46,7 @@ makedepends=(
 )
 checkdepends=(
   'appstream-glib'
+  'desktop-file-utils'
   'python-pytest'
 )
 optdepends=(

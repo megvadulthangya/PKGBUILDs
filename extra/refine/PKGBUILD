@@ -19,6 +19,10 @@ makedepends=(
   'git'
   'meson'
 )
+checkdepends=(
+  'appstream'
+  'desktop-file-utils'
+)
 source=("git+https://gitlab.gnome.org/TheEvilSkeleton/Refine.git#tag=$pkgver")
 sha256sums=('39caa62cde54a6200cd409d40cb740991f9b9ae6dc857b94f015f64a4f81be85')
 

@@ -25,6 +25,10 @@ depends=(
   'which'
 )
 makedepends=('meson')
+checkdepends=(
+  'appstream'
+  'desktop-file-utils'
+)
 source=("$pkgname-$pkgver.tar.gz::https://github.com/mijorus/gearlever/archive/refs/tags/$pkgver.tar.gz")
 sha256sums=('9f8f7a43d51e8ddcb66ee1d9aa5e6d1b9f5948c70e51be89e5bac045a01bd9ca')
 

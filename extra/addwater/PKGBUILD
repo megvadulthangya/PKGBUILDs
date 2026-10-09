@@ -17,6 +17,10 @@ depends=(
   'python-requests'
 )
 makedepends=('meson')
+checkdepends=(
+  'desktop-file-utils'
+  'appstream'
+)
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
 sha256sums=('9684a65533cfeb50ec99ea5cdc9e80283fc1738313147aaee72287bd32b782a6')
 

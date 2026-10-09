@@ -3,8 +3,8 @@
 # Contributor: Bernhard Landauer <bernhard@manjaro.org>
 # Contributor: WorMzy Tykashi <wormzy.tykashi@gmail.com>
 
-## Service Packs
-## https://www.softmaker.com/download/servicepacks
+# Service Packs
+# https://www.softmaker.com/download/old-versions
 
 pkgname=softmaker-office-2024
 _revision=1234

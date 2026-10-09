@@ -7,7 +7,7 @@
 # https://www.softmaker.com/download/old-versions
 
 pkgname=softmaker-office-2024
-_revision=1234
+_revision=1238
 pkgver=2024.${_revision}
 pkgrel=1
 pkgdesc="GDPR-compliant alternative to Microsoft Office"
@@ -37,7 +37,7 @@ source=(
         "${pkgname}-textmaker.desktop"
         "${pkgname}-planmaker.desktop"
         "${pkgname}-presentations.desktop")
-sha256sums=('a083bfa79d80488534aa342ac69fe5f4656b50af8b40d4315f5c0a85e2874f7c'
+sha256sums=('20be3d3061f5abfa85de35db62b34d22dca6cb3e56d3ae3c647c84686494e841'
             '00af1be185b00ab98ae33e6cad82ae00d845d78c6c4d7ab028d25f836f079f54'
             'c99ddfed2be5266f6036ed57394fe83867ac374eed7fc7165cb6f65a6360a479'
             'a70b5f3f7e54c4aee273636e7a8f8ad9ec8dbca1498132c6d9724e12eba39cbc'

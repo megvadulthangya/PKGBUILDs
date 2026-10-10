@@ -3,7 +3,7 @@
 # Contributor: Fabian Bornschein <fabiscafe-at-mailbox-dot-org>
 
 pkgname=game-devices-udev
-pkgver=1.0
+pkgver=1.1
 pkgrel=1
 pkgdesc="Udev rules for controllers"
 url="https://codeberg.org/fabiscafe/game-devices-udev"
@@ -18,7 +18,7 @@ provides=('nintendo-udev')
 install="$pkgname.install"
 source=("git+https://codeberg.org/fabiscafe/game-devices-udev.git#tag=$pkgver?signed"
         'uinput.conf')
-sha256sums=('b643bfa389d5a7f2bbb36f0e6bf662f59dbc9df3a5b5fe6d88bf42e2e36d3691'
+sha256sums=('4d9ffb973b6fd15420f5828895ccd67cab4b429b970157cd5671d7f1c3535a22'
             'a771c9695d7283f7771adc00b680bd27391e6ac00e9fd026f4796067ee9a87eb')
 validpgpkeys=('6E58E886A8E07538A2485FAED6A4F386B4881229') # Fabian Bornschein <fabiscafe@mailbox.org>
 

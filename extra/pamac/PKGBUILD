@@ -4,9 +4,12 @@
 # Contributor: Helmut Stult
 
 pkgbase=pamac
-pkgname=('pamac-gtk' 'pamac-gnome-integration')
+pkgname=(
+  'pamac-gtk'
+  'pamac-gnome-integration'
+)
 pkgver=11.7.5
-pkgrel=4
+pkgrel=5
 pkgdesc="A Package Manager based on libalpm with AUR and Appstream support (GTK4)"
 arch=('x86_64' 'aarch64')
 url="https://github.com/manjaro/pamac"
@@ -29,14 +32,14 @@ makedepends=(
   'vala'
 )
 options=('debug')
-source=("git+https://github.com/manjaro/pamac.git#tag=v$pkgver"
-        'gnome51.patch')
-sha256sums=('a1e82520739403d1b769c87731355ac5f5710b5626fbf77dce8eabea8506c4c1'
-            '51380e6ef8fe692bedc8ddd7c73bed79669ff420760c7472ed0f662722982e89')
+source=("git+https://github.com/manjaro/pamac.git#tag=v$pkgver")
+sha256sums=('a1e82520739403d1b769c87731355ac5f5710b5626fbf77dce8eabea8506c4c1')
 
 _backports=(
   f94121cf99a4b1e10eb5ccd83098a08ba029c40e
-  # 90053f8aff07002864b5196380e10503640c53f0
+  90053f8aff07002864b5196380e10503640c53f0
+  8f909f63fcdfec1a3050e1f60959c1c33d8d1541
+  363e794fef4f9f6a0e54757fd12155cf27e02cc3
 )
 
 _reverts=(
@@ -71,7 +74,8 @@ prepare() {
 
 build() {
   arch-meson "$pkgbase" build \
-    -Denable-fake-gnome-software=true
+    -Denable-fake-gnome-software=true \
+    -Djemalloc=false
   meson compile -C build
 }
 
@@ -99,8 +103,6 @@ package_pamac-gtk() {
 
   meson install -C build --no-rebuild --destdir "$pkgdir"
 
-  cd "$pkgbase"
-
   # remove pamac-gnome-integration
   rm "$pkgdir/usr/bin/gnome-software"
   rm "$pkgdir/usr/share/applications/org.gnome.Software.desktop"
@@ -115,8 +117,6 @@ package_pamac-gnome-integration() {
   install -Dm644 "build/data/dbus/org.gnome.Software.service" \
     "$pkgdir/usr/share/dbus-1/services/org.gnome.Software.service"
   install -Dm755 "build/src/gnome-software" "$pkgdir/usr/bin/gnome-software"
-
-  cd "$srcdir/$pkgbase"
-  install -Dm644 "data/applications/org.gnome.Software.desktop" \
+  install -Dm644 "$pkgbase/data/applications/org.gnome.Software.desktop" \
     "$pkgdir/usr/share/applications/org.gnome.Software.desktop"
 }

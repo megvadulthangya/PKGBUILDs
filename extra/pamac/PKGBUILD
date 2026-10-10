@@ -6,7 +6,7 @@
 pkgbase=pamac
 pkgname=('pamac-gtk' 'pamac-gnome-integration')
 pkgver=11.7.5
-pkgrel=3
+pkgrel=4
 pkgdesc="A Package Manager based on libalpm with AUR and Appstream support (GTK4)"
 arch=('x86_64' 'aarch64')
 url="https://github.com/manjaro/pamac"
@@ -29,12 +29,14 @@ makedepends=(
   'vala'
 )
 options=('debug')
-source=("git+https://github.com/manjaro/pamac.git#tag=v$pkgver")
-sha256sums=('a1e82520739403d1b769c87731355ac5f5710b5626fbf77dce8eabea8506c4c1')
+source=("git+https://github.com/manjaro/pamac.git#tag=v$pkgver"
+        'gnome51.patch')
+sha256sums=('a1e82520739403d1b769c87731355ac5f5710b5626fbf77dce8eabea8506c4c1'
+            '51380e6ef8fe692bedc8ddd7c73bed79669ff420760c7472ed0f662722982e89')
 
 _backports=(
   f94121cf99a4b1e10eb5ccd83098a08ba029c40e
-  90053f8aff07002864b5196380e10503640c53f0
+  # 90053f8aff07002864b5196380e10503640c53f0
 )
 
 _reverts=(

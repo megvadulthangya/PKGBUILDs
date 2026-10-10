@@ -1,7 +1,7 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=gnome-shell-extension-gnome-ui-tune
-pkgver=1.12.0
+pkgver=1.13.0
 pkgrel=1
 pkgdesc="Tunes GNOME Overview UI to make it more usable."
 arch=('any')
@@ -13,12 +13,7 @@ makedepends=(
   'jq'
 )
 source=("git+https://github.com/axxapy/gnome-ui-tune.git#tag=v$pkgver")
-sha256sums=('ad9848dbc9eb36d968dc9bd86f5d6aa994ea5f4270b5b4a588a8af45448fae89')
-
-prepare() {
-  cd gnome-ui-tune
-
-}
+sha256sums=('54e34d59e3528aa7de107ec6475e0ffb56e0cb9bd46d62ea676d349c16ad3d19')
 
 build() {
   cd gnome-ui-tune

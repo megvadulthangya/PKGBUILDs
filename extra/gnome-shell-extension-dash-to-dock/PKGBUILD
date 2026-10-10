@@ -7,7 +7,7 @@
 # Contributor: Christopher Krooß <didi2002 at web.de>
 
 pkgname=gnome-shell-extension-dash-to-dock
-pkgver=109
+pkgver=110
 pkgrel=1
 pkgdesc="A dock for the GNOME Shell"
 arch=('any')
@@ -20,7 +20,7 @@ makedepends=(
 )
 install='dash-to-dock.install'
 source=("git+https://github.com/micheleg/dash-to-dock.git#tag=extensions.gnome.org-v$pkgver?signed")
-sha256sums=('cd90faa0f693bc6c5b74ad6fb4e98974c2875082489988b24097cff8e2fbac10')
+sha256sums=('3a4014bd5db1c6e2322bde2a1be2da85ec3753f2857120426a7494e040e41c26')
 validpgpkeys=('D4C501DA48EB797A081750939449C2F50996635F') # Marco Trevisan <marco@trevi.me>
 
 build() {

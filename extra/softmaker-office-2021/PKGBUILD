@@ -1,7 +1,10 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
 # Maintainer: Philip Müller <philm@manjaro.org>
-# Maintainer: Bernhard Landauder <bernhard@manjaro.org>
+# Contributor: Bernhard Landauder <bernhard@manjaro.org>
 # Contributor: Niklas Pulina <pulina@softmaker.de>
-# Author of AUR PKGBUILD for FreeOffice: Muflone http://www.muflone.com/contacts/english/
+
+# Service Packs
+# https://www.softmaker.com/download/old-versions
 
 pkgname=softmaker-office-2021
 _revision=1068

@@ -1,0 +1,21 @@
+Binary files a/.git/index and b/.git/index differ
+diff -Npur a/gnome-extensions/extension/metadata.json b/gnome-extensions/extension/metadata.json
+--- a/gnome-extensions/extension/metadata.json	2026-10-11 09:47:29.867989262 -0600
++++ b/gnome-extensions/extension/metadata.json	2026-10-11 09:48:58.981606548 -0600
+@@ -5,7 +5,8 @@
+         "47",
+         "48",
+         "49",
+-        "50"
++        "50",
++        "51"
+     ],
+     "session-modes": ["user", "unlock-dialog"],
+     "url": "https://github.com/NiffirgkcaJ/papirus-folders-colorizer",
+@@ -13,4 +14,4 @@
+     "version": 5,
+     "settings-schema": "org.gnome.shell.extensions.papirus-folders-colorizer",
+     "textdomain": "papirus-folders-colorizer"
+-}
+\ No newline at end of file
++}

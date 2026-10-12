@@ -1,18 +1,18 @@
 # Maintainer: Stefano Capitani <stefanoatmanjarodotorg>
 
 pkgname='manjaro-refind-installer'
-pkgver=0.2
-pkgrel=7
-_commit=2961e0ab6e5719c4584ce8315601b16e620fc4ce
+pkgver=0.3
+pkgrel=1
+_commit=bd2ccf0005f19642ed8d7e31ac421f3a501dc985
 pkgdesc="Manjaro rEFInd GUI installer"
 arch=('any')
-url='https://code.manjaro.org/applications/manjaro-refind-installer'
+url='https://codeberg.org/Ste74/manjaro-refind-installer'
 license=('GPL3')
-depends=('refind' 'yad' 'mhwd' 'manjaro-icons' 'memtest86-efi')
-makdepends=('git')
+depends=('refind' 'yad' 'mhwd' 'manjaro-icons' 'memtest86+-efi')
+makedepends=('git')
 optdepends=('refind-theme-maia')
-source=("git+https://code.manjaro.org/applications/manjaro-refind-installer.git#commit=${_commit}")
-md5sums=('413bf5b7a3473246f6395af71e581c52')
+source=("git+https://codeberg.org/Ste74/manjaro-refind-installer.git#commit=${_commit}")
+md5sums=('e1ef849f15ff14541567c2e21c5bb57e')
 
 package() {
 	cd $pkgname

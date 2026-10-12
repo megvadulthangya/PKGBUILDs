@@ -2,7 +2,7 @@
 
 pkgname=gnome-shell-extension-papirus-folders-colorizer
 pkgver=5
-pkgrel=1
+pkgrel=2
 pkgdesc="A GNOME shell extension that automatically syncs your Papirus folder icons with your GNOME Accent Color."
 arch=('any')
 url="https://github.com/NiffirgkcaJ/papirus-folders-colorizer"
@@ -16,9 +16,11 @@ makedepends=(
   'jq'
 )
 source=("git+https://github.com/NiffirgkcaJ/papirus-folders-colorizer.git#tag=v$pkgver"
-        'maia-accent.patch')
+        'maia-accent.patch'
+        'gnome51.patch')
 sha256sums=('484f1bf6cbafb36b3c6502601912aa7139324db77d6796877b1a2099ca32caab'
-            '39b14fe36be5d6e1c8236cd9c2a294c6d5a0760e2a5070c491b9920076d250b1')
+            '39b14fe36be5d6e1c8236cd9c2a294c6d5a0760e2a5070c491b9920076d250b1'
+            'b6d4bfd0259d00c79abb097533633c0bc532e80ca12167ecaf8d31d809b9abb6')
 
 prepare() {
   cd papirus-folders-colorizer
@@ -26,6 +28,9 @@ prepare() {
   # GNOME blue > Papirus adwaita
   # Manjaro Maia > Papirus teal
   patch -Np1 -i ../maia-accent.patch
+
+  # Add GNOME 51 support
+  patch -Np1 -i ../gnome51.patch
 }
 
 build() {

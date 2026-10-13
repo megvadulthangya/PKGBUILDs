@@ -2,7 +2,7 @@
 # Contributor: Sam Burgos <santiago.burgos1089@gmail.com>
 
 pkgname=mint-l-theme
-pkgver=2.0.8
+pkgver=2.0.9
 pkgrel=1
 pkgdesc="A collection of legacy Mint themes."
 arch=('any')
@@ -14,7 +14,7 @@ options=('!strip')
 #source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 source=("http://packages.linuxmint.com/pool/main/m/$pkgname/${pkgname}_${pkgver}.tar.xz")
 noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('4b564250dd31dcc4a3b90e1b680f9e03ece38544ecf016c9aa6f23fee7b8b68f')
+sha256sums=('1c462d830685ec8494fc386dbfd79b7c76551c0cd18937e83c3328af4faea7b1')
 
 prepare() {
   mkdir -p "$pkgname-$pkgver"

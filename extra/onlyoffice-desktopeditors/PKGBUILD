@@ -6,7 +6,7 @@
 # Contributor: Mikalai Ramanovich < narod.ru: nikolay.romanovich >
 
 pkgname=onlyoffice-desktopeditors
-pkgver=9.4.0
+pkgver=10.0.0
 pkgrel=1
 pkgdesc="Open-source office suite that combines text, spreadsheet and presentation editors."
 arch=('x86_64' 'aarch64')
@@ -45,8 +45,8 @@ source_x86_64=("${pkgname}-${pkgver}_amd64.deb::https://github.com/ONLYOFFICE/De
 source_aarch64=("${pkgname}-${pkgver}_arm64.deb::https://github.com/ONLYOFFICE/DesktopEditors/releases/download/v${pkgver}/${pkgname}_arm64.deb")
 noextract=("${source[@]%%::*}")
 sha256sums=('670de5f8b72679a54ff41a96ba1bdba9231a93260d1a8eaf304f66c8e40efdb7')
-sha256sums_x86_64=('4271434e81be42b1559fd989d24bf6d413482f278dc6a5e328202a4fc1a18649')
-sha256sums_aarch64=('ce141a103051e220a89839dd5dc8511172ae5b989e8de9bda0e07c34b0b7702c')
+sha256sums_x86_64=('2190edb4022a2ac2f6eee0f78815520f0e4ece1e8a1097c645a6f9b225c8b59c')
+sha256sums_aarch64=('e176077c17977ea2f69c93e10821386b2f42faa5b923d5f9bd3a12e19ce3b040')
 
 prepare() {
   mkdir -p "onlyoffice-${pkgver}/pkg"

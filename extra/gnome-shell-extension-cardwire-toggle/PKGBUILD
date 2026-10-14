@@ -2,7 +2,7 @@
 
 pkgname=gnome-shell-extension-cardwire-toggle
 _uuid=cardwire-toggle@chrispouliot.github.io
-pkgver=1.4
+pkgver=1.5
 pkgrel=1
 pkgdesc="Quick Settings toggle for Cardwire, the eBPF-based Linux GPU manager."
 arch=('any')
@@ -14,11 +14,11 @@ depends=(
 )
 # makedepends=('jq')
 
-# Source code does not contain changes
+# Source code does not contain changes between v1.3 & v1.4
 # source=("cardwire-toggle-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
 source=("cardwire-toggle-$pkgver-shell-extension.zip::$url/releases/download/v$pkgver/${_uuid}.shell-extension.zip")
 noextract=('*.shell-extension.zip')
-sha256sums=('dc4d1687f80b7e04f8038fd0ee464b398d4175bfacf3ad2465dc38184c52e9bc')
+sha256sums=('b58f3d2937995474ec382c8bb91d1fa2fe729927374d57d3d74191fc1c5dc53b')
 
 # build() {
 #   cd "cardwire-toggle-$pkgver"

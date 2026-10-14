@@ -11,15 +11,15 @@ pkgname=(
 )
 pkgbase=grub-theme-live
 pkgver=20.2
-pkgrel=17
+pkgrel=18
 pkgdesc="Manjaro Linux grub theme"
 arch=('any')
 url="https://code.manjaro.org/artwork/grub-theme"
 license=('GPL-3.0-or-later')
 makedepends=('git')
-_commit=e3664f8bd83e35ad6db1e53963bffb9719bd4760
+_commit=ef679261772c574ae3e2e55c40ae752a49aab3b2
 source=("git+$url.git#commit=$_commit")
-sha256sums=('fa11abadc31868c294ab9537965cbdc25b462d63f22cc051046d23b69cbd5418')
+sha256sums=('7e55761e9174c0fc4966d7f9ba979b27205340f0254f253480cfd102010ef5a8')
 
 package_grub-theme-live-common() {
   pkgdesc+=" for live ISO (common files)"
@@ -30,6 +30,7 @@ package_grub-theme-live-common() {
   cd grub-theme
   make PREFIX=/usr DESTDIR="${pkgdir}" install_common
 }
+
 package_grub-theme-live-manjaro() {
   pkgdesc+=" for live ISO"
   depends=('grub-theme-live-common')

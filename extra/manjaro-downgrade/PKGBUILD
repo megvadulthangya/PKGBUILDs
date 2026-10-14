@@ -5,13 +5,15 @@
 
 pkgname=manjaro-downgrade
 pkgver=3.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Bash script for downgrading one or more packages to a version in your cache or the M.L.A."
 arch=('any')
-url="https://codeberg.org/Ste74/$pkgname"
-license=('GPL')
+url="https://codeberg.org/Ste74/manjaro-downgrade"
+license=('GPL-3.0-or-later')
+provides=('downgrade')
+conflicts=('downgrade')
 backup=(etc/xdg/manjaro-downgrade/manjaro-downgrade.conf)
-source=("https://codeberg.org/Ste74/$pkgname/archive/v$pkgver.tar.gz")	
+source=("https://codeberg.org/Ste74/$pkgname/archive/v$pkgver.tar.gz")
 depends=('pacman-contrib' 'fzf') # pacsort
 optdepends=('sudo: for installation via sudo')
 

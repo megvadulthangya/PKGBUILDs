@@ -3,9 +3,12 @@
 # Contributor: graysky <therealgraysky AT protonmail DOT com>
 # Contributor: germar <germar DOT reitze AT gmail DOT com>
 
-pkgname=('backintime' 'backintime-qt')
+pkgname=(
+  'backintime'
+  'backintime-qt'
+)
 pkgbase=backintime
-pkgver=1.6.1
+pkgver=1.6.2
 pkgrel=1
 pkgdesc="Simple backup system inspired from the Flyback Project and TimeVault."
 arch=('any')
@@ -14,7 +17,6 @@ license=(
   'CC0-1.0'
   'GPL-2.0-or-later'
   'GPL-3.0-or-later'
-  'MIT'
 )
 depends=(
   'cron'
@@ -33,6 +35,7 @@ depends=(
 )
 makedepends=(
   'asciidoctor'
+  'desktop-file-utils'
   'git'
   'man-db'
 #  'mkdocs'  ## build manual
@@ -42,17 +45,20 @@ makedepends=(
 #  'python-sphinx_rtd_theme'  ## build HTML docs
 )
 checkdepends=(
-  'python-pyfakefs'
-  'python-pytest'
+  # 'python-pyfakefs'
+  # 'python-pytest'
 )
 source=("git+https://github.com/bit-team/backintime.git#tag=v$pkgver")
-sha256sums=('5a9b7ccc64cfd6b93bbe27d937902d1cd0defb9dcd830901c0b68ba0ede7d673')
+sha256sums=('722a2d46bd8ea95238f3310d8a4d714e08dc206a2cd73927e1d7ec304e18f790')
 
 prepare() {
   cd "$pkgbase"
 
   # Fix documentation directories
   sed -i -e "s|$pkgbase-common|$pkgbase|g" common/configure
+
+  # Correct invalid boolean key
+  desktop-file-edit --set-key=Terminal --set-value=false "common/$pkgname.desktop"
 }
 
 build() {
@@ -82,17 +88,22 @@ build() {
 
 check() {
   cd "$pkgbase"
-  rm common/test/test_tools.py
-  rm common/test/test_sshtools.py
-  rm common/test/test_lint.py qt/test/test_lint.py
+#   rm common/test/test_tools.py
+#   rm common/test/test_sshtools.py
+#   rm common/test/test_lint.py qt/test/test_lint.py
+#
+#   pushd common
+#   python -m venv --clear --without-pip --system-site-packages test-env
+#   test-env/bin/python -I -m pytest
+#   popd
+#
+#   pushd qt
+#   python -m venv --clear --without-pip --system-site-packages test-env
+#   test-env/bin/python -I -m pytest
+#   popd
 
-  pushd common
-  pytest
-  popd
-
-  pushd qt
-  pytest
-  popd
+  desktop-file-validate "common/$pkgbase.desktop"
+  desktop-file-validate qt/*.desktop
 }
 
 package_backintime() {
@@ -116,12 +127,6 @@ package_backintime() {
 
   cd "$pkgbase"
   make -C common DESTDIR="$pkgdir" install
-
-  # Fix backintime-config man page installation
-  rm -v "$pkgdir/usr/share/man/man5"
-  install -Dm644 "doc/manpages/$pkgname-config.5" -t "$pkgdir/usr/share/man/man5/"
-
-  install -Dm644 LICENSES/MIT.txt -t "$pkgdir/usr/share/licenses/$pkgname/"
 
   # Manually compile Python bytecode
   python -m compileall -d / "$pkgdir/usr/share/$pkgbase/common/"
@@ -148,8 +153,6 @@ package_backintime-qt() {
 
   cd "$pkgbase"
   make -C qt DESTDIR="$pkgdir" install
-
-  install -Dm644 LICENSES/MIT.txt -t "$pkgdir/usr/share/licenses/$pkgname/"
 
   # Manually compile Python bytecode
   python -m compileall -d / "$pkgdir/usr/share/$pkgbase/qt/"

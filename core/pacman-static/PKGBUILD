@@ -14,12 +14,12 @@ _zlibver=1.3.2
 _xzver=5.8.4
 _bzipver=1.0.8
 _zstdver=1.5.7
-_libarchive_ver=3.8.9
+_libarchive_ver=3.8.10
 _gpgerrorver=1.61
 _libassuanver=3.0.0
 _gpgmever=2.2.0
 _libseccompver=2.6.0
-pkgrel=19
+pkgrel=20
 # use annotated tag and patch level commit from release branch (can be empty for no patches)
 _git_tag=7.1.0
 _git_patch_level_commit=54d94116164b0b2202c6061c4a59c6f3e70820d8
@@ -34,8 +34,7 @@ options=('!emptydirs' '!lto')
 # pacman
 source=("git+https://gitlab.archlinux.org/pacman/pacman.git#tag=v${_git_tag}?signed"
         pacman-revertme-makepkg-remove-libdepends-and-libprovides.patch::https://gitlab.archlinux.org/pacman/pacman/-/commit/354a300cd26bb1c7e6551473596be5ecced921de.patch
-        pacman-reproducible-builds.patch::https://gitlab.archlinux.org/pacman/pacman/-/commit/f4bdb77470528019aaba4d8b8f947e918c6db17d.patch
-        0001-libalpm-invalidate-curl-data-in-child.patch)
+        pacman-reproducible-builds.patch::https://gitlab.archlinux.org/pacman/pacman/-/commit/f4bdb77470528019aaba4d8b8f947e918c6db17d.patch)
 
 validpgpkeys=('6645B0A8C7005E78DB1D7864F99FFE0FEAE999BD')  # Allan McRae <allan@archlinux.org>
 # nghttp2
@@ -86,7 +85,6 @@ validpgpkeys+=('7100AADFAE6E6E940D2E0AD655E45A5AE8CA7C8A' # Paul Moore <paul@pau
 sha512sums=('512c5096c82e00730c884e5d4d452928a66d35b42a831a2b4b8b17af9215140d6b21b2d2de7233eefae70edb8ddd8fc4d4c750bda1ba0235489bc427396c04ba'
             '1a108c4384b6104e627652488659de0b1ac3330640fc3250f0a283af7c5884daab187c1efc024b2545262da1911d2b0b7b0d5e4e5b68bb98db25a760c9f1fb1a'
             '7ca20c2ab350f72552544004b37c5c920ae32b852e7f5315b8b29ee8acb86ca8e1f9f9678792842723908e3cb894f63904af8488cb4d49066a3dba5fc14518aa'
-            'e53fe847ab1291fcfb8dd286d40a4ace263f3c4f933805a2c6037da24384d923975423a61162b9fffc1ec5424211eed2a06da4092070573bffca626acb84c5fa'
             '8d8a95dcd05dfe8a032b78d99b7d32a9f0ad2c952c4548de4c6b4af0d2f3c584b0a2854b31516eca20b0c9c30f20d0d040edfe9961a3084e96353012f711b9d1'
             'ff7e7825d570333e211c8f68954cfd404f5abad62a7d6505504162a8bd9cb489f13a42da7507933eca55a2104cdb988dd0c65646535b429b03c279ef802963f5'
             'SKIP'
@@ -110,7 +108,7 @@ sha512sums=('512c5096c82e00730c884e5d4d452928a66d35b42a831a2b4b8b17af9215140d6b2
             'SKIP'
             '76c382bdc73b1c6ed523a0803dd2ec100b95f84e768787beaeb656ce84820fc37bc74229816a527ab17944c0ef7b937713298d9b3b87e70d7613e03b6dae4840'
             'SKIP'
-            'f37425417a9e3fdc194a2b892137452ddba6601c69e822598692d4d776c573a90e70aac4598d47c915615facc45d0c83fc46c24856ddf04afd7494b63bb9f137'
+            'ebf22fbfbf8d99a1cc06dd8dd29a76e2a0f7f6217b369aa1279be2a2e049ca240a0f62f59845f4e7caced54ddc289c105b3fc19755db85d339be5367317ccd75'
             'SKIP'
             '34d33f96df79b4e6bb3112bc01d5991fb8045e2af43568f8a6bf02481c0e9295c71987ee17ef49d1fc32a870632acc2c233a851316ecfc9a212095868de24e33')
 

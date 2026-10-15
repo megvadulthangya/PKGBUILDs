@@ -5,8 +5,8 @@
 # Contributor: unclesam <web _AT_ shinobi-mail _DOT_ de>
 
 pkgname=mintstick
-pkgver=1.6.7
-pkgrel=2
+pkgver=1.6.8
+pkgrel=1
 pkgdesc="A graphical tool that allows you to format USB sticks and create bootable USB sticks."
 arch=('any')
 url="https://github.com/linuxmint/mintstick"
@@ -40,7 +40,7 @@ optdepends=(
 )
 source=("http://packages.linuxmint.com/pool/main/m/$pkgname/${pkgname}_${pkgver}.tar.xz")
 noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('2fa897a1a795ee3a05ecd206aca1a418fc03b233d04c3c7f92c8c8bae48c044b')
+sha256sums=('d7d3f949d708022bbb1b390a2560100f24241a34817180fc01952d89eccf9cfe')
 
 prepare() {
   mkdir -p "$pkgname-$pkgver"

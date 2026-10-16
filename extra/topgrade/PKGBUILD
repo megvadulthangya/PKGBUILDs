@@ -1,7 +1,7 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=topgrade
-pkgver=17.12.3
+pkgver=17.13.0
 pkgrel=1
 pkgdesc="Upgrade all the things"
 arch=('x86_64' 'aarch64')
@@ -10,7 +10,7 @@ license=('GPL-3.0-or-later')
 depends=('libgcc')
 makedepends=('rust')
 source=("$pkgname-$pkgver.tar.gz::https://github.com/topgrade-rs/topgrade/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('2b7ec71fb11aa5d5db6e8b7fc492c28260835b1b64174923edae6cb38c50c4e6')
+sha256sums=('ec055df2751471229f9891d012686703afca2e525b3bff49fa2ae8a77bfe23c9')
 
 prepare() {
   cd "$pkgname-$pkgver"
@@ -21,6 +21,10 @@ build() {
   cd "$pkgname-$pkgver"
   CFLAGS+=" -ffat-lto-objects"
   export CARGO_TARGET_DIR=target
+
+  # https://github.com/aws/aws-lc-rs/issues/1097
+  export AWS_LC_SYS_NO_JITTER_ENTROPY=1
+
   cargo build --frozen --release
 
   # Generate completions

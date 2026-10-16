@@ -2,18 +2,24 @@
 
 pkgname=topgrade
 pkgver=17.13.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Upgrade all the things"
 arch=('x86_64' 'aarch64')
 url="https://topgrade-rs.github.io"
 license=('GPL-3.0-or-later')
 depends=('libgcc')
 makedepends=('rust')
-source=("$pkgname-$pkgver.tar.gz::https://github.com/topgrade-rs/topgrade/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('ec055df2751471229f9891d012686703afca2e525b3bff49fa2ae8a77bfe23c9')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/topgrade-rs/topgrade/archive/refs/tags/v$pkgver.tar.gz"
+        'https://github.com/topgrade-rs/topgrade/pull/2425.patch')
+sha256sums=('ec055df2751471229f9891d012686703afca2e525b3bff49fa2ae8a77bfe23c9'
+            'c1247843cfecda0b4abcd1185aa5991cf679a65891baae4df56a22992f71f899')
 
 prepare() {
   cd "$pkgname-$pkgver"
+
+  # Update dependencies
+  patch -Np1 -i ../2425.patch
+
   cargo fetch --locked --target host-tuple
 }
 
@@ -21,10 +27,6 @@ build() {
   cd "$pkgname-$pkgver"
   CFLAGS+=" -ffat-lto-objects"
   export CARGO_TARGET_DIR=target
-
-  # https://github.com/aws/aws-lc-rs/issues/1097
-  export AWS_LC_SYS_NO_JITTER_ENTROPY=1
-
   cargo build --frozen --release
 
   # Generate completions

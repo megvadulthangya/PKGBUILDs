@@ -8,7 +8,7 @@ pkgbase=xorg-server
 pkgname=('xorg-server' 'xorg-server-xephyr' 'xorg-server-xvfb' 'xorg-server-xnest'
          'xorg-server-common' 'xorg-server-devel' 'xorg-server-src')
 pkgver=21.1.25
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 license=('LicenseRef-Adobe-Display-PostScript'
          'BSD-3-Clause'
@@ -37,6 +37,7 @@ makedepends=('xorgproto' 'pixman' 'libx11' 'mesa' 'mesa-libgl' 'xtrans'
 source=(${pkgbase}::git+https://gitlab.freedesktop.org/xorg/xserver.git?signed#tag=${pkgbase}-${pkgver}
         xvfb-run # with updates from FC master
         xvfb-run.1
+        0001-Revert_damage_Unlink_a_damage_from_the_list_it_was_actually.patch
         use-intel-only-on-pre-gen4.patch
         use-modesetting-driver-by-default-on-GeForce.patch
 )
@@ -47,11 +48,15 @@ validpgpkeys=('3C2C43D9447D5938EF4551EBE23B7E70B467F0BF'  # Peter Hutterer (Who-
 sha512sums=('c961aeadb92ab7330f4c99257063e037502a2255f4e3a44ff884b5145b58264fed582581d121154731c6f6b1bd42d938fd8d24fd73cf4c81125bec5f6914c880'
             '12e70d32f09430f23b2ff3ab3c0b4835c96666bd79d6edb4c48a35be0b8ec6e161957de7bbfc7746752107b56ee52ec702ba0d9fa4a9270971bbde14011ac37e'
             'c54aee40a7709f66d938ff9bc595d4a9819f81fb5ac27c24a6742775140b47f001b75801622d2cf077afbfca93428a6375d4a95895c28c36d0bdcfee33358e95'
+            '5b749d10a968ba37b6ff59a459e80e6799e750d00f4b043b93033f9deb152cbb3fbb49cab7b2be2bc650ecf7fad5b4f0bbdaa80f40da017f074ee436d59ae4c3'
             '3c895cb2c3bbec1772984c699ade36b78b98625a6b656968b1cba1e897a89e21b212594d02c3c1e61e35c1937ffb39b2a26bb623c1a1fbaf65d21c7ef8192758'
             'e661150c00aa10f89613bcfe359c72e18793053721b8697338db59991a624e019f46565747f638729208ab28f40d41bfeba74d672abfafbc45afe46e99caaf14')
 
 prepare() {
   cd "${pkgbase}"
+
+  # fix ABI breakage
+  patch -Np1 -i ../0001-Revert_damage_Unlink_a_damage_from_the_list_it_was_actually.patch
 
   # Patches from Debian
   patch -Np1 -i ../use-intel-only-on-pre-gen4.patch

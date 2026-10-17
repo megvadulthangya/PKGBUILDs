@@ -11,7 +11,7 @@ pkgname=(
   'sddm-breath-theme'
 )
 pkgver=24.0.0
-pkgrel=7
+pkgrel=8
 arch=('x86_64' 'aarch64')
 url="https://code.manjaro.org/artwork/breath"
 license=(
@@ -33,9 +33,9 @@ makedepends=(
   'qt6-base'
   'qt6-declarative'
 )
-_commit=0266802cdbe62a9f18c9fdb9630732d60e49fa90  # 24.0.0
+_commit=0a7778074c2b882ac9ccc1a689f10672268df334
 source=("git+$url.git#commit=${_commit}")
-sha256sums=('da137cb462b1cbc7a1aae8fc46f5010288b2cb87da9324d58252da3cb898fabc')
+sha256sums=('13a88a19fa02335868e5a4a9a9cb39b47ac523fa9b0511707fd9374c7ef45e5c')
 
 build() {
 

@@ -15,6 +15,7 @@ depends=(
   'addwater'
   'gdm-settings'
   'gnome-console'
+  'gnome-extensions-app'
   'gnome-shell'
   'gnome-shell-extension-appindicator'
   'gnome-shell-extension-arc-menu'

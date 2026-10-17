@@ -1,0 +1,588 @@
+From c2383d5e5c4a3b9266cddb973e7062fd0c451457 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Tales=20A=2E=20Mendon=C3=A7a?= <talesam@gmail.com>
+Date: Wed, 16 Sep 2026 21:05:27 -0300
+Subject: [PATCH] feat: add GNOME 51 cursor support and orange variants
+
+---
+ .github/workflows/build.yml |   3 +
+ README.md                   |  35 ++++++++++++
+ build.sh                    |   7 ++-
+ configs/normal/x.build.toml |   1 +
+ configs/right/x.build.toml  |   1 +
+ package.json                |   1 +
+ pkgbuild/PKGBUILD           |  58 +++++++++++++++++++
+ render.json                 |  19 +++++++
+ tests/test_linux_build.py   |  43 ++++++++++++++
+ tests/test_svg_cursors.py   |  96 ++++++++++++++++++++++++++++++++
+ tools/build_linux.py        |  73 ++++++++++++++++++++++++
+ tools/build_svg_cursors.py  | 108 ++++++++++++++++++++++++++++++++++++
+ 12 files changed, 444 insertions(+), 1 deletion(-)
+ create mode 100644 pkgbuild/PKGBUILD
+ create mode 100644 tests/test_linux_build.py
+ create mode 100644 tests/test_svg_cursors.py
+ create mode 100644 tools/build_linux.py
+ create mode 100644 tools/build_svg_cursors.py
+
+diff --git a/.github/workflows/build.yml b/.github/workflows/build.yml
+index b512d4d51..14ebce45e 100644
+--- a/.github/workflows/build.yml
++++ b/.github/workflows/build.yml
+@@ -48,6 +48,9 @@ jobs:
+         run: python -m pip install --upgrade pip clickgen
+         continue-on-error: false
+ 
++      - name: Test scalable cursors
++        run: python -m unittest discover -s tests -v
++
+       - name: Print clickgen Version
+         run: |
+           clickgen --version
+diff --git a/README.md b/README.md
+index c0f9c5ccc..d2daebfa1 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,38 @@
++## BigCommunity fork: GNOME 50 and 51
++
++Linux themes include legacy `cursors/` and SVG `cursors_scalable/` together.
++GNOME 50 uses Xcursor; GNOME 51 loads SVG cursors. The SVG build reuses
++`render.json` colors and the existing TOML hotspots, aliases and animation
++timing for all fourteen variants. Upstream artwork and credits are preserved.
++
++Two additional Modern Classic variants reuse the original shapes:
++
++- `Bibata-Modern-Orange-Black`: orange (`#FF8300`) fill, black outline.
++- `Bibata-Modern-Black-Orange`: black fill, orange (`#FF8300`) outline.
++
++Build all Linux variants without Node or a browser:
++
++```sh
++# Arch/Manjaro build dependencies: python>=3.11 python-clickgen librsvg
++python tools/build_linux.py
++python -m unittest discover -s tests -v
++```
++
++Use `--theme Bibata-Modern-Classic` to build one variant. Output defaults to
++`themes/`; `--output PATH` selects another directory. To generate only SVG
++assets, run `python tools/build_svg_cursors.py` (Python 3.11+ only).
++The upstream `yarn build` workflow also includes SVG assets in Linux archives.
++
++`pkgbuild/PKGBUILD` builds `big-bibata-cursor-theme` from this fork. It provides,
++conflicts with and replaces `bibata-cursor-theme`, allowing migration during
++a repository system upgrade without relying on same-name repository priority.
++Existing theme names remain unchanged. Both formats are installed under
++`/usr/share/icons`. It preserves the distribution's legacy
++24/32/48 pixel sizes; SVG cursors scale independently. The template's date-based `pkgver`
++and `pkgrel` are unchanged. No session restart or settings changes are performed
++by the package. Runtime validation covers cursor selection separately from
++the build tests; SVG support does not imply testing every desktop environment.
++
+ ## ⚠️ Notice: Final Major Version v2.x.x
+ 
+ I've launched the successor to this project at https://www.github.com/ful1e5/bibata for **downloading and personalizing Bibata**, now the main source for new features. I recommend downloading from there. This repository is still maintained for [Linux packages](#packages).
+diff --git a/build.sh b/build.sh
+index 29f7a0b0d..071085400 100755
+--- a/build.sh
++++ b/build.sh
+@@ -1,7 +1,7 @@
+ #!/bin/bash
+ # A script for preparing binaries of Bibata Cursors, created by Abdulkaiz Khatri.
+ 
+-version="v2.0.6"
++version="v2.0.7"
+ 
+ error() (
+   set -o pipefail
+@@ -36,6 +36,8 @@ names["Bibata-Modern-Amber"]=$(with_version "Yellowish and rounded edge Bibata")
+ names["Bibata-Modern-Amber-Right"]=$(with_version "Yellowish and rounded edge right-hand Bibata")
+ names["Bibata-Modern-Classic"]=$(with_version "Black and rounded edge Bibata")
+ names["Bibata-Modern-Classic-Right"]=$(with_version "Black and rounded edge right-hand Bibata")
++names["Bibata-Modern-Orange-Black"]=$(with_version "Orange Bibata with black outlines")
++names["Bibata-Modern-Black-Orange"]=$(with_version "Black Bibata with orange outlines")
+ names["Bibata-Modern-Ice"]=$(with_version "White and rounded edge Bibata")
+ names["Bibata-Modern-Ice-Right"]=$(with_version "White and rounded edge right-hand Bibata")
+ names["Bibata-Original-Amber"]=$(with_version "Yellowish and sharp edge Bibata")
+@@ -58,6 +60,9 @@ for key in "${!names[@]}"; do
+   wait $PID
+ done
+ 
++# Include SVG cursors for GNOME 51 without replacing legacy Xcursors.
++python3 tools/build_svg_cursors.py || exit 1
++
+ # Building Bibata Windows binaries
+ for key in "${!names[@]}"; do
+   comment="${names[$key]}"
+diff --git a/configs/normal/x.build.toml b/configs/normal/x.build.toml
+index 591b018bd..0ca965b86 100644
+--- a/configs/normal/x.build.toml
++++ b/configs/normal/x.build.toml
+@@ -220,6 +220,7 @@ x11_symlinks = [
+   "4498f0e0c1937ffe01fd06f973665830",
+   "9081237383d90e509aa00f00170e968f",
+   "all-scroll",
++  "all-resize",
+   "fleur",
+   "size_all"
+ ]
+diff --git a/configs/right/x.build.toml b/configs/right/x.build.toml
+index bf8aeb43f..105360492 100644
+--- a/configs/right/x.build.toml
++++ b/configs/right/x.build.toml
+@@ -220,6 +220,7 @@ x11_symlinks = [
+   "4498f0e0c1937ffe01fd06f973665830",
+   "9081237383d90e509aa00f00170e968f",
+   "all-scroll",
++  "all-resize",
+   "fleur",
+   "size_all"
+ ]
+diff --git a/package.json b/package.json
+index d96c96dce..b79e8867c 100644
+--- a/package.json
++++ b/package.json
+@@ -7,6 +7,7 @@
+     "clean": "rm -rf bin bitmaps themes",
+     "render": "npx cbmp render.json",
+     "build": "bash build.sh",
++    "build:svg": "python3 tools/build_svg_cursors.py",
+     "generate": "npx cbmp render.json && bash build.sh"
+   }
+ }
+diff --git a/pkgbuild/PKGBUILD b/pkgbuild/PKGBUILD
+new file mode 100644
+index 000000000..ecabdd37c
+--- /dev/null
++++ b/pkgbuild/PKGBUILD
+@@ -0,0 +1,58 @@
++# Maintainer: Tales A. Mendonça <talesam@gmail.com>
++
++pkgname=big-bibata-cursor-theme
++pkgdesc="Bibata cursors with Xcursor and scalable SVG support for GNOME 50/51"
++# Uncomment and edit the following lines as needed
++#depends=('')
++makedepends=('git' 'python>=3.11' 'python-clickgen' 'librsvg')
++#optdepends=('')
++conflicts=('bibata-cursor-theme')
++provides=('bibata-cursor-theme')
++replaces=('bibata-cursor-theme')
++pkgver=$(date +%y.%m.%d)
++pkgrel=$(date +%H%M)
++arch=('any')
++license=('GPL-3.0-only')
++url="https://github.com/big-comm/Bibata_Cursor"
++source=("${pkgname}::git+${url}.git")
++md5sums=('SKIP')
++
++# Automatically detect and use the correct install file
++if [ -e "${pkgname}.install" ]; then
++    install=${pkgname}.install
++elif [ -e "pkgbuild.install" ]; then
++    install=pkgbuild.install
++fi
++
++prepare() {
++    cd "${srcdir}/${pkgname}"
++    # Add any preparation steps here, if needed
++    # For example: patch -p1 < "${srcdir}/patch-file.patch"
++}
++
++build() {
++    cd "${srcdir}/${pkgname}"
++    python tools/build_linux.py --sizes 24 32 48
++}
++
++check() {
++    cd "${srcdir}/${pkgname}"
++    python -m unittest discover -s tests -v
++}
++
++package() {
++    cd "${srcdir}/${pkgname}"
++
++    install -dm755 "${pkgdir}/usr/share/icons"
++    cp -a themes/Bibata-* "${pkgdir}/usr/share/icons/"
++
++    # Install license file if present
++    if [ -f "LICENSE" ]; then
++        install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
++    fi
++
++    # Install documentation if present
++    if [ -f "README.md" ]; then
++        install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
++    fi
++}
+diff --git a/render.json b/render.json
+index 6c48be749..e12bf1f31 100644
+--- a/render.json
++++ b/render.json
+@@ -37,6 +37,25 @@
+     ]
+   },
+ 
++  "Bibata-Modern-Orange-Black": {
++    "dir": "svg/modern",
++    "out": "bitmaps/Bibata-Modern-Orange-Black",
++    "colors": [
++      { "match": "#00FF00", "replace": "#FF8300" },
++      { "match": "#0000FF", "replace": "#000000" },
++      { "match": "#FF0000", "replace": "#FF8300" }
++    ]
++  },
++  "Bibata-Modern-Black-Orange": {
++    "dir": "svg/modern",
++    "out": "bitmaps/Bibata-Modern-Black-Orange",
++    "colors": [
++      { "match": "#00FF00", "replace": "#000000" },
++      { "match": "#0000FF", "replace": "#FF8300" },
++      { "match": "#FF0000", "replace": "#000000" }
++    ]
++  },
++
+   "Bibata-Modern-Ice": {
+     "dir": "svg/modern",
+     "out": "bitmaps/Bibata-Modern-Ice",
+diff --git a/tests/test_linux_build.py b/tests/test_linux_build.py
+new file mode 100644
+index 000000000..cfcf28eb3
+--- /dev/null
++++ b/tests/test_linux_build.py
+@@ -0,0 +1,43 @@
++"""Exercise the native compiler and repeated builds."""
++
++from collections import Counter
++from pathlib import Path
++import shutil
++import struct
++import subprocess
++import sys
++import tempfile
++import unittest
++
++ROOT = Path(__file__).resolve().parents[1]
++
++
++@unittest.skipUnless(shutil.which('ctgen') and shutil.which('rsvg-convert'),
++                     'Requires clickgen and librsvg build tools')
++class LinuxBuildTests(unittest.TestCase):
++    def test_rebuild_keeps_both_formats_and_requested_sizes(self):
++        with tempfile.TemporaryDirectory() as temporary:
++            theme = Path(temporary) / 'Bibata-Modern-Classic'
++            metadata = None
++            for sizes in ((24, 32, 48), (48,)):
++                result = subprocess.run([
++                    sys.executable, str(ROOT / 'tools/build_linux.py'),
++                    '--output', temporary, '--theme', theme.name,
++                    '--sizes', *(str(size) for size in sizes),
++                ], capture_output=True, text=True)
++                self.assertEqual(result.returncode, 0, result.stderr)
++                data = (theme / 'cursors/wait').read_bytes()
++                magic, header, _, count = struct.unpack_from('<4I', data)
++                self.assertEqual(magic, 0x72756358)
++                actual = Counter(struct.unpack_from('<3I', data, header + 12 * i)[1]
++                                 for i in range(count))
++                self.assertEqual(actual, Counter({size: 54 for size in sizes}))
++                self.assertTrue((theme / 'cursors/all-resize').is_file())
++                current = (theme / 'cursors_scalable/progress/metadata.json').read_bytes()
++                if metadata is not None:
++                    self.assertEqual(current, metadata)
++                metadata = current
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/tests/test_svg_cursors.py b/tests/test_svg_cursors.py
+new file mode 100644
+index 000000000..9c4fdfda7
+--- /dev/null
++++ b/tests/test_svg_cursors.py
+@@ -0,0 +1,96 @@
++"""Validate complete themes against GNOME 51 cursor requirements."""
++
++import importlib.util
++import json
++from pathlib import Path
++import tempfile
++import unittest
++import xml.etree.ElementTree as ET
++
++ROOT = Path(__file__).resolve().parents[1]
++spec = importlib.util.spec_from_file_location('builder', ROOT / 'tools/build_svg_cursors.py')
++builder = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(builder)
++
++# clutter_cursor_type_to_name(), Mutter 51.0.
++CURSORS = '''default context-menu help pointer progress wait cell crosshair text
++vertical-text alias copy move no-drop not-allowed grab grabbing e-resize n-resize
++ne-resize nw-resize s-resize se-resize sw-resize w-resize ew-resize ns-resize
++nesw-resize nwse-resize col-resize row-resize all-scroll zoom-in zoom-out dnd-ask
++all-resize'''.split()
++
++
++class SvgCursorTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.directory = tempfile.TemporaryDirectory()
++        cls.output = Path(cls.directory.name)
++        cls.variants = json.loads((ROOT / 'render.json').read_text())
++        for name, variant in cls.variants.items():
++            builder.build_theme(name, variant, cls.output)
++
++    @classmethod
++    def tearDownClass(cls):
++        cls.directory.cleanup()
++
++    def test_all_variants_cover_native_cursor_names(self):
++        self.assertEqual(len(self.variants), 14)
++        for name in self.variants:
++            scalable = self.output / name / 'cursors_scalable'
++            for cursor in CURSORS:
++                with self.subTest(theme=name, cursor=cursor):
++                    metadata = json.loads((scalable / cursor / 'metadata.json').read_text())
++                    self.assertTrue(metadata)
++                    for frame in metadata:
++                        ET.parse(scalable / cursor / frame['filename'])
++                        self.assertEqual(frame['nominal_size'], 256)
++
++    def test_animations_keep_frame_order_and_timing(self):
++        for name in self.variants:
++            for cursor in ('wait', 'progress'):
++                frames = json.loads((self.output / name / 'cursors_scalable' / cursor / 'metadata.json').read_text())
++                self.assertEqual(len(frames), 54)
++                self.assertEqual([f['filename'] for f in frames], sorted(f['filename'] for f in frames))
++                self.assertTrue(all(f['delay'] == 40 for f in frames))
++
++    def test_handedness_hotspots_and_colors(self):
++        for name, variant in self.variants.items():
++            target = self.output / name / 'cursors_scalable/default'
++            metadata = json.loads((target / 'metadata.json').read_text())[0]
++            self.assertEqual(metadata['hotspot_x'], 207 if name.endswith('-Right') else 55)
++            self.assertEqual(metadata['hotspot_y'], 24 if name.endswith('-Right') else 17)
++            svg = ET.parse(target / metadata['filename'])
++            path = svg.getroot().find('{http://www.w3.org/2000/svg}path')
++            palette = {c['match']: c['replace'] for c in variant['colors']}
++            self.assertEqual(path.get('fill'), palette['#00FF00'])
++            self.assertEqual(path.get('stroke'), palette['#0000FF'])
++
++    def test_rebuild_preserves_legacy_cursors_and_index(self):
++        name = 'Bibata-Modern-Classic'
++        theme = self.output / name
++        (theme / 'cursors').mkdir()
++        legacy = theme / 'cursors/left_ptr'
++        legacy.write_bytes(b'Xcur legacy fixture')
++        index = theme / 'index.theme'
++        index.write_text('[Icon Theme]\nName=Existing theme\n')
++        builder.build_theme(name, self.variants[name], self.output)
++        self.assertEqual(legacy.read_bytes(), b'Xcur legacy fixture')
++        self.assertEqual(index.read_text(), '[Icon Theme]\nName=Existing theme\n')
++        self.assertTrue((theme / 'cursors_scalable/default/metadata.json').is_file())
++
++    def test_palette_replacement_is_simultaneous(self):
++        colors = [{'match': '#000000', 'replace': '#FFFFFF'},
++                  {'match': '#FFFFFF', 'replace': '#000000'}]
++        self.assertEqual(builder.recolor('#000000 #ffffff', colors), '#FFFFFF #000000')
++
++    def test_missing_source_fails_without_replacing_theme(self):
++        name = 'Bibata-Modern-Classic'
++        metadata = self.output / name / 'cursors_scalable/default/metadata.json'
++        before = metadata.read_bytes()
++        with self.assertRaises(ValueError):
++            builder.build_theme(name, self.variants[name] | {'dir': 'svg/groups/modern'}, self.output)
++        self.assertEqual(metadata.read_bytes(), before)
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/tools/build_linux.py b/tools/build_linux.py
+new file mode 100644
+index 000000000..97b5205c3
+--- /dev/null
++++ b/tools/build_linux.py
+@@ -0,0 +1,73 @@
++#!/usr/bin/env python3
++"""Build Linux themes with both Xcursor and scalable SVG assets."""
++
++import argparse
++from concurrent.futures import ThreadPoolExecutor
++import json
++from pathlib import Path
++import shutil
++import subprocess
++import tempfile
++
++from build_svg_cursors import ROOT, build_theme
++
++
++def render_frame(args):
++    source, destination = args
++    subprocess.run(['rsvg-convert', '--output', str(destination), str(source)], check=True)
++
++
++def build_linux(name, variant, output, sizes=None):
++    build_theme(name, variant, output)
++    scalable = output / name / 'cursors_scalable'
++    side = 'right' if name.endswith('-Right') else 'normal'
++    with tempfile.TemporaryDirectory(prefix='bibata-bitmaps-') as temporary:
++        bitmaps = Path(temporary)
++        compiled = bitmaps / 'compiled'
++        frames = []
++        for cursor in scalable.iterdir():
++            if cursor.is_symlink():
++                continue
++            for svg in cursor.glob('*.svg'):
++                frames.append((svg, bitmaps / f'{svg.stem}.png'))
++        with ThreadPoolExecutor(max_workers=4) as pool:
++            list(pool.map(render_frame, frames))
++        command = [
++            'ctgen', str(ROOT / 'configs' / side / 'x.build.toml'),
++            '-p', 'x11', '-d', str(bitmaps), '-o', str(compiled),
++            '-n', name, '-c', 'Bibata Xcursor and scalable SVG cursors',
++        ]
++        if sizes:
++            command.extend(['-s', *(str(size) for size in sizes)])
++        subprocess.run(command, check=True)
++        # ctgen cannot overwrite its symlinks. Publish a fresh build instead.
++        legacy = output / name / 'cursors'
++        if legacy.exists():
++            shutil.rmtree(legacy)
++        shutil.move(str(compiled / name / 'cursors'), legacy)
++        shutil.copyfile(compiled / name / 'index.theme', output / name / 'index.theme')
++    if not (output / name / 'cursors/default').is_file():
++        raise RuntimeError(f'Missing Xcursor output: {name}')
++    if not (scalable / 'default/metadata.json').is_file():
++        raise RuntimeError(f'Missing SVG output: {name}')
++
++
++def main():
++    variants = json.loads((ROOT / 'render.json').read_text())
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--output', type=Path, default=ROOT / 'themes')
++    parser.add_argument('--theme', action='append', choices=variants)
++    parser.add_argument('--sizes', type=int, nargs='+', help='Legacy Xcursor sizes only')
++    args = parser.parse_args()
++    if args.sizes and any(size <= 0 for size in args.sizes):
++        parser.error('Cursor sizes must be positive')
++    for command in ('ctgen', 'rsvg-convert'):
++        if not shutil.which(command):
++            parser.error(f'Required build tool not found: {command}')
++    for name in args.theme or variants:
++        print(f'Building Linux theme: {name}', flush=True)
++        build_linux(name, variants[name], args.output.resolve(), args.sizes)
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/tools/build_svg_cursors.py b/tools/build_svg_cursors.py
+new file mode 100644
+index 000000000..5c1ced8a7
+--- /dev/null
++++ b/tools/build_svg_cursors.py
+@@ -0,0 +1,108 @@
++#!/usr/bin/env python3
++"""Build scalable cursors alongside the existing Xcursor themes."""
++
++import argparse
++import json
++from pathlib import Path
++import re
++import shutil
++import tempfile
++import tomllib
++import xml.etree.ElementTree as ET
++
++ROOT = Path(__file__).resolve().parents[1]
++
++
++def recolor(svg, colors):
++    """Replace palette tokens in one pass, including black/white swaps."""
++    palette = {item['match'].lower(): item['replace'] for item in colors}
++    pattern = '|'.join(re.escape(color) for color in palette)
++    return re.sub(f'(?:{pattern})(?![0-9a-f])',
++                  lambda match: palette[match[0].lower()], svg, flags=re.IGNORECASE)
++
++
++def source_frames(source, pattern):
++    pattern = str(Path(pattern).with_suffix('.svg'))
++    frames = list(source.glob(pattern))
++    # Animated sources live in symlinked subdirectories (wait, left_ptr_watch).
++    for child in source.iterdir():
++        if child.is_dir():
++            frames.extend(child.glob(pattern))
++    if not frames:
++        raise ValueError(f'No SVG frames for {source / pattern}')
++    return sorted(frames, key=lambda path: path.name)
++
++
++def frame_metadata(svg, filename, settings, animated):
++    root = ET.fromstring(svg)
++    width = float(root.attrib['width'].removesuffix('px'))
++    height = float(root.attrib['height'].removesuffix('px'))
++    if width != height or not width.is_integer() or width <= 0:
++        raise ValueError(f'Expected a square pixel canvas: {filename}')
++    x, y = settings['x_hotspot'], settings['y_hotspot']
++    if not (0 <= x < width and 0 <= y < height):
++        raise ValueError(f'Hotspot outside canvas: {filename}')
++    return {
++        'filename': filename,
++        'nominal_size': int(width),
++        'hotspot_x': x,
++        'hotspot_y': y,
++        'delay': settings['x11_delay'] if animated else 0,
++    }
++
++
++def build_theme(name, variant, output, root=ROOT):
++    side = 'right' if name.endswith('-Right') else 'normal'
++    with (root / 'configs' / side / 'x.build.toml').open('rb') as handle:
++        config = tomllib.load(handle)
++    cursors = config['cursors']
++    defaults = cursors['fallback_settings']
++    source = root / variant['dir']
++    theme_dir = output / name
++    theme_dir.mkdir(parents=True, exist_ok=True)
++    with tempfile.TemporaryDirectory(prefix='.svg-build-', dir=theme_dir) as temporary:
++        scalable = Path(temporary) / 'cursors_scalable'
++        scalable.mkdir()
++        aliases = {}
++        for key, cursor in cursors.items():
++            if key == 'fallback_settings':
++                continue
++            target = scalable / cursor['x11_name']
++            target.mkdir()
++            frames = source_frames(source, cursor['png'])
++            metadata = []
++            for frame in frames:
++                svg = recolor(frame.read_text(), variant['colors'])
++                metadata.append(frame_metadata(svg, frame.name, defaults | cursor, len(frames) > 1))
++                (target / frame.name).write_text(svg)
++            (target / 'metadata.json').write_text(json.dumps(metadata, indent=2) + '\n')
++            for alias in cursor.get('x11_symlinks', []):
++                if alias in aliases:
++                    raise ValueError(f'Duplicate cursor alias: {alias}')
++                aliases[alias] = target.name
++        for alias, target in aliases.items():
++            (scalable / alias).symlink_to(target, target_is_directory=True)
++        destination = theme_dir / 'cursors_scalable'
++        if destination.exists():
++            shutil.rmtree(destination)
++        scalable.rename(destination)
++    # Standalone SVG builds are discoverable too; preserve ctgen's index if present.
++    index = theme_dir / 'index.theme'
++    if not index.exists():
++        index.write_text(f'[Icon Theme]\nName={name}\nComment=Bibata scalable cursors\n')
++    shutil.copyfile(root / 'LICENSE', theme_dir / 'LICENSE')
++
++
++def main():
++    variants = json.loads((ROOT / 'render.json').read_text())
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--output', type=Path, default=ROOT / 'themes')
++    parser.add_argument('--theme', action='append', choices=variants)
++    args = parser.parse_args()
++    for name in args.theme or variants:
++        build_theme(name, variants[name], args.output)
++        print(f'Built scalable cursors: {name}')
++
++
++if __name__ == '__main__':
++    main()

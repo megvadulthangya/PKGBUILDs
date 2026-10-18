@@ -2,9 +2,6 @@
 # Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
 # Contributor: Pierre Schmitz <pierre@archlinux.de>
 
-## TODO
-# Move source files to applications/manjaro-keyring
-
 pkgname=manjaro-keyring
 pkgver=20251003
 pkgrel=2

@@ -1,7 +1,7 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=gnome-shell-extension-gsconnect
-pkgver=73
+pkgver=74
 pkgrel=1
 pkgdesc="KDE Connect implementation with GNOME Shell integration"
 arch=('any')
@@ -23,7 +23,7 @@ optdepends=(
   'nemo-python: Share files from Nemo'
 )
 source=("git+https://github.com/GSConnect/gnome-shell-extension-gsconnect#tag=v$pkgver")
-sha256sums=('577bdbe829dd7bf333c6366977c4657bcf4d947ac2158f46ed761ce18114de76')
+sha256sums=('b9e48c2578ca0e63cc88be30d77dcb6d587112df4da8f03645ef5d28705dd6a7')
 
 build() {
   local meson_options=(

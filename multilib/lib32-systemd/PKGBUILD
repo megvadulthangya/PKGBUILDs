@@ -9,7 +9,7 @@ _pkgbasename=systemd
 # Upstream versioning is incompatible with pacman's version comparisons, one
 # way or another. We use proper version for pacman here (no dash for rc
 # release!), and change in source array below.
-pkgver=262.1
+pkgver=261.3
 pkgrel=1
 pkgdesc='system and service manager (32-bit)'
 arch=('x86_64')
@@ -23,14 +23,12 @@ makedepends=('git' 'gperf' 'intltool' 'lib32-acl' 'lib32-bzip2'
              'libxslt' 'meson' 'python-jinja')
 checkdepends=('systemd')
 provides=('libsystemd.so' 'libudev.so')
-validpgpkeys=('63CDA1E5D3FC22B998D20DD6327F26951A015CC4'  # Lennart Poettering <lennart@poettering.net>
-              'A9EA9081724FFAE0484C35A1A81CEA22BC8C7E2E'  # Luca Boccassi <luca.boccassi@gmail.com>
-              '9A774DB5DB996C154EBBFBFDA0099A18E29326E1'  # Yu Watanabe <watanabe.yu+github@gmail.com>
+validpgpkeys=('A9EA9081724FFAE0484C35A1A81CEA22BC8C7E2E'  # Luca Boccassi <luca.boccassi@gmail.com>
               '5C251B5FC54EB2F80F407AAAC54CA336CFEB557E') # Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl>
 # For pacman's version comparisons $pkgver is missing the dash that would be
 # in an upstream rc version so add it back when fetching the tag from github.
 source=("git+https://github.com/systemd/systemd#tag=v${pkgver/rc/-rc}?signed")
-sha512sums=('7be7a345e35c13dce59db37247146d1a1f3f3ff121e6d655f056ca78834b5ff38ffbb5be53760a5d2339f9389ca2e0f04f4c3f4ce9d2b49f8bcc484f580fbfde')
+sha512sums=('d0cb1518becf7f105c2ce60f794bcddf4f8330174f56fcdfbd6b5f5e65fa94acb4098631ffe9d60a8b4e3c04b878f32c222b42dd827b5ff052bd460f4a30652a')
 
 _backports=(
 )
@@ -106,6 +104,7 @@ build() {
     -Dlibcryptsetup-plugins=disabled
     -Dlibfido2=disabled
     -Dlibidn2=enabled
+    -Dlibiptc=disabled
     -Dlocaled=false
     -Dlogind=false
     -Dlz4=disabled

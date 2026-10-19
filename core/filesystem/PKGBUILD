@@ -234,10 +234,7 @@ package() {
   cd "$pkgdir"
 
   for dir in "${!directories[@]}"; do
-    mode="$(cut -f 1 -d ':' <<< "${directories[$dir]}")"
-    user="$(cut -f 2 -d ':' <<< "${directories[$dir]}")"
-    group="$(cut -f 3 -d ':' <<< "${directories[$dir]}")"
-
+    IFS=':' read mode user group <<< "${directories[$dir]}"
     install -vdm "$mode" -o "$user" -g "$group" "$dir"
   done
 
@@ -246,11 +243,7 @@ package() {
   done
 
   for target_file in "${!files[@]}"; do
-    source_file="$(cut -f 1 -d ':' <<< "${files[$target_file]}")"
-    mode="$(cut -f 2 -d ':' <<< "${files[$target_file]}")"
-    user="$(cut -f 3 -d ':' <<< "${files[$target_file]}")"
-    group="$(cut -f 4 -d ':' <<< "${files[$target_file]}")"
-
+    IFS=':' read source_file mode user group <<< "${files[$target_file]}"
     install -vDm "$mode" -o "$user" -g "$group" "$srcdir/$source_file" "$target_file"
   done
 

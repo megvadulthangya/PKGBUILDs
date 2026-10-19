@@ -1,0 +1,14 @@
+post_install() {
+  systemctl enable --now gnome-vram-booster.service
+}
+
+post_upgrade() {
+  if systemctl is-enabled --quiet gnome-vram-booster.service; then
+    systemctl daemon-reload
+    systemctl restart gnome-vram-booster.service
+  fi
+}
+
+pre_remove() {
+  systemctl disable --now gnome-vram-booster.service
+}

@@ -2,14 +2,14 @@
 # Contributor: Piero Proietti <piero.proietti@gmail.com>
 
 pkgname=penguins-eggs
-pkgver=26.10.14
+pkgver=26.10.19
 pkgrel=1
 pkgdesc="penguins-eggs universal Linux remastering"
 arch=('x86_64')
 url="https://penguins-eggs.net"
 license=('GPL3')
 source=("$pkgname-$pkgver.tar.gz::https://github.com/pieroproietti/penguins-eggs/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('cc0f9987690886a6cc06b11c8b194f37d619fcfb55ba859929cfc47c2bb87b9c')
+sha256sums=('87df3e290a6343f1e5f8c63dce5132aff876fff07064686f9ea78e904628e7bc')
 options=('!debug')
 depends=(
     'arch-install-scripts'

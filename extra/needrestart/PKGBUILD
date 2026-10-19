@@ -3,7 +3,7 @@
 
 pkgname=needrestart
 pkgver=3.11
-pkgrel=4
+pkgrel=5
 pkgdesc="Restart daemons after kernel, library and CPU microcode updates."
 arch=('any')
 url="https://github.com/liske/needrestart"

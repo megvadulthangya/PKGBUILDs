@@ -1,0 +1,36 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=kiss-up
+pkgver=0.9
+pkgrel=4
+pkgdesc="Simple PySide6 GUI to check and install official repository updates on Manjaro Linux"
+arch=('any')
+url="https://codeberg.org/manjaro/kiss-up"
+license=('0BSD')
+depends=(
+  'fakeroot'
+  'libpamac'
+  'mhwd'
+  'pamac-cli'
+  'python'
+  'pyside6'
+  'pacman-contrib'
+  'pacman-mirrors'
+  'qt6-base'
+)
+checkdepends=('desktop-file-utils')
+_commit=b0f469dee30ed3912a6b983c03fcb91792b24aa3
+source=("git+https://codeberg.org/manjaro/kiss-up.git#commit=${_commit}")
+sha256sums=('53967f21ef423d6ab15374bce8cea1fe0036d6c6e9bf63947851453b6d08151f')
+
+check() {
+  cd "$pkgname"
+  desktop-file-validate "$pkgname.desktop"
+}
+
+package() {
+  cd "$pkgname"
+  install -Dm755 "$pkgname.py" "$pkgdir/usr/bin/$pkgname"
+  install -Dm644 "$pkgname.desktop" -t "$pkgdir/usr/share/applications/"
+  install -Dm644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

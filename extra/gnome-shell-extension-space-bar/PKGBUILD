@@ -11,6 +11,7 @@ depends=('gnome-shell')
 makedepends=(
   'git'
   'jq'
+  'nodejs'
   'pnpm'
   'zip'
 )

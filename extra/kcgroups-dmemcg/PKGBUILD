@@ -1,0 +1,102 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Natalie Vock <natalie dot vock at gmx dot de>
+# Contributor: Peter Jung <ptr1337@archlinux.org>
+
+pkgname=(
+  'kcgroups-dmemcg'
+  'plasma-foreground-booster-dmemcg'
+)
+pkgbase=kcgroups-dmemcg
+pkgver=0.1
+pkgrel=3
+_tag=dmemcg-experimental
+pkgdesc="Fork of KDE's KCGroups utility library adding integration with the dmem cgroup controller."
+arch=('x86_64')
+url="https://github.com/pixelcluster/kcgroups"
+license=('LGPL-2.1-or-later')
+depends=(
+  'kconfig'
+  'kdbusaddons'
+  'kwindowsystem'
+  'qt6-base'
+  'plasma-workspace'
+)
+makedepends=(
+  'cmake'
+  'extra-cmake-modules'
+  'git'
+)
+checkdepends=('desktop-file-utils')
+source=("git+https://github.com/pixelcluster/kcgroups.git#tag=kcgroups-${_tag}"
+        "booster::git+https://github.com/pixelcluster/kcgroups.git#tag=booster-${_tag}")
+sha256sums=('fc231c52a9a0b135870b73ce51849a64ea84f80eb8f921c0c0d85af8e12fde28'
+            'd48cf2a39ad087be415fced5b83b5f2ce497cb809fefae622e64e67c824d3286')
+
+prepare() {
+
+  # Order after kwin_wayland like the other plasma-workspace.target services,
+  # otherwise it can start before WAYLAND_DISPLAY exists and abort in
+  # QGuiApplication (no platform plugin). After=graphical-session.target was
+  # dropped upstream to break an ordering cycle, but left no ordering at all.
+  sed -i '/^PartOf=graphical-session.target/a After=plasma-core.target' \
+    booster/plasma-foreground-booster.service.in
+}
+
+build () {
+  local cmake_options=(
+    -B kcgroups-build
+    -S kcgroups
+    -W no-author
+    -D CMAKE_BUILD_TYPE='RelWithDebInfo'
+    -D CMAKE_INSTALL_PREFIX='/usr'
+    -D BUILD_WITH_QT6='ON'
+  )
+  cmake "${cmake_options[@]}"
+  cmake --build kcgroups-build
+
+  # HACK: plasma-foreground-booster needs an install of kcgroups to build
+  # Install it to a temporary directory inside the build area
+  DESTDIR='kcgroups-install' cmake --install kcgroups-build
+
+  local cmake_options=(
+    -B booster-build
+    -S booster
+    -W no-author
+    -D CMAKE_PREFIX_PATH="$srcdir/kcgroups-install/usr"
+    -D CMAKE_BUILD_TYPE='RelWithDebInfo'
+    -D CMAKE_INSTALL_PREFIX='/usr'
+  )
+  cmake "${cmake_options[@]}"
+  cmake --build booster-build
+}
+
+check() {
+  local ctest_flags=(
+    --output-on-failure
+    --parallel $(nproc)
+  )
+  ctest --test-dir kcgroups-build "${ctest_flags[@]}"
+  ctest --test-dir booster-build "${ctest_flags[@]}"
+
+  desktop-file-validate booster-build/org.kde.foreground-booster.desktop
+}
+
+package_kcgroups-dmemcg() {
+  depends=(
+    'kconfig'
+    'kdbusaddons'
+    'kwindowsystem'
+    'qt6-base'
+  )
+  provides=('kcgroups')
+  conflicts=('kcgroups')
+
+  DESTDIR="$pkgdir" cmake --install kcgroups-build
+}
+
+package_plasma-foreground-booster-dmemcg() {
+  pkgdesc="KDE helper to boost foreground apps using dmem cgroup limits"
+  depends=('kcgroups-dmemcg')
+
+  DESTDIR="$pkgdir" cmake --install booster-build
+}

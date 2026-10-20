@@ -1,0 +1,4 @@
+[gnome-vram-booster]
+source = "git"
+git = "https://github.com/sachesi/gnome-vram-booster.git"
+prefix = "v"

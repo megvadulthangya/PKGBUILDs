@@ -1,7 +1,8 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=tuxedo-control-center
-pkgver=3.0.10
+_app_id=com.tuxedocomputers.tcc
+pkgver=3.1.1
 pkgrel=1
 _nodeversion=24
 pkgdesc="A tool to help you control performance, energy, fan and comfort settings on TUXEDO laptops."
@@ -13,6 +14,7 @@ depends=(
   'gtk3'
   'libxss'
   'nss'
+  'polkit'
   'python'
   'systemd'
   'tuxedo-drivers-dkms'
@@ -28,8 +30,10 @@ checkdepends=('appstream')
 optdepends=('libayatana-appindicator: tray icon')
 options=('!strip')
 install="${pkgname}.install"
-source=("${pkgname}-${pkgver}.tar.gz::$url/archive/refs/tags/v${pkgver}.tar.gz")
-sha256sums=('d192391c559789c8f62af0e614e37e1222c9aa9753c61a30e3149b35d1969532')
+source=("${pkgname}-${pkgver}.tar.gz::$url/archive/refs/tags/v${pkgver}.tar.gz"
+        "${_app_id}.desktop")
+sha256sums=('96a0d38b660d6a02677f6ce3f2078a0c7169a5b5e83ec2e772e94472815fe4d7'
+            'faf33f0f2f8cb9e62e6ef8afe292ba615964d1941d07d9a08cd770507f40162a')
 
 _ensure_local_nvm() {
   # let's be sure we are starting clean
@@ -49,12 +53,6 @@ prepare() {
   cd "${pkgname}-${pkgver}"
   export npm_config_cache="${srcdir}/npm_cache"
   npm install
-
-  # error: value "System;TUXEDO;" for key "Categories" in group "Desktop Entry"
-  # contains an unregistered value "TUXEDO";
-  # values extending the format should start with "X-"
-  desktop-file-edit --set-key=Categories --set-value="System;" \
-    "src/dist-data/${pkgname}.desktop"
 
   # error: value item "TrayIcon" in key "Categories" in group "Desktop Entry"
   # is a reserved category, so a "OnlyShowIn" key must be included
@@ -79,40 +77,37 @@ check() {
   _ensure_local_nvm
   npm run tests
 
-  desktop-file-validate src/dist-data/*.desktop
+  desktop-file-validate "src/dist-data/${pkgname}-tray.desktop"
 }
 
 package() {
   cd "${pkgname}-${pkgver}"
-  _dist_data="dist/packages/linux-unpacked/resources/dist/${pkgname}/data/dist-data"
-
   install -d "${pkgdir}"/{opt/"${pkgname}",usr/bin}
   cp -av dist/packages/linux-unpacked/* "${pkgdir}/opt/${pkgname}/"
-  chmod 4755 "${pkgdir}/opt/${pkgname}/chrome-sandbox"
   ln -sv "/opt/${pkgname}/${pkgname}" "${pkgdir}/usr/bin/"
 
-  install -Dm644 "${_dist_data}/${pkgname}.desktop" -t \
+  install -Dm644 "${srcdir}/${_app_id}.desktop" -t \
     "${pkgdir}/usr/share/applications/"
 
-#  install -Dm644 "${_dist_data}/${pkgname}-tray.desktop" -t \
-#    "${pkgdir}/etc/skel/.config/autostart/"
+  install -Dm644 "src/dist-data/${pkgname}-tray.desktop" -t \
+    "${pkgdir}/etc/xdg/autostart/"
 
-  install -Dm644 "${_dist_data}"/com.tuxedocomputers.{tccd,tomte}.policy -t \
+  install -Dm644 "src/dist-data/${_app_id}d-service.policy" -t \
+    "${pkgdir}/usr/share/polkit-1/actions/"
+  install -Dm644 src/dist-data/com.tuxedocomputers.tomte-access.policy -t \
     "${pkgdir}/usr/share/polkit-1/actions/"
 
-  install -Dm644 "${_dist_data}/com.tuxedocomputers.tccd.conf" -t \
+  install -Dm644 "src/dist-data/${_app_id}d-dbus.conf" -t \
     "${pkgdir}/usr/share/dbus-1/system.d/"
 
-  install -Dm644 "${_dist_data}/tccd.service" -t \
-    "${pkgdir}/usr/lib/systemd/system/"
-  install -Dm644 "${_dist_data}/tccd-sleep.service" -t \
-    "${pkgdir}/usr/lib/systemd/system/"
+  install -Dm644 src/dist-data/tccd.service -t "${pkgdir}/usr/lib/systemd/system/"
+  install -Dm644 src/dist-data/tccd-sleep.service -t "${pkgdir}/usr/lib/systemd/system/"
 
-  install -Dm644 "${_dist_data}/99-webcam.rules" -t "$pkgdir/usr/lib/udev/rules.d/"
+  install -Dm644 src/dist-data/99-webcam.rules -t "$pkgdir/usr/lib/udev/rules.d/"
 
-  install -Dm644 "dist/${pkgname}/data/dist-data/com.tuxedocomputers.tcc.metainfo.xml" -t \
+  install -Dm644 "src/dist-data/${_app_id}-gui.metainfo.xml" -t \
     "${pkgdir}/usr/share/metainfo/"
 
-  install -Dm644 "${_dist_data}/${pkgname}_256.svg" \
+  install -Dm644 "src/dist-data/${pkgname}_256.svg" \
     "${pkgdir}/usr/share/icons/hicolor/scalable/apps/${pkgname}.svg"
 }

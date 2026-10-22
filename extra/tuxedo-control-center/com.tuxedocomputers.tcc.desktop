@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=TUXEDO Control Center
+Exec=/opt/tuxedo-control-center/tuxedo-control-center %U
+Terminal=false
+Type=Application
+Icon=tuxedo-control-center
+StartupWMClass=com.tuxedocomputers.tcc
+Keywords=TCC
+X-KDE-Shortcuts=Meta+Alt+F6
+Comment=An application helping you to tune your TUXEDO
+Categories=System

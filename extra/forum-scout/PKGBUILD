@@ -12,7 +12,10 @@ depends=(
   'python-gobject'
   'python-requests'
 )
-makdepends=('git')
+makedepends=(
+  'desktop-file-utils'
+  'git'
+)
 source=("git+https://codeberg.org/linux-bird/forum-scout.git#tag=v$pkgver")
 sha256sums=('28e5f89ef0c1ea4af85b18b0e4034005abbb063d8c2ff3f8804af4e717bf73f4')
 

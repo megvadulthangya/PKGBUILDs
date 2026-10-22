@@ -72,9 +72,8 @@ prepare() {
     patch -Np1 -i "${srcdir}/0002-Add-IBT-support.patch" -d "${srcdir}/${_pkg_open}/"
 
     # Attempt to make builds reproducible
-    sed -i "s/^  HOSTNAME.*/  HOSTNAME = echo manjarolinux/" "${srcdir}/${_pkg_open}/utils.mk"
-    sed -i "s/^WHOAMI.*/WHOAMI = echo manjarolinux-builder/" "${srcdir}/${_pkg_open}/utils.mk"
-    sed -i "s/^DATE.*/DATE = date -r version.mk/" "${srcdir}/${_pkg_open}/utils.mk"
+    sed -i "s/^NV_BUILD_HOST.*/NV_BUILD_HOST ?= manjaro/" "${srcdir}/${_pkg_open}/utils.mk"
+    sed -i "s/^NV_BUILD_USER.*/NV_BUILD_USER ?= manjaro-builder/" "${srcdir}/${_pkg_open}/utils.mk"
 
     shopt -s globstar
     for conf in "${srcdir}"/**/dkms.conf; do

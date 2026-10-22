@@ -2,21 +2,22 @@
 
 pkgname=forum-scout
 pkgver=0.6.6
-pkgrel=1
+pkgrel=2
 pkgdesc="Arch focused forum search tool"
 arch=('any')
-url="https://github.com/musqz/forum-scout"
+url="https://codeberg.org/linux-bird/forum-scout"
 license=('MIT')
 depends=(
   'gtk4'
   'python-gobject'
   'python-requests'
 )
-source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('d18356ecfd220af1e286e4e090eb33a19624c22c47e052858650b4788bcc12c1')
+makdepends=('git')
+source=("git+https://codeberg.org/linux-bird/forum-scout.git#tag=v$pkgver")
+sha256sums=('28e5f89ef0c1ea4af85b18b0e4034005abbb063d8c2ff3f8804af4e717bf73f4')
 
 prepare() {
-  cd "$pkgname-$pkgver"
+  cd "$pkgname"
   sed -i "s/__VERSION__/$pkgver/" "$pkgname.py"
 
   # Correct StartupWMClass & remove unrelated category
@@ -26,12 +27,12 @@ prepare() {
 }
 
 check() {
-  cd "$pkgname-$pkgver"
+  cd "$pkgname"
   desktop-file-validate "$pkgname.desktop"
 }
 
 package() {
-  cd "$pkgname-$pkgver"
+  cd "$pkgname"
   install -Dm755 "$pkgname.py" "$pkgdir/usr/bin/$pkgname"
   install -Dm644 "$pkgname.desktop" -t "$pkgdir/usr/share/applications/"
   install -Dm644 forums.conf -t "$pkgdir/usr/share/$pkgname/"

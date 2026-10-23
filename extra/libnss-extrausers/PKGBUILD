@@ -1,21 +1,26 @@
 pkgname=libnss-extrausers
 pkgver=0.6
-pkgrel=1
-pkgdesc='nss module to have an additional passwd, shadow and group file'
+pkgrel=2
+pkgdesc="nss module to have an additional passwd, shadow and group file"
 arch=('x86_64')
-url='https://packages.debian.org/de/source/sid/libnss-extrausers'
-license=('GPL')
+url="https://github.com/arkanelinux/libnss-extrausers"
+license=(
+  'GPL-2.0-only'
+  'LGPL-2.1-only'
+)
 depends=('pam')
-makedepends=('gcc' 'make')
-source=("https://github.com/arkanelinux/$pkgname/archive/refs/heads/main.zip")
-sha256sums=('SKIP')
+makedepends=('git')
+provides=('libnss_extrausers.so=2')
+_commit=c3cef70c3709cbcda8bf54742edb08af35fb3a19
+source=("git+https://github.com/arkanelinux/libnss-extrausers.git#commit=${_commit}")
+sha256sums=('88f4ceba573aa4c0925bb024949ab23fa64f2b029e593beae03b9201f92ffcb7')
 
 build() {
-  cd $srcdir/$pkgname-main/src
+  cd "$pkgname/src"
   make
 }
 
 package() {
-  cd $srcdir/$pkgname-main/src
-  make DESTDIR=$pkgdir install
+  cd "$pkgname/src"
+  make DESTDIR="$pkgdir" install
 }

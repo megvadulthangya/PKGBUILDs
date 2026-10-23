@@ -1,4 +1,4 @@
 [forum-scout-qt]
 source = "git"
-git = "https://github.com/musqz/forum-scout-qt.git"
+git = "https://codeberg.org/linux-bird/forum-scout-qt.git"
 prefix = "v"

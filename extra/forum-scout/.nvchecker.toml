@@ -1,5 +1,4 @@
 [forum-scout]
 source = "git"
-git = "https://github.com/musqz/forum-scout-gtk4.git"
+git = "https://codeberg.org/linux-bird/forum-scout.git"
 prefix = "v"
-ignored = "v0.8.5"

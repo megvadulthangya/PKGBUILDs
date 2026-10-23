@@ -10,7 +10,7 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-utils' 'opencl-nvidia' 'nvidia-dkms' 'nvidia-open-dkms' 'nvidia-settings' 'mhwd-nvidia')
 pkgver=615.78.08
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('LicenseRef-NVIDIA-Driver-License-Agreement')
@@ -29,6 +29,7 @@ source=('mhwd-nvidia'
         '50-nvidia-cuda-disable-perf-boost.conf'
         "https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run"
         "https://download.nvidia.com/XFree86/NVIDIA-kernel-module-source/${_pkg_open}.tar.xz"
+        'Open-sysfs-config-from-the-userspace-root-on-7.3.patch'
         'limit-vram-usage'
         'cuda-no-stable-perf-limit')
 
@@ -43,6 +44,7 @@ sha512sums=('5c641465a7c5e9e55eb5ee93f3a601d1d8fbe61134d3f8ca5013e35d4ce9422a052
             '2ce46e6cd7be6e6bfb7e84889568d162d52d70c6c29d62cebab323830fd5f55072670b345b62cc06c07a24a3649cd055f5380d06a194bd47505556139d8d45ba'
             'fb0c16c9812e60ac1f5ca663f03dd84f386ae4ad55beab4655c65fe8d094c98246c5acbcf9e385e93e38dbfb340472712fc80593a8bf0be47f34ff871bf4d83d'
             '5ced2c7e3e9df21f8494ea439ac2103307fcbcb295a3f11e5fdf4f1dbeda3f0b13800a06f8147ebd064f98897c24e92f5de82023a8ca43a582694d951c9620c9'
+            '99c1d188704f4bcbfa08ccb97c02f704455e3530ea458936e570675ad5b857ea1efef277ffab7dd7604077bc5a413559013c2fd21de9bd677d11c6cbe6b9e234'
             '9bb16a0d77bc66c6f885e31542d3e616aa3f778a3e693cb93d77ef76d112d05c89c3c3fc39723840f138a15fb33870840f3b61e57f8d0fc5688d41785dcc4cb9'
             'e8bfc46134e9121e0375c841ee02513b9b55c861d8af57090fc4d43791a2481b3c1d282f02bc93b7d25026a2f2bcb6e1730365e64c9ca1e6db69b67b0e54051a')
 
@@ -66,13 +68,14 @@ prepare() {
     # kernel suspend notifiers, making the nvidia suspend/hibernate services unnecessary.
     # Only start services with proprietary driver
     # https://us.download.nvidia.com/XFree86/Linux-x86_64/595.58.03/README/powermanagement.html
-    # https://github.com/rpmfusion/xorg-x11-drv-nvidia/blob/master/systemd.patch
+    # https://github.com/rpmfusion/xorg-x11-drv-nvidia/blob/25c2bd1dca174c84ec6050d116bb8b6d7aa50d17/systemd.patch
     patch -Np1 -i "${srcdir}/systemd.patch" -d "${srcdir}/${_pkg}"
 
+    patch -Np1 -i "${srcdir}/Open-sysfs-config-from-the-userspace-root-on-7.3.patch" -d "${srcdir}/${_pkg_open}/"
+
     # Attempt to make builds reproducible
-    sed -i "s/^  HOSTNAME.*/  HOSTNAME = echo manjarolinux/" "${srcdir}/${_pkg_open}/utils.mk"
-    sed -i "s/^WHOAMI.*/WHOAMI = echo manjarolinux-builder/" "${srcdir}/${_pkg_open}/utils.mk"
-    sed -i "s/^DATE.*/DATE = date -r version.mk/" "${srcdir}/${_pkg_open}/utils.mk"
+    sed -i "s/^NV_BUILD_HOST.*/NV_BUILD_HOST ?= manjaro/" "${srcdir}/${_pkg_open}/utils.mk"
+    sed -i "s/^NV_BUILD_USER.*/NV_BUILD_USER ?= manjaro-builder/" "${srcdir}/${_pkg_open}/utils.mk"
 
     shopt -s globstar
     for conf in "${srcdir}"/**/dkms.conf; do

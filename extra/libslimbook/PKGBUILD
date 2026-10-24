@@ -5,7 +5,7 @@
 # https://build.opensuse.org/package/show/home:Slimbook/libslimbook
 
 pkgname=libslimbook
-pkgver=1.27.1
+pkgver=1.28.1
 pkgrel=1
 pkgdesc="Core functionality for Slimbook apps"
 arch=('x86_64')
@@ -22,7 +22,7 @@ provides=('libslimbook.so=1')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 #source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+sourcefiles/$pkgname/$pkgver/${pkgname}_${pkgver}.tar.xz")
 #noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('e5b20d60bb0ddd7b1b5c51f4ab0b105261e1ae33606b2ff59e0bde4dffde13a6')
+sha256sums=('5176f90e018634f52844bf3bbf9b3e332371ea6b495d616f9d2ab1bb087f3384')
 
 prepare() {
 #  mkdir -p "$pkgname-$pkgver"

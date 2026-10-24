@@ -5,7 +5,7 @@
 # https://build.opensuse.org/package/show/home:Slimbook/slimbook-rgb-keyboard
 
 pkgname=slimbook-rgb-keyboard
-pkgver=0.7.1
+pkgver=0.8.0
 pkgrel=1
 pkgdesc="Utility to manage color and brightness of Slimbook RGB keyboard"
 arch=('any')
@@ -18,6 +18,7 @@ depends=(
   'python-ite8291r3-ctl'
   'python-slimbook'
 )
+makedepends=('desktop-file-utils')
 optdepends=(
   'slimbook-qc71-dkms: support for Slimbook Titan'
   'slimbook-keyboard-dkms: support for Slimbook Essential'
@@ -27,7 +28,7 @@ install="$pkgname.install"
 source=("slimbookrgbkeyboard-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 #source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+sourcefiles/slimbookrgbkeyboard/${pkgver}/slimbookrgbkeyboard_${pkgver}.tar.gz")
 #noextract=("slimbookrgbkeyboard_${pkgver}.tar.gz")
-sha256sums=('ad445b6b83bc80d00d7dc1987813ede2deb68c3a4b79ce7f62b3c6713373e3a3')
+sha256sums=('6e236b44f75ab640e83a0423b416e3698c2a9d8b152f9d21e7e51bba8abed4a4')
 
 prepare() {
   # mkdir -p "slimbookrgbkeyboard-$pkgver"

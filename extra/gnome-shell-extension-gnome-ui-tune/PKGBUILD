@@ -17,8 +17,10 @@ sha256sums=('54e34d59e3528aa7de107ec6475e0ffb56e0cb9bd46d62ea676d349c16ad3d19')
 
 build() {
   cd gnome-ui-tune
-  make gettext
-  make dist
+  gnome-extensions pack \
+    --podir=locale \
+    --extra-source=src/ \
+    --force
 }
 
 package() {
@@ -34,5 +36,4 @@ package() {
   install -Dvm644 schemas/*.gschema.xml -t "$pkgdir/usr/share/glib-2.0/schemas/"
 
   rm -rv "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}/schemas"
-  rm -v "$pkgdir/usr/share/gnome-shell/extensions/${_uuid}/LICENSE"
 }

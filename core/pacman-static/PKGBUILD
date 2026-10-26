@@ -9,7 +9,7 @@ pkgver=7.1.0.r9.g54d9411
 _nghttp2_ver=1.70.0
 _curlver=8.23.0
 _sslver=3.6.5
-_brotliver=1.2.0
+_brotliver=1.2.1
 _zlibver=1.3.2
 _xzver=5.8.4
 _bzipver=1.0.8
@@ -19,7 +19,7 @@ _gpgerrorver=1.61
 _libassuanver=3.0.0
 _gpgmever=2.2.0
 _libseccompver=2.6.0
-pkgrel=21
+pkgrel=22
 # use annotated tag and patch level commit from release branch (can be empty for no patches)
 _git_tag=7.1.0
 _git_patch_level_commit=54d94116164b0b2202c6061c4a59c6f3e70820d8
@@ -35,8 +35,8 @@ options=('!emptydirs' '!lto')
 source=("git+https://gitlab.archlinux.org/pacman/pacman.git#tag=v${_git_tag}?signed"
         pacman-revertme-makepkg-remove-libdepends-and-libprovides.patch::https://gitlab.archlinux.org/pacman/pacman/-/commit/354a300cd26bb1c7e6551473596be5ecced921de.patch
         pacman-reproducible-builds.patch::https://gitlab.archlinux.org/pacman/pacman/-/commit/f4bdb77470528019aaba4d8b8f947e918c6db17d.patch)
-
-validpgpkeys=('6645B0A8C7005E78DB1D7864F99FFE0FEAE999BD')  # Allan McRae <allan@archlinux.org>
+validpgpkeys=('6645B0A8C7005E78DB1D7864F99FFE0FEAE999BD'  # Allan McRae <allan@archlinux.org>
+              'B8151B117037781095514CA7BBDFFC92306B1121') # Andrew Gregory (pacman) <andrew@archlinux.org>
 # nghttp2
 source+=("https://github.com/nghttp2/nghttp2/releases/download/v$_nghttp2_ver/nghttp2-$_nghttp2_ver.tar.xz")
 # curl
@@ -47,8 +47,7 @@ validpgpkeys+=('27EDEAF22F3ABCEB50DB9A125CC908FDB71E12C2') # Daniel Stenberg
 source+=("https://github.com/openssl/openssl/releases/download/openssl-${_sslver}/openssl-${_sslver}.tar.gz"{,.asc}
          "ca-dir.patch"
          "openssl-3.0.7-no-atomic.patch")
-validpgpkeys+=('EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5'   # OpenSSL security team <openssl-security@openssl.org>
-               'B146647E45A7B33947AB226B2A2C87D161692D40')  # OpenSSL <openssl@openssl.org>
+validpgpkeys+=('B146647E45A7B33947AB226B2A2C87D161692D40')  # OpenSSL <openssl@openssl.org>
 # brotli
 source+=("git+https://github.com/google/brotli#tag=v${_brotliver}")
 # zlib
@@ -66,22 +65,22 @@ source+=("https://github.com/facebook/zstd/releases/download/v${_zstdver}/zstd-$
 validpgpkeys+=('4EF4AC63455FC9F4545D9B7DEF8FE99528B52FFD') # Zstandard Release Signing Key <signing@zstd.net>
 # libgpg-error
 source+=("https://gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-${_gpgerrorver}.tar.bz2"{,.sig})
-validpgpkeys+=('AC8E115BF73E2D8D47FA9908E98E9B2D19C6C8BD'  # NIIBE Yutaka (GnuPG Release Key) <gniibe@fsij.org>
-               '6DAA6E64A76D2840571B4902528897B826403ADA') # "Werner Koch (dist signing 2020)"
+validpgpkeys+=('6DAA6E64A76D2840571B4902528897B826403ADA'  # Werner Koch (dist signing 2020)
+               'AC8E115BF73E2D8D47FA9908E98E9B2D19C6C8BD') # Niibe Yutaka (GnuPG Release Key)
 # libassuan
 source+=("https://gnupg.org/ftp/gcrypt/libassuan/libassuan-${_libassuanver}.tar.bz2"{,.sig})
 # gpgme
 source+=("https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-${_gpgmever}.tar.bz2"{,.sig})
-validpgpkeys+=('AC8E115BF73E2D8D47FA9908E98E9B2D19C6C8BD') #  Niibe Yutaka (GnuPG Release Key)
+validpgpkeys+=('6DAA6E64A76D2840571B4902528897B826403ADA'  # Werner Koch (dist signing 2020)
+               'AC8E115BF73E2D8D47FA9908E98E9B2D19C6C8BD') # Niibe Yutaka (GnuPG Release Key)
 # libarchive
 source+=("https://github.com/libarchive/libarchive/releases/download/v${_libarchive_ver}/libarchive-${_libarchive_ver}.tar.xz"{,.asc})
 validpgpkeys+=('DB2C7CF1B4C265FAEF56E3FC5848A18B8F14184B'  # Martin Matuska <martin@matuska.org>
-              '659C84C0E23EA1FA97E0B58CC040B508D63D2B36') # Martin Matuska <mm@FreeBSD.org>
+               '659C84C0E23EA1FA97E0B58CC040B508D63D2B36') # Martin Matuska <mm@FreeBSD.org>
 # libseccomp
 source+=(git+https://github.com/seccomp/libseccomp.git#tag=v${_libseccompver}?signed)
 validpgpkeys+=('7100AADFAE6E6E940D2E0AD655E45A5AE8CA7C8A' # Paul Moore <paul@paul-moore.com>
-              '47A68FCE37C7D7024FD65E11356CE62C2B524099') # Tom Hromatka <tom.hromatka@oracle.com>
-
+               '47A68FCE37C7D7024FD65E11356CE62C2B524099') # Tom Hromatka <tom.hromatka@oracle.com>
 sha512sums=('512c5096c82e00730c884e5d4d452928a66d35b42a831a2b4b8b17af9215140d6b21b2d2de7233eefae70edb8ddd8fc4d4c750bda1ba0235489bc427396c04ba'
             '1a108c4384b6104e627652488659de0b1ac3330640fc3250f0a283af7c5884daab187c1efc024b2545262da1911d2b0b7b0d5e4e5b68bb98db25a760c9f1fb1a'
             '7ca20c2ab350f72552544004b37c5c920ae32b852e7f5315b8b29ee8acb86ca8e1f9f9678792842723908e3cb894f63904af8488cb4d49066a3dba5fc14518aa'
@@ -93,7 +92,7 @@ sha512sums=('512c5096c82e00730c884e5d4d452928a66d35b42a831a2b4b8b17af9215140d6b2
             'SKIP'
             'b1873dbb7a49460b007255689102062756972de5cc2d38b12cc9f389b6be412da6797579b1acd3717a8cd2ee118fd9801b94e55f063d4328f050f0876a5eb53c'
             'b5887ea77417fae49b6cb1e9fa782d3021f268d5219701d87a092235964f73fa72a31428b630445517f56f2bb69dcbbb24119ef9dbf8b4e40a753369a9f9a16f'
-            '36b8fadb3e5de540746eea19c758234095fafc0a4a687bd70fc70b0f74036c03cf9c70a7339aa1626f1197b5ac707bf5b01e393f6cd26c90b78519529724871a'
+            '5b75c0bd67e47441aac8d8e67b4f2416f06c2f5e4fb09f1f213ccf313d00a9d08dfda42d59f5133884f980ea712509bbc6f26f4e942316352eb4150b2f16e964'
             '70963771ea5d763614278a69b474f09b7d237ef8f53b675a10fe31d9923aeef601504b35d7ebd1b1e7f347e9ebb048e6b3b47fffdf137e7bdc7e8d5eb4ec4692'
             'SKIP'
             'a8cca9039ff9f09f92fa7fbcf5c6744615e8cd71a033784c0b996ee931af0dfa69f5b6efb67243693d418b9b3e1f7dadc178335bd407b72b0d72bdc4679da9ff'

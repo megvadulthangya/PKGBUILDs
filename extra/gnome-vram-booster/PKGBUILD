@@ -2,8 +2,8 @@
 # Contributor: sachesi <xsachesi@pm.me>
 
 pkgname=gnome-vram-booster
-pkgver=0.7.3
-pkgrel=2
+pkgver=0.7.5
+pkgrel=1
 pkgdesc="Dynamic VRAM prioritization for GNOME"
 arch=('x86_64')
 url="https://github.com/sachesi/gnome-vram-booster"
@@ -23,11 +23,14 @@ makedepends=(
 install="$pkgname.install"
 optdepends=('gnome-shell: The extension that reports the focused window')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver/$pkgname-$pkgver.tar.gz")
-sha256sums=('c343db59eb3c3aa8b2e73168134ad2503bd8c5c50ede1358093d0c5bf2e35ca8')
+sha256sums=('ed7de12fa57d14626561c677369f610ca8a49e08cddcc5d6491fa887b253c534')
 
 prepare() {
   cd "$pkgname-$pkgver"
   cargo fetch --manifest-path daemon/Cargo.toml --locked --target host-tuple
+
+  # libexec > lib
+  sed -i 's|usr/libexec|usr/lib|g' "packaging/usr/lib/systemd/system/$pkgname.service"
 }
 
 build() {
@@ -52,10 +55,11 @@ package() {
   cd "$pkgname-$pkgver"
   _uuid=$(jq -r .uuid extension/metadata.json)
 
-  install -Dm755 daemon/target/release/{"$pkgname","${pkgname}ctl"} -t \
+  install -Dm755 "daemon/target/release/${pkgname}ctl" -t \
     "$pkgdir/usr/bin/"
+  install -Dm755 "daemon/target/release/${pkgname}" -t "$pkgdir/usr/lib/$pkgname/"
   install -Dm644 "packaging/usr/lib/systemd/system/$pkgname.service" -t \
-    "$pkgdir/usr/lib/systemd/system"
+    "$pkgdir/usr/lib/systemd/system/"
   install -Dm644 packaging/usr/share/dbus-1/system.d/org.gnome.VramBooster.conf -t \
     "$pkgdir/usr/share/dbus-1/system.d"
   install -Dm644 README.md docs/usage.md -t "$pkgdir/usr/share/doc/$pkgname/"

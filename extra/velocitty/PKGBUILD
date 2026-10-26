@@ -19,21 +19,8 @@ depends=(
 )
 makedepends=('meson')
 checkdepends=('desktop-file-utils')
-optdepends=()
-provides=()
-conflicts=()
-replaces=()
-backup=()
-options=()
-install=
-changelog=
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 sha256sums=('25fa9e98f0537644107d7c721be3ca1149e17e3e22e04618e53ec38dfd74af91')
-
-prepare() {
-  cd "$pkgname-$pkgver"
-
-}
 
 build() {
   arch-meson "$pkgname-$pkgver" build
@@ -46,7 +33,4 @@ check() {
 
 package() {
   meson install -C build --no-rebuild --destdir "$pkgdir"
-
-  cd "$pkgname-$pkgver"
-
 }

@@ -1,0 +1,45 @@
+Binary files a/.git/index and b/.git/index differ
+diff -Npur a/refine/sections/shell-compositor.blp b/refine/sections/shell-compositor.blp
+--- a/refine/sections/shell-compositor.blp	2026-10-26 10:22:23.604491761 -0600
++++ b/refine/sections/shell-compositor.blp	2026-10-26 10:57:52.694208965 -0600
+@@ -67,22 +67,6 @@ $PanelPage page {
+       "warning",
+     ]
+ 
+-    $FlagsSwitchRow {
+-      title: _("Fractional Scaling Options");
+-      subtitle: _("These options will appear in Settings");
+-      schema-id: 'org.gnome.mutter';
+-      key: 'experimental-features';
+-      value: 'scale-monitor-framebuffer';
+-    }
+-
+-    $FlagsSwitchRow {
+-      title: _("Variable Refresh Rate Options");
+-      subtitle: _("These options will appear in Settings");
+-      schema-id: 'org.gnome.mutter';
+-      key: 'experimental-features';
+-      value: 'variable-refresh-rate';
+-      restart-required: true;
+-    }
+   }
+ 
+   Adw.PreferencesGroup {
+@@ -93,16 +77,9 @@ $PanelPage page {
+     $FlagsSwitchRow {
+       title: _("Autoclose Xwayland");
+       schema-id: 'org.gnome.mutter';
+-      key: 'experimental-features';
++      key: 'experimental';
+       value: 'autoclose-xwayland';
+       restart-required: true;
+     }
+-
+-    $FlagsSwitchRow {
+-      title: _("Xwayland Native Scaling");
+-      schema-id: 'org.gnome.mutter';
+-      key: 'experimental-features';
+-      value: 'xwayland-native-scaling';
+-    }
+   }
+ }

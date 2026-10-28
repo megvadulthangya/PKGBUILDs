@@ -1,24 +1,17 @@
-# Maintainer: Guinux <nuxgui@gmail.com>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Guinux <nuxgui@gmail.com>
 
 pkgname=manjaro-release
-pkgver=26.1.3
+pkgver=26.2
 pkgrel=1
-pkgdesc="Manjaro's release definition"
-arch=("any")
+pkgdesc="Manjaro release definition"
+arch=('any')
 url="https://manjaro.org/"
-license=('GPL2')
+license=('GPL-2.0-or-later')
 depends=('lsb-release')
 source=('lsb-release')
-install="manjaro-release.install"
-sha256sums=('0c0b9cbcdd52d233f254b9662cd8046265cb33863d334cff57a28fc8bbb9748f')
-
-#pkgver() {
-    #parse lsb-release
-#    grep 'DISTRIB_RELEASE='  lsb-release | cut -d '=' -f2
-#}
+sha256sums=('2044e878c329ca52900f9d1ce106303f544a60b08d37f7c3201aaa95c8c2ae22')
 
 package() {
-    # Copy files
-    mkdir -p ${pkgdir}/etc
-    install -m644 ${srcdir}/lsb-release ${pkgdir}/etc/
+  install -Dm644 ${srcdir}/lsb-release -t "${pkgdir}/etc/"
 }

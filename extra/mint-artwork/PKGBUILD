@@ -2,13 +2,13 @@
 # Contributor: Bernhard Landauer <bernhard[at]manjaro[dot]org>
 # Contributor: Helmut Stult
 
-pkgbase=mint-artwork
 pkgname=(
   'cinnamon-sounds'
   'mint-artwork-styles'
 )
+pkgbase=mint-artwork
 pkgver=1.9.4
-pkgrel=1
+pkgrel=2
 pkgdesc="Linux Mint Artwork and Resources"
 epoch=1
 arch=('any')
@@ -29,8 +29,7 @@ package_cinnamon-sounds() {
 
   cd "$pkgbase-$pkgver"
   install -Dm644 usr/share/$pkgbase/sounds/* -t \
-    "${pkgdir}/usr/share/$pkgbase/sounds/"
-  install -d "${pkgdir}/usr/share/sounds"
+    "${pkgdir}/usr/share/sounds/LinuxMint/"
   cp -r usr/share/sounds/* "${pkgdir}/usr/share/sounds/"
 }
 

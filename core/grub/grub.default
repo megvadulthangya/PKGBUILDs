@@ -63,5 +63,12 @@ GRUB_SAVEDEFAULT=true
 # systemd-fsck can run the check automatically. We use 'fsck' by default, which
 # needs 'rw' as boot parameter, to avoid delay in boot-time. 'fsck' needs to be
 # removed from 'mkinitcpio.conf' to make 'systemd-fsck' work.
-# See also Arch-Wiki: https://wiki.archlinux.org/index.php/Fsck#Boot_time_checking
+# See also Arch-Wiki: https://wiki.archlinux.org/title/Fsck#Boot_time_checking
 #GRUB_ROOT_FS_RO=true
+
+# Disable generating menu entries for other EFI boot manager entries detected
+GRUB_DISABLE_BOOTNEXT=true
+
+# Skip EFI boot manager entries that are marked inactive
+# when when generating bootnext entries
+GRUB_BOOTNEXT_OMIT_INACTIVE=true

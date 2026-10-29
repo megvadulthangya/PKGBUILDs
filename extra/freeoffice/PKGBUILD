@@ -1,14 +1,14 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
-# Maintainer: Philip Müller <philm@manjaro.org>
+# Contributor: Philip Müller <philm@manjaro.org>
 # Contributor: Bernhard Landauder <bernhard@manjaro.org>
 # Contributor: Niklas Pulina <pulina@softmaker.de>
-# Author of base PKGBUILD: Muflone http://www.muflone.com/contacts/english/
+# Contributor: Muflone http://www.muflone.com/contacts/english/
 
 ## Service Packs
 ## https://www.freeoffice.com/download/servicepacks
 
 pkgname=freeoffice
-_revision=1234
+_revision=1238
 pkgver=2024.${_revision}
 pkgrel=1
 pkgdesc="A complete, reliable, lightning-fast and Microsoft Office-compatible office suite with a word processor, spreadsheet, and presentation graphics software."
@@ -34,7 +34,7 @@ source=("https://www.softmaker.net/down/softmaker-${pkgname}-2024-${_revision}-a
         "${pkgname}-textmaker.desktop"
         "${pkgname}-planmaker.desktop"
         "${pkgname}-presentations.desktop")
-sha256sums=('ab94147af912c5d87adb664c8706cee381cb268c29834bf0bfd75eee174e5104'
+sha256sums=('60e421c691355760f33ecc5717ad9d112425f575d5037a478d821375d8765b5f'
             '491577d73d1dad9e9b5b2e0e067881d8d291baf5f9825482996e9309c5ade422'
             'db9cb24a40d3025c89ae4b952b5ebf537661f731716f09099d915793406548c4'
             '81b29a332975a5b96da00d14627dbaafc1c7d1beefacce5e77bdb68f98c1a3c6'

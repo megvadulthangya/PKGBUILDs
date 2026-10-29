@@ -3,8 +3,8 @@
 # Contributor: Ramon Buldó
 
 pkgname=manjaro-browser-settings
-pkgver=20231111
-pkgrel=3
+pkgver=20261029
+pkgrel=1
 pkgdesc="Manjaro Linux settings browser defaults"
 arch=('any')
 url="https://code.manjaro.org/profiles/manjaro-browser-settings"
@@ -12,17 +12,13 @@ license=('GPL-3.0-or-later')
 makedepends=('git')
 conflicts=('manjaro-firefox-settings')
 replaces=('manjaro-firefox-settings')
-_commit=453f952ccad2ac3b2bc81e1ee8016bc9662ad97e  # branch/master
+_commit=582bd40f39cf4f62a7ece7bdfc96de113d1a9ce7
 source=("git+https://code.manjaro.org/profiles/manjaro-browser-settings.git#commit=${_commit}")
-sha256sums=('84d9fe54e8c87ae5d949fdacf6f0c2f83c54368a3020227fb2c5f341f5da1eb6')
+sha256sums=('27374f2b402e16e7ea0f134fdbd0338aa89c5f85c7d9631de288e0b05bdc420c')
 
 pkgver() {
   cd "$pkgname"
   git show -s --date=format:'%Y%m%d' --format=%cd
-}
-
-prepare() {
-  cd "$pkgname"
 }
 
 package() {

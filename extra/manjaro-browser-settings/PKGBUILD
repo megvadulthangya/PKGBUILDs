@@ -4,17 +4,17 @@
 
 pkgname=manjaro-browser-settings
 pkgver=20261029
-pkgrel=1
-pkgdesc="Manjaro Linux settings browser defaults"
+pkgrel=2
+pkgdesc="Manjaro Linux browser defaults"
 arch=('any')
 url="https://code.manjaro.org/profiles/manjaro-browser-settings"
 license=('GPL-3.0-or-later')
 makedepends=('git')
 conflicts=('manjaro-firefox-settings')
 replaces=('manjaro-firefox-settings')
-_commit=582bd40f39cf4f62a7ece7bdfc96de113d1a9ce7
+_commit=6a17249a05b32a71ad58ccac1f7dc1c099bc2c9c
 source=("git+https://code.manjaro.org/profiles/manjaro-browser-settings.git#commit=${_commit}")
-sha256sums=('27374f2b402e16e7ea0f134fdbd0338aa89c5f85c7d9631de288e0b05bdc420c')
+sha256sums=('aaf6fd5a1ef03e3995740a6afd2cbb5a9369b5ba64c8b92dea83a2601a0ea0d3')
 
 pkgver() {
   cd "$pkgname"
@@ -34,8 +34,8 @@ package() {
   install -Dm644 thunderbird/distribution.ini "$pkgdir/etc/manjaro-thunderbird.ini"
   install -Dm644 firefox/distribution.ini "$pkgdir/etc/manjaro-firefox-developer-edition.ini"
   sed -i 's/Firefox/Firefox Developer Edition/;s/firefox/firefox-developer-edition/' "$pkgdir/etc/manjaro-firefox-developer-edition.ini"
-  install -Dm644 firefox/all-companyname.js "$pkgdir/usr/lib/firefox/browser/defaults/preferences/all-companyname.js"
-  install -Dm644 firefox/all-companyname.js "$pkgdir/usr/lib/firefox-developer-edition/browser/defaults/preferences/all-companyname.js"
+  # install -Dm644 firefox/all-companyname.js "$pkgdir/usr/lib/firefox/browser/defaults/preferences/all-companyname.js"
+  # install -Dm644 firefox/all-companyname.js "$pkgdir/usr/lib/firefox-developer-edition/browser/defaults/preferences/all-companyname.js"
 
   # Hooks
   install -Dm644 firefox-pre.hook "$pkgdir/usr/share/libalpm/hooks/firefox-pre.hook"

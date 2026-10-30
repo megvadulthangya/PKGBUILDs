@@ -30,7 +30,7 @@ source=('mhwd-nvidia'
         '0002-Add-IBT-support.patch'
         'limit-vram-usage'
         'fix-hw-cursor-kde.patch')
-sha256sums=('ddffe7033abf38253b50d4c02d780a270f79089bbe163994e00a4d7c91d64f0e'
+sha256sums=('ee7012863c5945d1e09e96a8196a1a0efe2077b133f46aa2ccb822d1772f0652'
             'be99ff3def641bb900c2486cce96530394c5dc60548fc4642f19d3a4c784134d'
             'f77a5247a3ba63e9fad3a3b2822d0fcfa51e0f79b5a90bd79bf08ea34b64ab07'
             'e30714f9b473d810c28763d067e0b85c75f86f23618d968b49b9d1fced9a1dd6'

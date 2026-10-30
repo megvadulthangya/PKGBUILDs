@@ -2,7 +2,7 @@
 # Contributor: Guinux <nuxgui@gmail.com>
 
 pkgname=manjaro-release
-pkgver=26.2
+pkgver=27.0
 pkgrel=1
 pkgdesc="Manjaro release definition"
 arch=('any')
@@ -10,7 +10,7 @@ url="https://manjaro.org/"
 license=('GPL-2.0-or-later')
 depends=('lsb-release')
 source=('lsb-release')
-sha256sums=('2044e878c329ca52900f9d1ce106303f544a60b08d37f7c3201aaa95c8c2ae22')
+sha256sums=('7467ba9db022cda3ee6726ee08dc3bcbf5970dfca1a3f3618f44414601c5f84f')
 
 package() {
   install -Dm644 ${srcdir}/lsb-release -t "${pkgdir}/etc/"

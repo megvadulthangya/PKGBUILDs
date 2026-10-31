@@ -1,0 +1,26 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=xenity
+pkgver=3.44.6
+pkgrel=2
+pkgdesc="Drop-in replacement for Zenity 3.44 (GTK3)"
+arch=('x86_64')
+url="https://github.com/xapp-project/xenity"
+license=('LGPL-2.1-or-later')
+groups=('x-apps')
+depends=(
+  'gtk3'
+  'libx11'
+)
+makedepends=('meson')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+sha256sums=('e019dcf264132d5a894b7cd78bcb86e5d3a474f608061d28ca86a4cfaefc49d8')
+
+build() {
+  arch-meson $pkgname-$pkgver build
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+}

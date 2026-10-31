@@ -1,8 +1,8 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=gnome-shell-extension-gpu-profile-selector
-pkgver=26
-pkgrel=2
+pkgver=27
+pkgrel=1
 epoch=1
 pkgdesc="Provides a simple way to switch between GPU profiles on NVIDIA Optimus systems"
 arch=('any')
@@ -18,17 +18,8 @@ makedepends=(
   'git'
   'jq'
 )
-source=("git+https://github.com/LorenzoMorelli/GPU_profile_selector.git#tag=v$pkgver"
-        'gnome51.patch')
-sha256sums=('3fec27e0c5c1aa08a72e70e9dbe1cc9cf34c3a8ada762870363773303aa05e67'
-            '6a880c9f950c9f8955540aa105784d171b2f0c4b44f76667e18da3dc4f7544e3')
-
-prepare() {
-  cd GPU_profile_selector
-
-  # GNOME 51 support
-  patch -Np1 -i ../gnome51.patch
-}
+source=("git+https://github.com/LorenzoMorelli/GPU_profile_selector.git#tag=v$pkgver")
+sha256sums=('17f2e7882322997fcd969bb28093729e86ae6d64999d8f89eebe7227d9c05374')
 
 build() {
   cd GPU_profile_selector

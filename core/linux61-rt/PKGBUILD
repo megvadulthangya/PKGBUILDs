@@ -4,12 +4,12 @@
 pkgbase=linux61-rt
 pkgname=("$pkgbase" "$pkgbase-headers")
 _basekernel=6.1
-_sub=182
-_rtpatchver=rt67
+_sub=190
+_rtpatchver=rt70
 _basever=${pkgbase//linux}
 _kernelname=-MANJARO
 _pkgver=${_basekernel}.${_sub}
-pkgver=6.1.182_rt67
+pkgver=6.1.190_rt70
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org"
@@ -46,8 +46,8 @@ sha256sums=('2ca1f17051a430f6fed1196e4952717507171acfd97d96577212502703b25deb'
             '0a32a567966d7c33035634c46d56073e8a6f66e4d9729b8b25d09579d00c3e7b'
             'b88d42565ce771cb6c8f98b7c05aada6b8024578a1985e5772dc5a2d07facee0'
             '5f2d2c4ab326830df11d5bc985feab2988ee929bbf249f85453536e1998951bd'
-            'c3f5500643c7120915f4c7aadb169d05324fd0a445c640a7b450735732900422'
-            '1aceb25b142f89d74e96c9e4155c0a8529f84ae01031dfe24dee694cb756dcc6')
+            '220e58f822b11679918602f7e4c037652dd81ac411c097d4c7d7c3c7dd2062af'
+            '568c94a2cbd1026f6f31eed4608d771ab0fc8fcf497259305e77b0a44bbbf77f')
 
 # upstream patch
 if [[ ! "$_sub" == "0" ]]; then

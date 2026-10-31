@@ -8,7 +8,7 @@ _kernelname=-MANJARO
 _commit=
 _rc=
 pkgbase=linux${_basever}
-pkgver=7.3.0
+pkgver=7.3.1
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
@@ -42,7 +42,7 @@ source=(#https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-${_basekernel}.tar.x
         https://github.com/torvalds/linux/archive/refs/tags/v${_basekernel}.tar.gz
         #https://git.kernel.org/torvalds/t/linux-${_basekernel}-${_rc}.tar.gz
         #linux-${_basekernel}-${_rc}.tar.gz::https://github.com/torvalds/linux/archive/${_commit}.tar.gz
-        #https://cdn.kernel.org/pub/linux/kernel/v7.x/patch-${pkgver}.xz
+        https://cdn.kernel.org/pub/linux/kernel/v7.x/patch-${pkgver}.xz
         config
         # ARCH Patches
         0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
@@ -80,7 +80,8 @@ else
 fi
 
 sha256sums=('fd00c1da5cb8d190679248673ca6424492336818e3874a4752144ded942ff68b'
-            '0c632837dfd52e61224c855293ed44373019b3327459902bad562e57f69cf67f'
+            'faa3f6102b70a4c79db5eb7844719d2bdb9b3e5967ae914dda66eabf449eebc2'
+            '80282f72c636a69f84af13a7c2a3a281281eb1cc74deee68423b0d662ba08aa7'
             'ccbd1a83d4f25020b9a19cf6d7a16d9d0b3d50543082dd233f514fb655bf042c'
             'c21170eba77438abb8b8ab02aeccf16bfb2467a01303509945aa6b3a0fd16d31'
             '37f3222fafbe67dec3740933be37867e0c378468f71e9a6d5d6a07c2a2a568fe'

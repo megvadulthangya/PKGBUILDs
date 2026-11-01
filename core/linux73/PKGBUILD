@@ -167,6 +167,7 @@ _package() {
     virtualbox-guest-modules
     wireguard
   )
+  install=EOL.install
 
   cd $_srcdir
   local modulesdir="$pkgdir/usr/lib/modules/$(<version)"

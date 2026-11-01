@@ -3,14 +3,13 @@
 
 pkgname=usb-dirty-pages-udev
 pkgver=23.10.15
-pkgrel=3
+pkgrel=4
 _rel=2049
 pkgdesc="Use udev to specify dirty pages for usb devices"
 arch=('any')
 url="https://github.com/biglinux/usb-dirty-pages-udev"
 license=('GPL-3.0-or-later')
 conflicts=('udev-usb-sync')
-install="${pkgname}.install"
 source=("${url}/archive/refs/tags/${pkgname}-${pkgver}-${_rel}.tar.gz")
 sha256sums=('f97a0e9d46109cbaad8e07dec115988d88df70549bad559a4f3e594d01188deb')
 

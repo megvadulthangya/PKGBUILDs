@@ -38,6 +38,7 @@ options=(
   !debug
   !strip
 )
+install=EOL.install
 source=(https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-${_basekernel}.tar.xz
         #https://github.com/torvalds/linux/archive/refs/tags/v${_basekernel}.tar.gz
         #https://git.kernel.org/torvalds/t/linux-${_basekernel}-${_rc}.tar.gz

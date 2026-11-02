@@ -60,11 +60,6 @@ source=(#https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-${_basekernel}.tar.x
         # https://github.com/OpenGamingCollective/linux/tree/features/asus
         # OrangePi Neo patches
         0001-iio-imu-bmi270-Match-PNP-ID-found-on-newer-OrangePi-NEO-firmware.patch
-        # Zotac Zone patches
-        0001-zotac-zone-hid-initial-impl.patch
-        0002-xpad-gate-the-zotac-zone-PID-behind-if-IS_REACHABLE-.patch
-        0003-tmp-apply-zotac-screen-quirk.patch
-        0005-zone-fix-6.15-rename-del_timer-to-timer_delete.patch
         # Steamdeck (OLED)
         0001-steam-deck.patch
         #iwlwifi: Fix firmware version handling
@@ -88,10 +83,6 @@ sha256sums=('b19dd413fa7cc4059de8dab234320858e86abdc15c7c4d839eff15b0e2ac39ee'
             '512032c6b93fce24254da6cace7bf101c8f7c824761a0f99deed4b7724ac6f3e'
             '103688f3fceff664c919d94faab7a6948880710641110eaa71fe107ee06c37e9'
             'fc358dd3b574e4f47d25952417107ca0e743d33125ed93866697a266cde9b76e'
-            'b67f25c13e946b51712b0e828ebbf8bea980d339bd6effab17869f6a62e428df'
-            'f53e0ad0892ab4bd85f55b4cbb829481eba28865cf835a46c80bc237e0771981'
-            '138684588665b8f651dffb4e75c265a2b81f6bd7a606f75f8fc6814a4a63d3fd'
-            '3d37e1f54290bad1b7a4c5c45046341dc4c1bfc2f8648b7754bf0bd9705b3a35'
             'f8cf8ad3e17857b51c3f7dd954eb5ac7ba44bfe0302a40e70b2c496573407edf'
             '9628a67ac23beaf2de7194d2934386944adc64cb2a4a90e4c38b867b868654b4')
 

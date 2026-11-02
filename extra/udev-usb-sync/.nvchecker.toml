@@ -1,0 +1,3 @@
+[udev-usb-sync]
+source = "git"
+git = "https://code.manjaro.org/applications/udev-usb-sync.git"

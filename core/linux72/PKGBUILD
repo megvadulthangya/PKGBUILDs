@@ -8,7 +8,7 @@ _kernelname=-MANJARO
 _commit=
 _rc=
 pkgbase=linux${_basever}
-pkgver=7.2.14
+pkgver=7.2.15
 pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org/"
@@ -38,6 +38,7 @@ options=(
   !debug
   !strip
 )
+install=EOL.install
 source=(https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-${_basekernel}.tar.xz
         #https://github.com/torvalds/linux/archive/refs/tags/v${_basekernel}.tar.gz
         #https://git.kernel.org/torvalds/t/linux-${_basekernel}-${_rc}.tar.gz
@@ -101,8 +102,8 @@ else
 fi
 
 sha256sums=('f9fef3d14c0df53819026f4be74459835c2a0b0dcbf5b5bbd9ea19f0829402b3'
-            'de23840e02788ea04702b534ac32723c57ca4bb7800d35de0e561b19b5770e03'
-            'a8f97db852f2e3cad366bdead7201ca598f9cb5baf37f3e4dbf3b6d831716a40'
+            '2d89124e7adfe0e806bd4ae2c67da530ec4e7b45f466ccae77464dbcc878c7ac'
+            'f5e6f61d63d64377431ab1a24f72a83f76598d84b4f475fe88107d5782a2975c'
             'e5e98d62b63704cecdf32dbe6a9bafea6e70b23fa8e01fe96ca220ac6036392e'
             'c21170eba77438abb8b8ab02aeccf16bfb2467a01303509945aa6b3a0fd16d31'
             '37f3222fafbe67dec3740933be37867e0c378468f71e9a6d5d6a07c2a2a568fe'

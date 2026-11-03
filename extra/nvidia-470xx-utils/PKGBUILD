@@ -10,7 +10,7 @@
 pkgbase=nvidia-470xx-utils
 pkgname=('nvidia-470xx-dkms' 'nvidia-470xx-utils' 'mhwd-nvidia-470xx' 'opencl-nvidia-470xx')
 pkgver=470.256.02
-pkgrel=22
+pkgrel=23
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('custom')
@@ -44,7 +44,8 @@ source=('10-amdgpu-nvidia-drm-outputclass.conf'
         'nvidia-470xx-fix-linux-7.2-part1.patch'
         'nvidia-470xx-fix-linux-7.2-part2.patch'
         'nvidia-470xx-fix-linux-7.2-part3.patch'
-        'nvidia-470xx-fix-linux-7.3.patch')
+        'nvidia-470xx-fix-linux-7.3.patch'
+        'nvidia-470xx-fix-linux-7.4.patch')
 sha256sums=('3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
             'f57d8e876dd88e6bb7796899f5d45674eb7f99cee16595f34c1bab7096abdeb3'
             'c2396f48835caf7ae60bc17e07eeaf142c8b7074d15d428d6c61d9e38373b8d8'
@@ -72,7 +73,8 @@ sha256sums=('3b017d461420874dc9cce8e31ed3a03132a80e057d0275b5b4e1af8006f13618'
             'cf5c08f2da12d96833946c0992e37e976488080bc97252d2dc1da8efa2dad689'
             'b52e44c6f7b7a6a2a96259b08615ecdca24812420af080db0b4a2135d908d984'
             '1fa175e2e9fd5a9130217a99a897d8465d96bbbfa2b521035ee57488a477beea'
-            '6d99facca902647f591cae312f883ec7052bd4aa8b407a5cd226f814b93ffd92')
+            '6d99facca902647f591cae312f883ec7052bd4aa8b407a5cd226f814b93ffd92'
+            '840198745d6906fa197de36e08591f3dface75d6003743660102307e00f92c2d')
 
 create_links() {
     # create soname links
@@ -115,6 +117,7 @@ prepare() {
     patch -Np1 -i "${srcdir}"/nvidia-470xx-fix-linux-7.2-part2.patch
     patch -Np1 -i "${srcdir}"/nvidia-470xx-fix-linux-7.2-part3.patch
     patch -Np1 -i "${srcdir}"/nvidia-470xx-fix-linux-7.3.patch
+    patch -Np1 -i "${srcdir}"/nvidia-470xx-fix-linux-7.4.patch
 
     sed -i "s/__VERSION_STRING/${pkgver}/" dkms.conf
     sed -i 's/__JOBS/`nproc`/' dkms.conf

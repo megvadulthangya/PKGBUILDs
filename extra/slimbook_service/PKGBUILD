@@ -5,7 +5,7 @@
 # https://build.opensuse.org/package/show/home:Slimbook/slimbook-service
 
 pkgname=slimbook_service
-pkgver=1.0.14
+pkgver=1.0.16
 pkgrel=1
 pkgdesc="Service for Slimbook laptops"
 arch=('any')
@@ -28,19 +28,35 @@ depends=(
   'python-slimbook'
 )
 optdepends=('slimbook-qc71-dkms')
+provides=('slimbook-service')
 install="$pkgname.install"
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
-sha256sums=('047b0422f8b1cbe32e605d415098aa6281578896cc7232b1500a7f03b293e812')
+sha256sums=('27f7013d664ba782185a04460384809bba23dd953ade2a96fe813579bbbb7911')
 
 package() {
   cd "$pkgname-$pkgver"
   install -Dm755 slimbook/bin/slimbookindicator -t "$pkgdir/usr/bin/"
-  cp -a slimbook/usr "$pkgdir/"
+
   install -Dm644 90-slimbook-service.preset -t "$pkgdir/usr/lib/systemd/system-preset/"
   install -Dm644 slimbook-service.service -t "$pkgdir/usr/lib/systemd/system/"
 
-  install -d "$pkgdir"/usr/share/applications
-  install -d "$pkgdir"/etc/skel/.config/autostart
+  install -Dm644 slimbook/usr/share/slimbook/*.py -t "$pkgdir/usr/share/slimbook/"
+  cp -r slimbook/usr/share/icons "$pkgdir/usr/share/slimbook"
+  cp -r slimbook/usr/share/icons "$pkgdir/usr/share/"
+
+  install -d "$pkgdir/usr/share/applications"
+  install -d "$pkgdir/etc/xdg/autostart"
+  install -Dm644 slimbook/usr/share/slimbook/slimbook-indicator.desktop -t \
+    "$pkgdir/usr/share/slimbook/"
   ln -s /usr/share/slimbook/slimbook-indicator.desktop "$pkgdir/usr/share/applications/"
-  ln -s /usr/share/slimbook/slimbook-client-autostart.desktop "$pkgdir/etc/skel/.config/autostart/"
+  install -Dm644 slimbook/usr/share/slimbook/slimbook-client-autostart.desktop -t \
+    "$pkgdir/usr/share/slimbook"
+  ln -s /usr/share/slimbook/slimbook-client-autostart.desktop "$pkgdir/etc/xdg/autostart/"
+
+  local langdir="usr/share/slimbook/locale-langpack"
+  for lang in ast ca es ru; do
+    install -d "$pkgdir/${langdir}/${lang}/LC_MESSAGES"
+    msgfmt "slimbook/${langdir}/${lang}/LC_MESSAGES/slimbook.po" -o \
+      "$pkgdir/${langdir}/${lang}/LC_MESSAGES/slimbook.mo"
+  done
 }

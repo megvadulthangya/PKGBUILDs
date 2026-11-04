@@ -76,8 +76,7 @@ device_ids() {
 
     # Add additional IDs
 
-    # NVIDIA RTX A4000
-    printf "24b0" <"$readme_list"
+    # printf "XXXX" <"$readme_list"
 
     ret=0
   fi

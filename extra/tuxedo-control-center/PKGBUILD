@@ -2,7 +2,7 @@
 
 pkgname=tuxedo-control-center
 _app_id=com.tuxedocomputers.tcc
-pkgver=3.1.1
+pkgver=3.1.3
 pkgrel=1
 _nodeversion=24
 pkgdesc="A tool to help you control performance, energy, fan and comfort settings on TUXEDO laptops."
@@ -32,7 +32,7 @@ options=('!strip')
 install="${pkgname}.install"
 source=("${pkgname}-${pkgver}.tar.gz::$url/archive/refs/tags/v${pkgver}.tar.gz"
         "${_app_id}.desktop")
-sha256sums=('96a0d38b660d6a02677f6ce3f2078a0c7169a5b5e83ec2e772e94472815fe4d7'
+sha256sums=('5197ac584f1f99e12752977a46e885ad705819e07a9ccfc221b74bf4639af7d7'
             'faf33f0f2f8cb9e62e6ef8afe292ba615964d1941d07d9a08cd770507f40162a')
 
 _ensure_local_nvm() {
@@ -110,4 +110,8 @@ package() {
 
   install -Dm644 "src/dist-data/${pkgname}_256.svg" \
     "${pkgdir}/usr/share/icons/hicolor/scalable/apps/${pkgname}.svg"
+
+  install -d "${pkgdir}/etc/apparmor.d"
+  ln -s "/opt/${pkgname}/resources/apparmor-profile" \
+    "$pkgdir/etc/apparmor.d/${pkgname}"
 }

@@ -10,7 +10,7 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-utils' 'opencl-nvidia' 'nvidia-dkms' 'nvidia-open-dkms' 'nvidia-settings' 'mhwd-nvidia')
 pkgver=620.70.06
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="http://www.nvidia.com/"
 license=('LicenseRef-NVIDIA-Driver-License-Agreement')
@@ -30,6 +30,8 @@ source=('mhwd-nvidia'
         "https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run"
         "https://download.nvidia.com/XFree86/NVIDIA-kernel-module-source/${_pkg_open}.tar.xz"
         'Open-sysfs-config-from-the-userspace-root-on-7.3.patch'
+        'Fix-build-on-Linux-7.4-nvidia-open.patch'
+        'Fix-build-on-Linux-7.4-nvidia.patch'
         'limit-vram-usage'
         'cuda-no-stable-perf-limit')
 
@@ -45,6 +47,8 @@ sha512sums=('6d1e8b6e5fe62b1488a779b62b71a861f498d73eb1e0bba430a119edf7d03e047a1
             '3889406d2717c5492852c8e06343981ee2481a31e1247fb6c7600205941a28cde90421192d78bbd9e98082b87cc853768ac741dbca4e03ad01ff4f123a9a086d'
             'fcf9d9640fe8d0a282e92471371dd35ab5b78d0ee40388e32a9c23211d52d793dbee5228599c22e6d5939169f3ce5b9854cea060e05e5262b9cebb865ad33df3'
             '5b747ecd9b53994582c252d595cc508483b33131957a3c3b0174ba67d59e55c6cb3125f643b054c62ce8dda5d736c8e8e1ae39dbb4cbb811beb135165ef19666'
+            '382b14df89175c698ae4b0fc613815ebc7b81e2ba3246b812fb83c0161cd8b579901acaa7edd80ef28b27a8fad121da1932d3d83c109db4170f32dccd60bbc6d'
+            '7018a174c03b00c74f4d6a41035695d5c6977e3f938e5aa85b32e73f689760568e30910b4eb849d93970b0b5ef0c91f3ecec5c7c8a023926098b0f12987cd2da'
             '9bb16a0d77bc66c6f885e31542d3e616aa3f778a3e693cb93d77ef76d112d05c89c3c3fc39723840f138a15fb33870840f3b61e57f8d0fc5688d41785dcc4cb9'
             'e8bfc46134e9121e0375c841ee02513b9b55c861d8af57090fc4d43791a2481b3c1d282f02bc93b7d25026a2f2bcb6e1730365e64c9ca1e6db69b67b0e54051a')
 
@@ -72,6 +76,10 @@ prepare() {
     patch -Np1 -i "${srcdir}/systemd.patch" -d "${srcdir}/${_pkg}"
 
     patch -Np1 -i "${srcdir}/Open-sysfs-config-from-the-userspace-root-on-7.3.patch" -d "${srcdir}/${_pkg_open}/"
+
+    # Linux 7.4
+    patch -Np1 -i "${srcdir}/Fix-build-on-Linux-7.4-nvidia-open.patch" -d "${srcdir}/${_pkg_open}/"
+    patch -Np2 -i "${srcdir}/Fix-build-on-Linux-7.4-nvidia.patch" -d "${srcdir}/${_pkg}/kernel/"
 
     # Attempt to make builds reproducible
     sed -i "s/^NV_BUILD_HOST.*/NV_BUILD_HOST ?= manjaro/" "${srcdir}/${_pkg_open}/utils.mk"

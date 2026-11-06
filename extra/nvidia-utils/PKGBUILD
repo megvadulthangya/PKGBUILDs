@@ -9,7 +9,7 @@
 
 pkgbase=nvidia-utils
 pkgname=('nvidia-utils' 'opencl-nvidia' 'nvidia-dkms' 'nvidia-open-dkms' 'nvidia-settings' 'mhwd-nvidia')
-pkgver=615.78.08
+pkgver=620.70.06
 pkgrel=2
 arch=('x86_64')
 url="http://www.nvidia.com/"
@@ -30,6 +30,8 @@ source=('mhwd-nvidia'
         "https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run"
         "https://download.nvidia.com/XFree86/NVIDIA-kernel-module-source/${_pkg_open}.tar.xz"
         'Open-sysfs-config-from-the-userspace-root-on-7.3.patch'
+        'Fix-build-on-Linux-7.4-nvidia-open.patch'
+        'Fix-build-on-Linux-7.4-nvidia.patch'
         'limit-vram-usage'
         'cuda-no-stable-perf-limit')
 
@@ -42,9 +44,11 @@ sha512sums=('6d1e8b6e5fe62b1488a779b62b71a861f498d73eb1e0bba430a119edf7d03e047a1
             'ed3b16bba49bdc9394f11d63b6aaf4437e59cf973cf500d90beee4536ffc693e459ce7031cfbd955531b9ef05f9a5d48a7a7210cbeb4e9e33df4e38a60370d38'
             '704dad990eff6635625bd64be314a72d13fc7149e25463d9deef4a077f86c558589aa31f292c18b6c7022d0d0ad5b1dff638ee4f1daa73cada2e7fefa36db52a'
             '2ce46e6cd7be6e6bfb7e84889568d162d52d70c6c29d62cebab323830fd5f55072670b345b62cc06c07a24a3649cd055f5380d06a194bd47505556139d8d45ba'
-            'fb0c16c9812e60ac1f5ca663f03dd84f386ae4ad55beab4655c65fe8d094c98246c5acbcf9e385e93e38dbfb340472712fc80593a8bf0be47f34ff871bf4d83d'
-            '5ced2c7e3e9df21f8494ea439ac2103307fcbcb295a3f11e5fdf4f1dbeda3f0b13800a06f8147ebd064f98897c24e92f5de82023a8ca43a582694d951c9620c9'
-            '99c1d188704f4bcbfa08ccb97c02f704455e3530ea458936e570675ad5b857ea1efef277ffab7dd7604077bc5a413559013c2fd21de9bd677d11c6cbe6b9e234'
+            '3889406d2717c5492852c8e06343981ee2481a31e1247fb6c7600205941a28cde90421192d78bbd9e98082b87cc853768ac741dbca4e03ad01ff4f123a9a086d'
+            'fcf9d9640fe8d0a282e92471371dd35ab5b78d0ee40388e32a9c23211d52d793dbee5228599c22e6d5939169f3ce5b9854cea060e05e5262b9cebb865ad33df3'
+            '5b747ecd9b53994582c252d595cc508483b33131957a3c3b0174ba67d59e55c6cb3125f643b054c62ce8dda5d736c8e8e1ae39dbb4cbb811beb135165ef19666'
+            '382b14df89175c698ae4b0fc613815ebc7b81e2ba3246b812fb83c0161cd8b579901acaa7edd80ef28b27a8fad121da1932d3d83c109db4170f32dccd60bbc6d'
+            '7018a174c03b00c74f4d6a41035695d5c6977e3f938e5aa85b32e73f689760568e30910b4eb849d93970b0b5ef0c91f3ecec5c7c8a023926098b0f12987cd2da'
             '9bb16a0d77bc66c6f885e31542d3e616aa3f778a3e693cb93d77ef76d112d05c89c3c3fc39723840f138a15fb33870840f3b61e57f8d0fc5688d41785dcc4cb9'
             'e8bfc46134e9121e0375c841ee02513b9b55c861d8af57090fc4d43791a2481b3c1d282f02bc93b7d25026a2f2bcb6e1730365e64c9ca1e6db69b67b0e54051a')
 
@@ -72,6 +76,10 @@ prepare() {
     patch -Np1 -i "${srcdir}/systemd.patch" -d "${srcdir}/${_pkg}"
 
     patch -Np1 -i "${srcdir}/Open-sysfs-config-from-the-userspace-root-on-7.3.patch" -d "${srcdir}/${_pkg_open}/"
+
+    # Linux 7.4
+    patch -Np1 -i "${srcdir}/Fix-build-on-Linux-7.4-nvidia-open.patch" -d "${srcdir}/${_pkg_open}/"
+    patch -Np2 -i "${srcdir}/Fix-build-on-Linux-7.4-nvidia.patch" -d "${srcdir}/${_pkg}/kernel/"
 
     # Attempt to make builds reproducible
     sed -i "s/^NV_BUILD_HOST.*/NV_BUILD_HOST ?= manjaro/" "${srcdir}/${_pkg_open}/utils.mk"
@@ -131,11 +139,11 @@ package_opencl-nvidia() {
 
 package_nvidia-dkms() {
     pkgdesc="NVIDIA kernel modules - module sources"
-    depends=('dkms' "nvidia-utils=${pkgver}" 'libglvnd')
+    depends=('dkms' "nvidia-utils=${pkgver}")
     provides=('NVIDIA-MODULE' "nvidia=${pkgver}")
     conflicts=('NVIDIA-MODULE' 'nvidia')
 
-    cd ${_pkg}
+    cd "${_pkg}"
 
     install -dm 755 "${pkgdir}/usr/src"
     cp -dr --no-preserve='ownership' kernel "${pkgdir}/usr/src/nvidia-${pkgver}"
@@ -158,7 +166,7 @@ package_nvidia-utils() {
     cd "${_pkg}"
 
     # Check https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/README/installedcomponents.html
-    # for hints on what needs to be installed where.
+    # or "${_pkg}/html/installedcomponents.html" for hints on what needs to be installed where.
 
     # X driver
     install -Dm755 nvidia_drv.so "${pkgdir}/usr/lib/xorg/modules/drivers/nvidia_drv.so"
@@ -236,9 +244,15 @@ package_nvidia-utils() {
     # NGX
     install -Dm755 nvidia-ngx-updater "${pkgdir}/usr/bin/nvidia-ngx-updater"
     install -Dm755 "libnvidia-ngx.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-ngx.so.${pkgver}"
+    install -Dm755 libnvidia-ngx-builtin-dlssd.so.* -t "${pkgdir}/usr/lib"
     install -Dm755 _nvngx.dll "${pkgdir}/usr/lib/nvidia/wine/_nvngx.dll"
     install -Dm755 nvngx.dll "${pkgdir}/usr/lib/nvidia/wine/nvngx.dll"
     install -Dm755 nvngx_dlssg.dll "${pkgdir}/usr/lib/nvidia/wine/nvngx_dlssg.dll"
+    install -Dm755 nvngx_update.exe "${pkgdir}/usr/lib/nvidia/wine/nvngx_update.exe"
+    # nvidia-installer flattens this to wine/, while _nvngx.dll refers to ngx-builtins
+    install -Dm755 ngx-builtins/nvngx_dlssd.dll "${pkgdir}/usr/lib/nvidia/wine/nvngx_dlssd.dll"
+    install -d "${pkgdir}/usr/lib/nvidia/wine/ngx-builtins"
+    ln -s ../nvngx_dlssd.dll "${pkgdir}/usr/lib/nvidia/wine/ngx-builtins/nvngx_dlssd.dll"
 
     # Optical flow
     install -Dm755 "libnvidia-opticalflow.so.${pkgver}" "${pkgdir}/usr/lib/libnvidia-opticalflow.so.${pkgver}"
@@ -290,10 +304,10 @@ package_nvidia-utils() {
     install -Dm644 "nvidia-application-profiles-${pkgver}-rc" "${pkgdir}/usr/share/nvidia/nvidia-application-profiles-${pkgver}-rc"
     install -Dm644 "nvidia-application-profiles-${pkgver}-key-documentation" "${pkgdir}/usr/share/nvidia/nvidia-application-profiles-${pkgver}-key-documentation"
     # Application profiles to fix vram usage for electron applications
-    install -Dm644 "$srcdir"/limit-vram-usage "${pkgdir}/etc/nvidia/nvidia-application-profiles-rc.d/limit-vram-usage"
+    install -Dm644 "${srcdir}"/limit-vram-usage "${pkgdir}/etc/nvidia/nvidia-application-profiles-rc.d/limit-vram-usage"
     # Allow full perf while streaming/recording
     # https://github.com/NVIDIA/open-gpu-kernel-modules/issues/333
-    install -Dm644 "$srcdir"/cuda-no-stable-perf-limit "${pkgdir}/etc/nvidia/nvidia-application-profiles-rc.d/cuda-no-stable-perf-limit"
+    install -Dm644 "${srcdir}"/cuda-no-stable-perf-limit "${pkgdir}/etc/nvidia/nvidia-application-profiles-rc.d/cuda-no-stable-perf-limit"
 
     install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/nvidia-utils/LICENSE"
     install -Dm644 README.txt "${pkgdir}/usr/share/doc/nvidia/README"
@@ -321,16 +335,7 @@ package_nvidia-utils() {
 
     install -Dm644 "${srcdir}/nvidia.rules" "$pkgdir"/usr/lib/udev/rules.d/60-nvidia.rules
 
-    # Blacklist nouveau and nova
-    install -Dm644 /dev/stdin "${pkgdir}/usr/lib/modprobe.d/${pkgname}.conf" <<END
-blacklist nouveau
-blacklist nova_core
-blacklist nova_drm
-END
-    echo "nvidia-uvm" | install -Dm644 /dev/stdin "${pkgdir}/usr/lib/modules-load.d/${pkgname}.conf"
-
-    # Enable PreserveVideoMemoryAllocations, TemporaryFilePath & UseKernelSuspendNotifiers
-    # Fixes Wayland Sleep, when restoring the session
+    # Blacklist nouveau and nova and override TemporaryFilePath from default /tmp to /var/tmp
     install -Dm644 "${srcdir}/nvidia-utils.conf" "${pkgdir}/usr/lib/modprobe.d/nvidia-utils.conf"
 
     # Reduce idle power usage caused by CUDA contexts (NVDEC/NVENC, etc.)
@@ -344,7 +349,7 @@ END
 
 package_nvidia-open-dkms() {
   pkgdesc="NVIDIA open kernel modules - module sources"
-  depends+=('dkms' "nvidia-utils=${pkgver}" 'libglvnd')
+  depends+=('dkms' "nvidia-utils=${pkgver}")
   license=('MIT AND GPL-2.0-only')
   conflicts=('nvidia-open' 'NVIDIA-MODULE')
   provides=('nvidia-open' 'NVIDIA-MODULE')

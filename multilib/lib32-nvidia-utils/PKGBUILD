@@ -7,16 +7,15 @@
 
 pkgbase=lib32-nvidia-utils
 pkgname=('lib32-nvidia-utils' 'lib32-opencl-nvidia')
-pkgver=615.78.08
+pkgver=620.70.06
 pkgrel=1
 arch=('x86_64')
 url="https://www.nvidia.com/"
-#makedepends=('nvidia-libgl')  # To avoid conflict during installation in the build chroot
 license=('custom')
 options=('!strip')
 _pkg="NVIDIA-Linux-x86_64-${pkgver}"
 source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run")
-sha512sums=('fb0c16c9812e60ac1f5ca663f03dd84f386ae4ad55beab4655c65fe8d094c98246c5acbcf9e385e93e38dbfb340472712fc80593a8bf0be47f34ff871bf4d83d')
+sha512sums=('3889406d2717c5492852c8e06343981ee2481a31e1247fb6c7600205941a28cde90421192d78bbd9e98082b87cc853768ac741dbca4e03ad01ff4f123a9a086d')
 
 create_links() {
     # create soname links
@@ -56,12 +55,11 @@ package_lib32-nvidia-utils() {
     provides=('lib32-vulkan-driver' 'lib32-opengl-driver' 'lib32-nvidia-libgl' "lib32-nvidia-utils=$pkgver")
     conflicts=('lib32-nvidia-libgl')
     replaces=('lib32-nvidia-libgl')
-    install="${pkgname}.install"
 
     cd "${_pkg}"/32
 
-    # Check http://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/README/installedcomponents.html
-    # for hints on what needs to be installed where.
+    # Check https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/README/installedcomponents.html
+    # or "${_pkg}/html/installedcomponents.html" for hints on what needs to be installed where.
 
     install -D -m755 "libGLX_nvidia.so.${pkgver}" "${pkgdir}/usr/lib32/libGLX_nvidia.so.${pkgver}"
 
@@ -98,6 +96,9 @@ package_lib32-nvidia-utils() {
     # CUDA
     install -D -m755 "libcuda.so.${pkgver}" "${pkgdir}/usr/lib32/libcuda.so.${pkgver}"
     install -D -m755 "libnvcuvid.so.${pkgver}" "${pkgdir}/usr/lib32/libnvcuvid.so.${pkgver}"
+
+    # NVVM Compiler library loaded by the CUDA driver to do JIT link-time-optimization
+    install -D -m644 "libnvidia-nvvm.so.${pkgver}" "${pkgdir}/usr/lib32/libnvidia-nvvm.so.${pkgver}"
 
     # PTX JIT Compiler (Parallel Thread Execution (PTX) is a pseudo-assembly language for CUDA)
     install -D -m755 "libnvidia-ptxjitcompiler.so.${pkgver}" "${pkgdir}/usr/lib32/libnvidia-ptxjitcompiler.so.${pkgver}"

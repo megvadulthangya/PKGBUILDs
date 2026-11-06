@@ -1,0 +1,4 @@
+[kcgroups-dmemcg]
+source = "git"
+git = "https://github.com/pixelcluster/kcgroups.git"
+prefix = "kcgroups-dmemcg-experimental-"

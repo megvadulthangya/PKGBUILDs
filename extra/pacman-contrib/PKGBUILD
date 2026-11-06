@@ -4,7 +4,7 @@
 
 pkgname=pacman-contrib
 pkgver=1.13.1
-pkgrel=1
+pkgrel=2
 pkgdesc='Contributed scripts and tools for pacman systems'
 arch=('x86_64')
 url="https://gitlab.archlinux.org/pacman/pacman-contrib"
@@ -28,6 +28,7 @@ optdepends=(
   'vim: default diff program for pacdiff'
   'neovim: default diff program for pacdiff if EDITOR=nvim'
 )
+install="$pkgname.install"
 source=("git+$url.git#tag=v$pkgver?signed")
 b2sums=('cf1396aa108c6742d74a369456dfdf6a83286c0e8996b730ed16fa8907d0253ebb49ddcd6b548959d5df8d30af223d7883bbabda9e1dfb006d175400e37a105f')
 validpgpkeys=(04DC3FB1445FECA813C27EFAEA4F7B321A906AD9) # Daniel M. Capella <polyzen@archlinux.org>
@@ -55,8 +56,8 @@ package() {
   cd $pkgname
   make DESTDIR="$pkgdir" install
 
-  # replace rankmirrors
-  rm "$pkgdir/usr/bin/rankmirrors"
+  # Replace rankmirrors with pacman-mirrors
+  rm -fv "$pkgdir/usr/bin/rankmirrors"
   ln -sfv "/usr/bin/pacman-mirrors" "$pkgdir/usr/bin/rankmirrors"
 }
 

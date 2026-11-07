@@ -1,0 +1,12 @@
+post_install() {
+
+  # Replace rankmirrors man page with pacman-mirors man page
+  # Has to be done after man pages are gzipped
+  rm -f /usr/share/man/man8/rankmirrors.8.gz
+  ln -sf /usr/share/man/man8/pacman-mirrors.8.gz \
+    /usr/share/man/man8/rankmirrors.8.gz
+}
+
+post_upgrade() {
+  post_install
+}

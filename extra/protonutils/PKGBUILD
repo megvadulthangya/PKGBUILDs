@@ -2,22 +2,25 @@
 # Contributor: henning mueller <mail@nning.io>
 
 pkgname=protonutils
-pkgver=1.6.7
-pkgrel=2
-pkgdesc="Lists configured Proton version per game."
+pkgver=1.8.0
+pkgrel=1
+pkgdesc="CLI tool providing utilities for Proton"
 arch=('x86_64')
 url="https://github.com/nning/protonutils"
 license=('MIT')
 depends=('glibc')
-makedepends=('git' 'go')
-source=("git+https://github.com/nning/protonutils.git#tag=v${pkgver}?signed")
-sha256sums=('a7d755441404f852b124d941511b0681ff6eb4031e2dd87695712c7a6dd045b5')
+makedepends=(
+  'git'
+  'go'
+)
+source=("git+https://github.com/nning/protonutils.git#tag=v$pkgver")
+sha256sums=('e6fe5909cf3c5c28bdf5da754f93c2c36e4f03ab4deacc310a4711cb0e50e312')
 validpgpkeys=('CCBB87A93F9F494C93EEA47905CCCF87AE5FC712') # henning mueller <henning@orgizm.net>
 
 prepare() {
   cd "$pkgname"
   export GOPATH="$srcdir/gopath"
-  go mod tidy
+  go mod download -modcacherw
 }
 
 build() {
@@ -32,9 +35,6 @@ build() {
   # Makefile only generates ZSH completions
   "./cmd/$pkgname/$pkgname" completion bash > completion.bash
   "./cmd/$pkgname/$pkgname" completion fish > completion.fish
-
-  # Clean module cache for makepkg -C
-  go clean -modcache
 }
 
 package() {

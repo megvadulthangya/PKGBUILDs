@@ -1,7 +1,7 @@
 # Maintainer: Stefano Capitani <stefano@manjaro.org>
 
 pkgname=manjaro-rescue
-pkgver=3.0.0
+pkgver=3.1.0
 pkgrel=1
 pkgdesc="Professional system restore utility for Manjaro Linux"
 arch=('any')
@@ -11,7 +11,7 @@ depends=(
   'grub'
   'gtk4'
   'libadwaita'
-  'manjaro-tools-base'
+  'manjaro-tools-base-git'
   'os-prober'
   'polkit'
   'python'
@@ -22,10 +22,11 @@ optdepends=(
   'bmenu: Bash scripts providing a collection of terminal applications in a simple UI'
   'manjaro-log-helper: Gathers selected system logs and optionally sends them to the internet'
   'timeshift: System restore utility for Linux'
+  'mc: A file manager that emulates Norton Commander'
 )
 source=("${pkgname}-${pkgver}.tar.gz::$url/archive/$pkgver.tar.gz")
 noextract=("${pkgname}-${pkgver}.tar.gz")
-sha256sums=('aa92e600b5305bbc9e47de38eff1eb41254dc953d6036e0218fce95d21ec6379')
+sha256sums=('d7be0c00a00af94d5efccb39bce41c64101be5b7c1b9ff2653d14070a5c30f23')
 
 prepare() {
   mkdir -p "${pkgname}-${pkgver}"
@@ -36,15 +37,21 @@ package() {
   cd "${pkgname}-${pkgver}"
 
   install -d "${pkgdir}/usr/bin"
+  install -d "${pkgdir}/usr/lib/${pkgname}"
+  install -d "${pkgdir}/usr/share/applications"
   install -d "${pkgdir}/usr/share/icons/hicolor/scalable/apps"
 
   cp -r backend utils locale "${pkgdir}/usr/lib/${pkgname}/"
   [ -d icons ] && cp -a icons "${pkgdir}/usr/lib/${pkgname}/"
-  install -Dm755 main.py "${pkgdir}/usr/lib/${pkgname}/"
-  install -Dm644 window.ui "${pkgdir}/usr/lib/${pkgname}/"
+  install -m755 main.py "${pkgdir}/usr/lib/${pkgname}/"
+  install -m644 window.ui "${pkgdir}/usr/lib/${pkgname}/"
 
   ln -s "/usr/lib/${pkgname}/main.py" "${pkgdir}/usr/bin/${pkgname}"
   ln -s "/usr/lib/${pkgname}/icons/hicolor/scalable/apps/${pkgname}.svg" \
     "${pkgdir}/usr/share/icons/hicolor/scalable/apps/${pkgname}.svg"
-  install -Dm644 "${pkgname}.desktop" "${pkgdir}/usr/share/applications/"
+
+  install -m644 "${pkgname}.desktop" "${pkgdir}/usr/share/applications/"
+
+  python -m compileall -d / "$pkgdir/usr/lib/$pkgname"
+  python -O -m compileall -d / "$pkgdir/usr/lib/$pkgname"
 }

@@ -6,8 +6,10 @@
 # Contributor: Timothy Redaelli <timothy.redaelli@gmail.com>
 # Contributor: darkcoder <mario_vazq@hotmail.com>
 
-## Patches from os-prober-btrfs AUR package
-## https://aur.archlinux.org/packages/os-prober-btrfs/
+# Patches from os-prober-btrfs AUR package / openSUSE / Fedora
+# https://aur.archlinux.org/packages/os-prober-btrfs/
+# https://build.opensuse.org/package/show/openSUSE:Factory/os-prober
+# https://src.fedoraproject.org/rpms/os-prober/tree/rawhide
 
 pkgname=os-prober
 pkgver=1.85

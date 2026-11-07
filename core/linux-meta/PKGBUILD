@@ -7,7 +7,7 @@ pkgname=(
 )
 pkgbase=linux-meta
 pkgdesc="Manjaro stable kernel meta package"
-pkgver=7.2
+pkgver=7.3
 _pkgver="${pkgver//./}"
 pkgrel=1
 arch=('any')
@@ -51,6 +51,7 @@ _eol=(
   '619'
   '70'
   '71'
+  '72'
 )
 
 _array() {

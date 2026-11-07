@@ -1,0 +1,4 @@
+[shiny-mirrors]
+source = "git"
+git = "https://gitlab.com/Arisa_Snowbell/shiny-mirrors.git"
+prefix = "v"

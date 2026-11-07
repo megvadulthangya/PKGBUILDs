@@ -317,7 +317,9 @@ package_nvidia-580xx-utils() {
 
     install -Dm644 "${srcdir}/nvidia.rules" "$pkgdir"/usr/lib/udev/rules.d/60-nvidia.rules
 
-    # Blacklist nouveau and nova and override TemporaryFilePath from default /tmp to /var/tmp
+    # Blacklist nouveau and nova
+    # Enable PreserveVideoMemoryAllocations and TemporaryFilePath
+    # Fixes Wayland Sleep, when restoring the session
     install -Dm644 "${srcdir}/nvidia-utils.conf" "${pkgdir}/usr/lib/modprobe.d/nvidia-utils.conf"
 
     # Lists NVIDIA driver files for container runtimes like nvidia-container-toolkit

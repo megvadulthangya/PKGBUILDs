@@ -1,27 +1,25 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=shiny-mirrors
-pkgver=r273.54e5d9d
+pkgver=1.0.0
 pkgrel=1
-pkgdesc="An alternative to Manjaro's pacman-mirrors, rewritten in Rust! A tool to find the best mirrors for you!"
+pkgdesc="An alternative to pacman-mirrors, rewritten in Rust! A tool to find the best mirrors for you!"
 arch=('x86_64' 'aarch64')
 url="https://gitlab.com/Arisa_Snowbell/shiny-mirrors"
-license=('GPL-3.0-or-later')
-depends=('libgcc')
+license=('GPL-3.0-only')
+depends=(
+  'glibc'
+  'libgcc'
+)
 makedepends=(
   'git'
   'rust'
 )
-backup=("etc/$pkgname.conf")
-_commit=54e5d9d88fde8505de5665321546ecfe02552edb  # branch/domina
-source=("git+https://gitlab.com/Arisa_Snowbell/shiny-mirrors.git#commit=${_commit}?signed")
-sha256sums=('ed5a27eee38edb6426324f418b6ea66443cce8274548bb6642519ee9ce666148')
+backup=("etc/$pkgname.toml")
+install="$pkgname.install"
+source=("git+https://gitlab.com/Arisa_Snowbell/shiny-mirrors.git#tag=v${pkgver}?signed")
+sha256sums=('1f504ac20fce9f55b67c7a59bda5f48f3673d407d19d34a6339a7e57e3260acd')
 validpgpkeys=('E2C998FA1F7B651E45B20CDC56AA2C2801F619D7') # Arisa Snowbell (Hyena) <arisa.snowbell@gmail.com>
-
-pkgver() {
-  cd "$pkgname"
-  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
-}
 
 prepare() {
   cd "$pkgname"
@@ -32,7 +30,7 @@ build() {
   cd "$pkgname"
   CFLAGS+=" -ffat-lto-objects"
   export CARGO_TARGET_DIR=target
-  cargo build --frozen --release --features manjaro --no-default-features
+  cargo build --frozen --release --no-default-features --features manjaro
 }
 
 package() {
@@ -45,7 +43,7 @@ package() {
   install -Dm644 "target/gen/$pkgname.fish" -t \
     "$pkgdir/usr/share/fish/vendor_completions.d/"
   install -Dm644 "$pkgname/man/$pkgname.1" -t "$pkgdir/usr/share/man/man1/"
-  install -Dm644 "conf/$pkgname.conf" -t "$pkgdir/etc/"
+  install -Dm644 "conf/$pkgname.toml" -t "$pkgdir/etc/"
   install -Dm644 "$pkgname/systemd/$pkgname"{.service,.timer} -t \
     "$pkgdir/usr/lib/systemd/system/"
 }

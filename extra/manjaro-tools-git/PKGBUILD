@@ -2,8 +2,6 @@
 # Contributor: Bernhard Landauer <bernhard@manjaro.org>
 # Contributor: Frede Hundewadt <fhatmanjarorg>
 
-_ver=0.15.15dev
-
 pkgname=(
   'manjaro-tools-base-git'
   'manjaro-tools-pkg-git'
@@ -11,8 +9,8 @@ pkgname=(
   'manjaro-tools-yaml-git'
 )
 pkgbase=manjaro-tools-git
-pkgver=r3071.5c97abe
-pkgrel=2
+pkgver=0.15.13.r82.gdc6ba13
+pkgrel=1
 pkgdesc="Development tools for Manjaro Linux"
 arch=('any')
 url="https://code.manjaro.org/tools/manjaro-tools"
@@ -22,18 +20,18 @@ makedepends=(
   'docbook2x'
   'git'
 )
-_commit=5c97abe3126b5108ce76738308e5e435bcce617e
+_commit=dc6ba13413c6faba77c5ccdcc74121c97e9a1cab
 source=("git+$url.git#commit=${_commit}")
-sha256sums=('0510b6dbe7da37fcdc491d3a9c45c799b18fc4b42051cb029a6997056b0e3dd4')
+sha256sums=('761246006872a6f6a5f54758e0264301899de8edd9d63fe804927c950fc68a3b')
 
 pkgver() {
   cd "${pkgbase%-git}"
-  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+  git describe --long --tags --abbrev=7 | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
 }
 
 prepare() {
   cd "${pkgbase%-git}"
-  sed -e "s/^Version=.*/Version=${_ver}/" -i Makefile
+  sed -e "s/^Version=.*/Version=$pkgver/" -i Makefile
 
   # patches here
 }

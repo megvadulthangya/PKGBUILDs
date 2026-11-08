@@ -20,7 +20,7 @@ pkgname=(
 )
 pkgbase=linux-extramodules-meta
 pkgdesc="Manjaro Kernel Extra Modules Meta Package"
-pkgver=7.2
+pkgver=7.3
 _pkgver="${pkgver//./}"
 pkgrel=1
 arch=('any')
@@ -64,6 +64,7 @@ _eol=(
   '619'
   '70'
   '71'
+  '72'
 )
 
 _array() {

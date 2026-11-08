@@ -3,7 +3,6 @@
 pkgname=xfce4-xapp-status-plugin
 pkgver=0.4.4
 pkgrel=1
-_codename=zena
 pkgdesc="XappStatus panel applet for Xfce4"
 arch=('x86_64')
 url="https://github.com/linuxmint/xfce4-xapp-status-plugin"

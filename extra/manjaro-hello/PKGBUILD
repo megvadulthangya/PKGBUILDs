@@ -3,7 +3,7 @@
 # Contributor: Stefano Capitani <stefano@manjaro.org>
 
 pkgname=manjaro-hello
-pkgver=0.8.2
+pkgver=0.8.3
 pkgrel=1
 pkgdesc="A tool providing access to documentation and support for new Manjaro users."
 url="https://code.manjaro.org/applications/manjaro-hello"
@@ -23,7 +23,7 @@ optdepends=(
 makedepends=('git')
 checkdepends=('desktop-file-utils')
 source=("git+https://code.manjaro.org/applications/manjaro-hello.git#tag=${pkgver}?signed")
-sha256sums=('e74989be6149c7ab9592ffadc01ac21b8e31955d76b67ea762cc0ad5f953ef98')
+sha256sums=('091a94aef42f7e6ab157e41400b7b257b4ccfa637551c154b8bfb72c790904b9')
 validpgpkeys=('688E8F82879D0E25CE541426150C200743ED46D8') # Mark Wagie <mark@manjaro.org>
 
 prepare() {

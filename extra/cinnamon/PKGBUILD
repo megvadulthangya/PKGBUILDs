@@ -8,11 +8,9 @@
 # Contributor: unifiedlinux
 # Contributor: CReimer
 
-## TODO: needs to be rebuilt when cjs is updated to 140
-
 pkgname=cinnamon
 pkgver=6.8.0
-pkgrel=2
+pkgrel=3
 pkgdesc='Desktop environment which provides advanced innovative features and a traditional user experience'
 arch=(x86_64)
 url='https://github.com/linuxmint/cinnamon'
@@ -110,14 +108,12 @@ source=(
   cinnamon-set-wheel.patch
   30_org.archlinux.cinnamon.gschema.override
   manjaro-settings.patch
-  girepository-version.patch
 )
 b2sums=('2ea68d9c7887f184dbc4b7f07c918ea7b6034730f73b07a94789e18c17c962b881b78510cc430f5f550fbda4aa791d4ec7f4531115f5fb96545bb1db3985796a'
         '716095bf9b74fad22714040dfd3d7b115eb950a81b4ec809f8541d81102bc276532948d1e70c2d022b061cc8e939276b9f51f4fedb01c6ef2940d1232253460d'
         '3becf1f40068fc629109e6e7d464c3c484296afacc9ab6328b2ccbb3c9735bcbfa9550f9f73b430ede178ae668e37c660ce322b5b4d1873526de3d3d41185160'
         '97582a7734c1282c0c2f879e6b0ebe9acb2591592431702aff1557b08189d47f40bebfd10e1fae001546bfc87dea847bd33f64fd7a496f878a442651b255ea00'
-        'eba1c9660c68916e70ca68c4de73d6f170c534cbdc71c7a11ae4f7c86d73e210d703967c63bb76c3c0a331384c6b928076f284c3c7de1560d561b8eb0dd7bc79'
-        '8d01c0c1be6c285eb613501aad9293ea4b31baba146c8122841718641aa5318b1574e46e3e91a1009481647e28fa59140d10529ab9a74852275378bf09513d29')
+        'eba1c9660c68916e70ca68c4de73d6f170c534cbdc71c7a11ae4f7c86d73e210d703967c63bb76c3c0a331384c6b928076f284c3c7de1560d561b8eb0dd7bc79')
 
 prepare() {
   cd $pkgname
@@ -139,10 +135,6 @@ prepare() {
 
   # add MSM to cinnamon-settings
   patch -Np1 -i ../manjaro-settings.patch
-
-  # Set GIREPOSITORY_VERSION to 3.0 to fix cinnamon-settings not launching
-  # 'ValueError: Namespace GIRepository not available for version 2.0'
-  patch -Np1 -i ../girepository-version.patch
 }
 
 build() {

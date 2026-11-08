@@ -7,16 +7,16 @@ pkgname=(
   'mint-artwork-styles'
 )
 pkgbase=mint-artwork
-pkgver=1.9.4
-pkgrel=2
-pkgdesc="Linux Mint Artwork and Resources"
+pkgver=1.9.6
+pkgrel=1
 epoch=1
+pkgdesc="Linux Mint Artwork and Resources"
 arch=('any')
 url="https://www.linuxmint.com"
 license=('GPL-3.0-or-later')
 source=("http://packages.linuxmint.com/pool/main/m/$pkgbase/${pkgbase}_${pkgver}.tar.xz")
 noextract=("${pkgbase}_${pkgver}.tar.xz")
-sha256sums=('1a87e41a001a2ecbd9db331ed3cd0eab72529766759b92f5a0672dc3f2c52a1c')
+sha256sums=('5d6b9c289fc2b744df08b84ef31ac502731b59ccd5985f4269c8b88b7f8e437c')
 
 prepare() {
   mkdir -p "$pkgbase-$pkgver"

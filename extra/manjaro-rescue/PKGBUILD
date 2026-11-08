@@ -2,7 +2,7 @@
 
 pkgname=manjaro-rescue
 pkgver=3.1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Professional system restore utility for Manjaro Linux"
 arch=('any')
 url="https://codeberg.org/Ste74/manjaro-rescue"
@@ -16,14 +16,12 @@ depends=(
   'polkit'
   'python'
   'python-gobject'
+  'bmenu'
+  'manjaro-log-helper'
+  'timeshift'
+  'mc'
 )
 makedepends=('git')
-optdepends=(
-  'bmenu: Bash scripts providing a collection of terminal applications in a simple UI'
-  'manjaro-log-helper: Gathers selected system logs and optionally sends them to the internet'
-  'timeshift: System restore utility for Linux'
-  'mc: A file manager that emulates Norton Commander'
-)
 source=("${pkgname}-${pkgver}.tar.gz::$url/archive/$pkgver.tar.gz")
 noextract=("${pkgname}-${pkgver}.tar.gz")
 sha256sums=('d7be0c00a00af94d5efccb39bce41c64101be5b7c1b9ff2653d14070a5c30f23')

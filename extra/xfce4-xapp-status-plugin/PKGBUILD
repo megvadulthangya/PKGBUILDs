@@ -1,0 +1,36 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=xfce4-xapp-status-plugin
+pkgver=0.4.4
+pkgrel=1
+pkgdesc="XappStatus panel applet for Xfce4"
+arch=('x86_64')
+url="https://github.com/linuxmint/xfce4-xapp-status-plugin"
+license=('GPL-3.0-or-later')
+groups=('x-apps')
+depends=(
+  'gtk3'
+  'json-glib'
+  'xapp'
+  'xfce4-panel'
+)
+makedepends=('meson')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
+sha256sums=('e090af7da9917f1a3bb108c1a3b3b4df1d688a33ec187773cf792d0896114e68')
+
+prepare() {
+  cd "$pkgname-$pkgver"
+
+  # panel-applets icon only available in mint-y-icons
+  # Use matching cs-applets icon available in papirus-icon-theme
+  sed -i 's/Icon=panel-applets/Icon=cs-applets/g' plugin/xapp-status-plugin.desktop.in
+}
+
+build() {
+  arch-meson "$pkgname-$pkgver" build
+  meson compile -C build
+}
+
+package() {
+  meson install -C build --no-rebuild --destdir "$pkgdir"
+}

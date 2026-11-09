@@ -13,6 +13,11 @@ boost-libs
 - dwarfs
 
 
+cjs
+
+- cinnamon
+
+
 fmt
 
 - dwarfs

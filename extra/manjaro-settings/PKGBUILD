@@ -1,7 +1,7 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=manjaro-settings
-pkgver=1.0.1
+pkgver=1.0.2
 pkgrel=1
 pkgdesc="Manjaro configuration files and scripts"
 arch=('any')
@@ -19,7 +19,7 @@ conflicts=('manjaro-system')
 replaces=('manjaro-system')
 install="$pkgname.install"
 source=("git+https://code.manjaro.org/applications/manjaro-settings.git#tag=${pkgver}?signed")
-sha256sums=('2e2e9ea1bbf8724fc838be1aa202024cc5c843fb14f51e25fd0643b6d1ade1c2')
+sha256sums=('b242c01a02fbad9298c3b40c98364a0ca8b0c74bc859386e8c18f107657d9efa')
 validpgpkeys=('688E8F82879D0E25CE541426150C200743ED46D8') # Mark Wagie <mark@manjaro.org>
 
 package() {
@@ -27,6 +27,8 @@ package() {
   install -Dm755 iw-set-regdomain -t "$pkgdir/usr/lib/"
   install -Dm644 iw-set-regdomain.{path,service} -t \
     "$pkgdir/usr/lib/systemd/system/"
+  install -Dm644 85-iw-regulatory.rules -t "$pkgdir/usr/lib/udev/rules.d/"
+  install -Dm644 iw-set-regdomain.1 -t "$pkgdir/usr/share/man/man1/"
 
   install -Dm644 70-manjaro-settings.conf -t "$pkgdir/usr/lib/sysctl.d/"
 

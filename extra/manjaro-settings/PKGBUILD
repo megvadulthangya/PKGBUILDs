@@ -1,7 +1,7 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=manjaro-settings
-pkgver=1.0
+pkgver=1.0.1
 pkgrel=1
 pkgdesc="Manjaro configuration files and scripts"
 arch=('any')
@@ -19,7 +19,7 @@ conflicts=('manjaro-system')
 replaces=('manjaro-system')
 install="$pkgname.install"
 source=("git+https://code.manjaro.org/applications/manjaro-settings.git#tag=${pkgver}?signed")
-sha256sums=('3a3d1c31ae9f98230dfaed1b4922b2498c5571a990e7c97ecf182ab3428e58e2')
+sha256sums=('2e2e9ea1bbf8724fc838be1aa202024cc5c843fb14f51e25fd0643b6d1ade1c2')
 validpgpkeys=('688E8F82879D0E25CE541426150C200743ED46D8') # Mark Wagie <mark@manjaro.org>
 
 package() {

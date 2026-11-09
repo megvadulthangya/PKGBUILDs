@@ -1,0 +1,3 @@
+[manjaro-settings]
+source = "git"
+git = "https://code.manjaro.org/applications/manjaro-settings.git"

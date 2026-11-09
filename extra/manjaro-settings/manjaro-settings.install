@@ -1,0 +1,11 @@
+post_install() {
+  echo "Enabling Manjaro Settings services..."
+  systemctl enable systemd-oomd.service iw-set-regdomain.path
+}
+
+post_upgrade() {
+  echo "Restarting Manjaro Settings services..."
+  if systemctl is-active systemd-oomd.service >/dev/null; then
+    systemctl restart systemd-oomd.service
+  fi
+}

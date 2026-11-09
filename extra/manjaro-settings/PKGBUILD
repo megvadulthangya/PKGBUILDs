@@ -1,0 +1,41 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+
+pkgname=manjaro-settings
+pkgver=1.0
+pkgrel=1
+pkgdesc="Manjaro configuration files and scripts"
+arch=('any')
+url="https://code.manjaro.org/applications/manjaro-settings"
+license=('GPL-3.0-or-later')
+depends=(
+  'bash'
+  'iw'
+  'systemd'
+  'util-linux'
+  'wireless-regdb'
+)
+makedepends=('git')
+conflicts=('manjaro-system')
+replaces=('manjaro-system')
+install="$pkgname.install"
+source=("git+https://code.manjaro.org/applications/manjaro-settings.git#tag=${pkgver}?signed")
+sha256sums=('3a3d1c31ae9f98230dfaed1b4922b2498c5571a990e7c97ecf182ab3428e58e2')
+validpgpkeys=('688E8F82879D0E25CE541426150C200743ED46D8') # Mark Wagie <mark@manjaro.org>
+
+package() {
+  cd "$pkgname"
+  install -Dm755 iw-set-regdomain -t "$pkgdir/usr/lib/"
+  install -Dm644 iw-set-regdomain.{path,service} -t \
+    "$pkgdir/usr/lib/systemd/system/"
+
+  install -Dm644 70-manjaro-settings.conf -t "$pkgdir/usr/lib/sysctl.d/"
+
+  install -Dm644 10-oomd-defaults.conf -t "$pkgdir/usr/lib/systemd/oomd.conf.d/"
+  install -Dm644 10-oomd-per-slice-defaults.conf -t \
+    "$pkgdir/usr/lib/systemd/system/system.slice.d/"
+  install -Dm644 10-oomd-per-slice-defaults.conf -t \
+    "$pkgdir/usr/lib/systemd/user/slice.d/"
+
+  install -Dm644 networkmanager-connectivity.hook \
+    "$pkgdir/usr/share/libalpm/hooks/networkmanager-connectivity.hook"
+}

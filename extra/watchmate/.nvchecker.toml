@@ -1,4 +1,0 @@
-[watchmate]
-source = "git"
-git = "https://github.com/azymohliad/watchmate.git"
-prefix = "v"

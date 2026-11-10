@@ -1,5 +1,5 @@
-# Maintainer: Dan Johansen <strit at strits dot dk>
-# Contributor: Mark Wagie <mark at manjaro dot org>
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Dan Johansen <strit at strits dot dk>
 
 pkgname=watchmate
 _app_id=io.gitlab.azymohliad.WatchMate
@@ -49,4 +49,3 @@ package() {
   install -Dm644 "assets/icons/${_app_id}-symbolic.svg" -t \
     "$pkgdir/usr/share/icons/hicolor/symbolic/apps/"
 }
-

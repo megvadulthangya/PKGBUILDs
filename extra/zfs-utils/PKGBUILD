@@ -1,14 +1,12 @@
 # Maintainer: Philip Müller <philm[at]manjaro[dot]org>
 # Contributor: Helmut Stult
-
-# Arch credits:
-# Maintainer: Kevin Stolp <kevinstolp@gmail.com>
+# Contributor: Kevin Stolp <kevinstolp@gmail.com>
 # Contributor: Eli Schwartz <eschwartz@archlinux.org>
 # Contributor: Iacopo Isimbaldi <isiachi@rhye.it>
 
 pkgname=zfs-utils
 pkgver=2.4.4
-pkgrel=1
+pkgrel=2
 pkgdesc="Userspace utilities for the Zettabyte File System."
 arch=('x86_64')
 url="http://zfsonlinux.org/"
@@ -70,7 +68,7 @@ package() {
   # https://github.com/openzfs/zfs/issues/15146
   # https://github.com/systemd/systemd/issues/28653
   install -D -m644 "${srcdir}"/zfs-node-permission.conf "${pkgdir}"/usr/lib/tmpfiles.d/zfs-node-permission.conf
-  
+
   install -Dm644 "${srcdir}"/zfs.initcpio.hook "${pkgdir}"/usr/lib/initcpio/hooks/zfs
   install -Dm644 "${srcdir}"/zfs.initcpio.install "${pkgdir}"/usr/lib/initcpio/install/zfs
 }

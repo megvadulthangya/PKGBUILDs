@@ -2,7 +2,7 @@
 
 pkgname=manjaro-settings
 pkgver=1.0.2
-pkgrel=1
+pkgrel=2
 pkgdesc="Manjaro configuration files and scripts"
 arch=('any')
 url="https://code.manjaro.org/applications/manjaro-settings"
@@ -10,13 +10,12 @@ license=('GPL-3.0-or-later')
 depends=(
   'bash'
   'iw'
+  'manjaro-system'
   'systemd'
   'util-linux'
   'wireless-regdb'
 )
 makedepends=('git')
-conflicts=('manjaro-system')
-replaces=('manjaro-system')
 install="$pkgname.install"
 source=("git+https://code.manjaro.org/applications/manjaro-settings.git#tag=${pkgver}?signed")
 sha256sums=('b242c01a02fbad9298c3b40c98364a0ca8b0c74bc859386e8c18f107657d9efa')
@@ -37,7 +36,4 @@ package() {
     "$pkgdir/usr/lib/systemd/system/system.slice.d/"
   install -Dm644 10-oomd-per-slice-defaults.conf -t \
     "$pkgdir/usr/lib/systemd/user/slice.d/"
-
-  install -Dm644 networkmanager-connectivity.hook \
-    "$pkgdir/usr/share/libalpm/hooks/networkmanager-connectivity.hook"
 }

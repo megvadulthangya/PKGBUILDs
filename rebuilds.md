@@ -102,6 +102,7 @@ libxml2
 
 openssl
 
+- dwarfs
 - pacman
 - systemd
 - zfs-utils

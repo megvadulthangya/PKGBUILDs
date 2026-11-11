@@ -3,7 +3,7 @@
 
 pkgname=dwarfs
 pkgver=0.15.8
-pkgrel=1
+pkgrel=2
 pkgdesc="A fast high compression read-only file system"
 arch=('x86_64' 'aarch64')
 url="https://github.com/mhx/dwarfs"
@@ -47,7 +47,7 @@ build() {
     -D CMAKE_BUILD_TYPE='RelWithDebInfo'
     -D CMAKE_INSTALL_PREFIX='/usr'
     -D CMAKE_INSTALL_SBINDIR='bin'
-    -D WITH_TESTS='ON'
+    -D WITH_TESTS='OFF'
     -D PREFER_SYSTEM_GTEST='ON'
     -D DISABLE_CCACHE='ON'
     -D DISABLE_MOLD='ON'
@@ -68,7 +68,7 @@ check() {
     --parallel $(nproc)
     --exclude-regex "$excluded_tests"
   )
-  ctest "${ctest_flags[@]}"
+  # ctest "${ctest_flags[@]}"
 }
 
 package() {

@@ -4,37 +4,44 @@
 pkgname=watchmate
 _app_id=io.gitlab.azymohliad.WatchMate
 pkgver=0.5.3
-pkgrel=1
+pkgrel=2
 pkgdesc="PineTime smart watch companion app for Linux phone and desktop"
 arch=('x86_64' 'aarch64')
 url="https://github.com/azymohliad/watchmate"
 license=('GPL-3.0-or-later')
-depends=('bluez'
-         'libadwaita')
-makedepends=('cargo')
-checkdepends=('appstream-glib')
-options=('!lto')
+depends=(
+  'bluez'
+  'bzip2'
+  'dbus'
+  'gtk4'
+  'libadwaita'
+  'openssl-3'
+)
+makedepends=('rust')
+checkdepends=(
+  'appstream'
+  'desktop-file-utils'
+)
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
 sha256sums=('640d9460a0dcef70fcdd235ba23196d0e0e8b5648040874162458599ae39fd8b')
 
 prepare() {
   cd "$pkgname-$pkgver"
-  export CARGO_HOME="$srcdir/cargo-home"
-  export RUSTUP_TOOLCHAIN=stable
-  cargo fetch --locked --target "$CARCH-unknown-linux-gnu"
+  cargo fetch --locked --target host-tuple
 }
 
 build() {
   cd "$pkgname-$pkgver"
-  export CARGO_HOME="$srcdir/cargo-home"
-  export RUSTUP_TOOLCHAIN=stable
+  CFLAGS+=" -ffat-lto-objects"
+  export PKG_CONFIG_PATH="/usr/lib/openssl-3/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+  export OPENSSL_NO_VENDOR=1
   export CARGO_TARGET_DIR=target
-  cargo build --frozen --release --all-features
+  cargo build --frozen --release
 }
 
 check() {
   cd "$pkgname-$pkgver"
-  appstream-util validate-relax --nonet "assets/${_app_id}.metainfo.xml"
+  appstreamcli validate --no-net "assets/${_app_id}.metainfo.xml"
   desktop-file-validate "assets/${_app_id}.desktop"
 }
 

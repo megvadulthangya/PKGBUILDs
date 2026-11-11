@@ -107,7 +107,7 @@ openssl
 - zfs-utils
 - firmware-manager
 - kernels
-- watchmate
+
 
 pacman (libalpm.so)
 

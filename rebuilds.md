@@ -105,6 +105,7 @@ openssl
 - dwarfs
 - pacman
 - systemd
+- watchmate
 - zfs-utils
 - firmware-manager
 - kernels

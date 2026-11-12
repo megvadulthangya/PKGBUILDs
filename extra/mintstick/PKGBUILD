@@ -5,7 +5,7 @@
 # Contributor: unclesam <web _AT_ shinobi-mail _DOT_ de>
 
 pkgname=mintstick
-pkgver=1.6.8
+pkgver=1.6.9
 pkgrel=1
 pkgdesc="A graphical tool that allows you to format USB sticks and create bootable USB sticks."
 arch=('any')
@@ -14,15 +14,12 @@ license=('GPL-2.0-or-later')
 depends=(
   'coreutils'
   'cdrtools'
-  'dosfstools'
   'e2fsprogs'
-  'exfatprogs'
   'gtk3'
   'hicolor-icon-theme'
   'polkit'
   'procps-ng'
   'python'
-  'python-dbus'
   'python-gnupg'
   'python-gobject'
   'python-pyparted'
@@ -35,12 +32,14 @@ depends=(
   'xapp-symbolic-icons'
 )
 optdepends=(
+  'dosfstools: FAT16 and FAT32 partitions'
+  'exfatprogs: exFAT partitions'
   'mint-translations: i18n'
-  'ntfsprogs: NTFS filesystems'
+  'ntfsprogs: NTFS partitions'
 )
 source=("http://packages.linuxmint.com/pool/main/m/$pkgname/${pkgname}_${pkgver}.tar.xz")
 noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('d7d3f949d708022bbb1b390a2560100f24241a34817180fc01952d89eccf9cfe')
+sha256sums=('2b383eb6ec92ced363d25e6d23a04c8f427530ebad59dd372e4112a83bb3c998')
 
 prepare() {
   mkdir -p "$pkgname-$pkgver"
@@ -62,7 +61,7 @@ package() {
   install -Dm755 "$pkgname" mint-iso-verify -t "$pkgdir/usr/bin/"
   install -Dm644 share/nemo/actions/* -t "$pkgdir/usr/share/nemo/actions/"
   install -Dm644 share/kde4/* -t "$pkgdir/usr/share/kde4/apps/solid/actions/"
-  cp -r share/icons "$pkgdir/usr/share/icons"
+  cp -r share/icons "$pkgdir/usr/share/"
   install -Dm755 bin/* -t "$pkgdir/usr/bin/"
   install -Dm644 "debian/$pkgname.1" -t "$pkgdir/usr/share/man/man1/"
 }

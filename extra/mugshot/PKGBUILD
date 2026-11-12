@@ -6,7 +6,7 @@
 
 pkgname=mugshot
 pkgver=0.4.3
-pkgrel=10
+pkgrel=11
 pkgdesc="User Management Utility for Linux"
 arch=('any')
 url="https://bluesabre.org/projects/mugshot"
@@ -27,21 +27,27 @@ makedepends=(
   'python-build'
   'python-distutils-extra'
   'python-installer'
-  'python-setuptools'
   'python-wheel'
 )
-checkdepends=('appstream')
-optdepends=(
-  'cheese: webcam support'
-  'pidgin: update buddy icon'
-  'gnome-control-center: collection of stock face icons'
+checkdepends=(
+  'appstream'
+  'desktop-file-utils'
 )
-_commit=01cc800f467dd3661bf158fb26820d37042fb0a0
+_commit=e0d916337f2beee80aa22ac50f11b9bacb23b02d
 source=("git+https://github.com/bluesabre/mugshot.git#tag=$pkgname-$pkgver?signed"
-        "git+https://github.com/oberon-manjaro/avatars.git#commit=${_commit}")
+        "git+https://github.com/linuxmint/mintcommon.git#commit=${_commit}"
+        'disable_webcam.patch')
 sha256sums=('18162cb0bbd5f852612e233cb53975a132635c03533f019a95e9017b473287a2'
-            'c7d21a21a43a4d10301452f38daceff3ed14bd63747c34f2b0d1a3b0700f427c')
+            '092438e492caf67686a6f6209bf55e7e4081982fa45c088cf8986c4331491537'
+            '3ea808d9962af670cb3584726f239642fcd5a99f698f6ae7fc1f74d5abcf9255')
 validpgpkeys=('21D00B5001E804E5DE6E4BF876E6FEEC95FC5E22') # Sean Davis <sean@bluesabre.org>
+
+prepare() {
+  cd "$pkgname"
+
+  # Remove webcam option from menu due to crashes
+  patch -Np1 -i ../disable_webcam.patch
+}
 
 build() {
   cd "$pkgname"
@@ -59,10 +65,9 @@ package() {
   python -m installer --destdir="$pkgdir" dist/*.whl
 
   # Remove misplaced mugshot.appdata.xml.in
-  rm -r "$pkgdir/usr/share/$pkgname/metainfo/"
+  rm -rfv "$pkgdir/usr/share/$pkgname/metainfo/"
 
-  # install our stock avatars
-  cd "$srcdir/avatars"
+  # install Linux Mint stock avatars
   install -d "$pkgdir/usr/share/pixmaps"
-  cp -r faces "$pkgdir/usr/share/pixmaps/"
+  cp -r "$srcdir/mintcommon/usr/share/pixmaps/faces" "$pkgdir/usr/share/pixmaps/"
 }

@@ -102,22 +102,24 @@ libxml2
 
 openssl
 
+- kernels
+- dwarfs
+- firmware-manager
 - pacman
 - systemd
+- watchmate
 - zfs-utils
-- firmware-manager
-- kernels
 
 
 pacman (libalpm.so)
 
+- alpm-octopi-utils
+- libpamac
+- octopi
 - pacman
 - pacman-contrib
-- libpamac
-- pamac-cli
 - pamac
-- alpm-octopi-utils
-- octopi
+- pamac-cli
 - yay
 
 
@@ -128,11 +130,11 @@ perl
 
 python (libpython3.so)
 
+- kernels
 - backintime
 - calamares
 - calamares-git
 - gdm-settings
-- kernels
 - thunarx-python
 
 python (site-packages)

@@ -5,7 +5,7 @@
 # Contributor: Nate Simon <njsimon10@gmail.com>
 
 pkgname=xviewer
-pkgver=3.4.17
+pkgver=3.4.18
 pkgrel=1.0
 pkgdesc="Simple image viewer"
 arch=('x86_64')
@@ -53,18 +53,8 @@ optdepends=(
   'xviewer-plugins: Extra plugins'
   'yelp: for viewing the help manual'
 )
-source=("git+https://github.com/linuxmint/xviewer.git#tag=$pkgver"
-        'xviewer-update-state.patch')
-sha256sums=('98e475cf04360b72380a1868f273f712c9732291ce953118a4b15b4e364cf2f4'
-            'f99aa8e1b1ecb897a7e7356771a788aec12e854fcdb393dbcba6bd8b2e0e4456')
-
-prepare() {
-  cd "$pkgname"
-
-  # Update state after opening images
-  # https://github.com/linuxmint/xviewer/pull/238
-  git apply -3 ../xviewer-update-state.patch
-}
+source=("git+https://github.com/linuxmint/xviewer.git#tag=$pkgver")
+sha256sums=('05d20dead35727c37ac222d1318868df7300c401a5f20b5a4d9b3ffedbe850d9')
 
 build() {
   arch-meson "$pkgname" build

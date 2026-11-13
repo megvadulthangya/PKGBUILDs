@@ -9,11 +9,12 @@
 
 # - The default configuration is stored in dconf under the schema x.dm.slick-greeter.
 # - Distributions should set their own defaults using a glib override.
-# - Users can create and modify /etc/lightdm/slick-greeter.conf, settings in this files take priority and overwrite dconf settings.
+# - Users can create and modify /etc/lightdm/slick-greeter.conf, settings in this file
+# - take priority and overwrite dconf settings.
 
 pkgname=lightdm-slick-greeter
 _pkgname=${pkgname#lightdm-}
-pkgver=2.2.7
+pkgver=2.2.8
 pkgrel=1
 pkgdesc="A slick-looking LightDM greeter"
 arch=('x86_64')
@@ -42,7 +43,7 @@ optdepends=(
   'onboard: On-screen keyboard'
 )
 source=("$pkgname-$pkgver.tar.gz::${url}/archive/${pkgver}.tar.gz")
-sha256sums=('f685da6ca9d97329b4b200077d12db0ad4f9964d4515479e6c00bba721ab0626')
+sha256sums=('e0ceede9fc111124275dda6251c7531169df1df1893074cd2b98e696ef098bc4')
 
 prepare() {
   cd "${_pkgname}-${pkgver}"

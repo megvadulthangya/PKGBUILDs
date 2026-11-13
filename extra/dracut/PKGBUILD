@@ -1,10 +1,13 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 # Maintainer: Philip Mueller <philm at manjaro dot org>
-# Contributor: Giancarlo Razzolini <grazzolini@archlinux.org>
+# Contributor: Hyacinthe Cartiaux <hyacinthe@archlinux.org>
 # Contributor: Frederik Schwan <freswa@archlinux.org>
 
+pkgname=(
+  'dracut'
+  'dracut-alpm-hooks'
+)
 pkgbase=dracut
-pkgname=('dracut' 'dracut-alpm-hooks')
 pkgver=112
 pkgrel=1
 pkgdesc="An event driven initramfs infrastructure"
@@ -18,11 +21,14 @@ depends=(
   'filesystem'
   'findutils'
   'gawk'
+  'glibc'
   'grep'
   'kmod'
+  'libgcc'
   'pkgconf'
   'procps-ng'
   'sed'
+  'systemd-libs'
   'util-linux'
 )
 makedepends=(
@@ -99,11 +105,6 @@ b2sums=('190892b98d2bfcf00ece2bc2db724bc689886c7dbdacd98c24d62cf6e0cd60b03cd82b0
         '43657d862aa6c1d7fae4f511b0715ad56a2988e43890921ffaf0ee3e1ac9418aaae789524c5cf50d1dc44a4164525a9cbc590a2e41336037115b3409902e8ecd'
         '5e0e702553060dbc94a378a1b3b7caa52590a33f33d78767a4c3ef0a5360d11520084e91f59b941a62bea8abfcd017cd64132c5f3d42d93319683283a22e0875'
         'a3bc75e55af379ddd3fee1dd7c6855fcb42366f42d9e10c1725b8e38f81c3eee0a4131badcf6ba2c4addf78aae4084528407af38295ab2b7e62ab16e3fe0b599')
-
-prepare() {
-  cd ${pkgname}-${pkgver}
-  # patches here
-}
 
 build() {
   cd ${pkgname}-${pkgver}

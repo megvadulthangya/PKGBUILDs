@@ -3,7 +3,7 @@
 # Contributor: Nate Simon <aurpkg (at natesimon.net)>
 
 pkgname=xviewer-plugins
-pkgver=3.4.4
+pkgver=3.4.5
 pkgrel=1.0
 pkgdesc="Plugins for Xviewer"
 arch=('x86_64')
@@ -12,10 +12,13 @@ license=('GPL-2.0-or-later')
 groups=('x-apps')
 depends=(
   'cinnamon-desktop'
+  'exempi'
+  'gsettings-desktop-schemas'
   'gtk3'
   'lcms2'
   'libexif'
   'libpeas'
+  'librsvg'
   'osm-gps-map'
   'python-gobject'
   'xviewer'
@@ -25,7 +28,7 @@ makedepends=(
   'meson'
 )
 source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/${pkgver}.tar.gz")
-sha256sums=('b2429693d12ed0d5389fd8f5a714d58dde57faf2ddbcc86ec653824ce8858e0e')
+sha256sums=('585945e7516b9dbd80ff251c6cf7a81d3ac98dbc084c465c5ac66b003bac4e85')
 
 build() {
   arch-meson "${pkgname}-${pkgver}" build

@@ -1,7 +1,7 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=xfce4-xapp-status-plugin
-pkgver=0.4.4
+pkgver=0.4.5
 pkgrel=1
 pkgdesc="XappStatus panel applet for Xfce4"
 arch=('x86_64')
@@ -16,7 +16,7 @@ depends=(
 )
 makedepends=('meson')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
-sha256sums=('e090af7da9917f1a3bb108c1a3b3b4df1d688a33ec187773cf792d0896114e68')
+sha256sums=('25b5e97108c8bb801c81455c9dfdd3f2f3f6760c221f5158fcbee3b42f7c85f3')
 
 prepare() {
   cd "$pkgname-$pkgver"

@@ -2,7 +2,7 @@
 
 pkgname=pamac-tray-icon-plasma
 pkgver=0.1.3
-pkgrel=3
+pkgrel=4
 pkgdesc="Pamac tray icon for Plasma users"
 arch=('x86_64' 'aarch64')
 url="https://gitlab.com/LordTermor/pamac-tray-icon-plasma"
@@ -11,6 +11,7 @@ depends=(
   'knotifications'
   'kstatusnotifieritem'
   'libnotify'
+  'libpamac'
   'pamac-gtk'
   'qt6-base'
 )
@@ -18,6 +19,7 @@ makedepends=(
   'cmake'
   'git'
 )
+checkdepends=('desktop-file-utils')
 conflicts=('pamac-tray-appindicator')
 replaces=('pamac-tray-appindicator')
 _commit=58353a1b0fc4d1ba0957883da27c63aa04d0cdf2
@@ -26,10 +28,13 @@ sha256sums=('2637180ab74a81296abfeb80ca5f2d1f003ea7833ac922acf00fb6cf0a087729')
 
 build() {
   cmake -B build -S "$pkgname" \
-    -DCMAKE_BUILD_TYPE='None' \
-    -DCMAKE_INSTALL_PREFIX='/usr' \
-    -Wno-dev
+    -DCMAKE_BUILD_TYPE='RelWithDebInfo' \
+    -DCMAKE_INSTALL_PREFIX='/usr'
   cmake --build build
+}
+
+check() {
+  desktop-file-validate build/pamac-tray-plasma.desktop
 }
 
 package() {

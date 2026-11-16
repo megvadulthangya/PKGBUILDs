@@ -4,7 +4,7 @@
 
 pkgname=xdg-desktop-portal-gnome
 pkgver=51.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Backend implementation for xdg-desktop-portal for the GNOME desktop environment"
 url="https://gitlab.gnome.org/GNOME/xdg-desktop-portal-gnome"
 arch=(x86_64)
@@ -25,17 +25,15 @@ depends=(
   nautilus
   wayland
   xdg-desktop-portal
-  'xdg-desktop-portal-gtk>=1.10.0-2'
+  xdg-desktop-portal-gtk
 )
 makedepends=(
   git
   glib2-devel
   meson
 )
-optdepends=('evince: Print previews')
+optdepends=('papers: Print previews')
 provides=(xdg-desktop-portal-impl)
-conflicts=('xdg-desktop-portal-gtk<1.10.0-2')
-replaces=('xdg-desktop-portal-gtk<1.10.0-2')
 groups=(gnome)
 source=(
   "git+https://gitlab.gnome.org/GNOME/xdg-desktop-portal-gnome.git?signed#tag=${pkgver/[a-z]/.&}"
@@ -45,7 +43,10 @@ source=(
 b2sums=('e741415df2143c413def3e1f4e4821258ed541d84537f8cd2d462a3003580f8d3a80b617bcc441ea77371254a132fbbbae0ae97e1777cf8de0c2a770327c640d'
         'f5bd238c316a55784f97b1b7c8b498d3dfa727375cf8a1bf61f4771e306232b36752df8f61edb8d8c5da7c5e1a7acd8c0e85a53725af56e9b18b8dd1a6f284e0'
         '71589207f5125d6f5ef352a5007d162aef3c702b14d46660fa724a25bc47dd8bf355de7e9246f56c18fd4bcd33d211d12567bb25ad0dc279b900dfde8d77ffd9')
-validpgpkeys=(9038F70CA72FAC9D10C6327B89AFE307C861D158) # Georges Basile Stavracas Neto (Primary Key) <georges.stavracas@gmail.com>
+validpgpkeys=(
+  8307C0A224BABDA1BABD0EB9A6EEEC9E0136164A # Jonas Ådahl <jadahl@gmail.com>
+  9038F70CA72FAC9D10C6327B89AFE307C861D158 # Georges Basile Stavracas Neto (Primary Key) <georges.stavracas@gmail.com>
+)
 
 prepare() {
   cd $pkgname

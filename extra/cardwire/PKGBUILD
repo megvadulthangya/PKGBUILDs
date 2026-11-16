@@ -68,6 +68,7 @@ package_cardwire() {
     'envycontrol'
     'optimus-manager'
     'supergfxctl'
+    # 'switcheroo-control'  ## TODO: May conflict
   )
   install="$pkgname.install"
 
@@ -75,7 +76,7 @@ package_cardwire() {
   install -Dm755 target/release/{"$pkgname","${pkgname}d"} -t "$pkgdir/usr/bin/"
   install -Dm644 "assets/${pkgname}d.service" -t "$pkgdir/usr/lib/systemd/system/"
   install -Dm644 "assets/99-${pkgname}d.preset" -t "$pkgdir/usr/lib/systemd/system-preset/"
-  install -Dm644 assets/${_app_id}.conf -t "$pkgdir/usr/share/dbus-1/system.d/"
+  install -Dm644 "assets/${_app_id}.conf" -t "$pkgdir/usr/share/dbus-1/system.d/"
 }
 
 package_cardwire-gui() {

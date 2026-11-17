@@ -1,0 +1,56 @@
+# Maintainer: Mark Wagie <mark at manjaro dot org>
+# Contributor: Evangelos Foutras <foutrelis@archlinux.org>
+
+# https://salsa.debian.org/debian/7zip-rar
+
+pkgname=7zip-rar
+pkgver=26.06
+pkgrel=1
+pkgdesc="RAR plugin for 7-Zip"
+arch=('x86_64' 'aarch64')
+url='https://www.7-zip.org'
+license=('LicenseRef-UnRAR')
+depends=('7zip')
+makedepends_x86_64=(
+  'dos2unix'
+  'uasm'
+)
+source=("https://github.com/ip7z/7zip/releases/download/${pkgver}/7z${pkgver//./}-src.tar.xz"
+        'Add-RAR-plugin-builder.patch')
+sha512sums=('fba4d4b8630d2501fd53a1709231623a1a5d365128eb084ca8ab9aa9f9e04dccf8d97bc47ef50e63a7cf1281e677c43c47c2ee70a706dc67d3def9cfb1761bea'
+            '025994cbc04672bd3e3d77b0ab5c17be4c193fcbbb9c25409171a425e79f79b223a2115f72d2643bfa684808c97b48009bbb27d4966e26cf2f44f2ad233e3dfb')
+b2sums=('23c75453953028bdb175c5f7cec92b19d6008b97905aa9a7c0adf90ad4479cc787d8ac5abbf72bb2c449bbf4cbb78c26363bb7b3fc32bf7889a484e9f8bc4343'
+        '88aee4b638afa24fecfa4f29ceb863263f797943a248041348af1f6b63ee2fc0584e825491e27fe329754458812ef01332cadd49bde2a5d79d24a08fb391b4f0')
+
+prepare() {
+
+  # Convert file to Unix format to avoid patch failing due to different line endings
+  dos2unix CPP/7zip/Bundles/Format7zF/makefile.gcc
+
+  patch -Np1 -i Add-RAR-plugin-builder.patch
+}
+
+build() {
+  local _platform_flags=()
+
+  case $CARCH in
+    x86_64)
+      _platform_flags=(PLATFORM=x64 IS_X64=1 MY_ASM=uasm USE_ASM=1)
+      ;;
+    aarch64)
+      _platform_flags=(PLATFORM=arm64 IS_ARM64=1 USE_ASM=1)
+      ;;
+  esac
+
+  make -C CPP/7zip/Bundles/CodecRAR -f ../../cmpl_gcc.mak "${_platform_flags[@]}" \
+    LFLAGS_STRIP= \
+    CC="cc $CPPFLAGS $CFLAGS $LDFLAGS" \
+    CXX="g++ $CPPFLAGS $CXXFLAGS $LDFLAGS"
+}
+
+package() {
+  install -Dm755 CPP/7zip/Bundles/CodecRAR/b/g/Rar.so -t "$pkgdir/usr/lib/7zip/"
+
+  install -d "$pkgdir/usr/share/licenses/$pkgname"
+  ln -s /usr/share/licenses/7zip/unRarLicense.txt "$pkgdir/usr/share/licenses/$pkgname/"
+}

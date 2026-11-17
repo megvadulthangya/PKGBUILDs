@@ -5,7 +5,7 @@
 # Contributor: Nate Simon <njsimon10@gmail.com>
 
 pkgname=xviewer
-pkgver=3.4.18
+pkgver=3.4.19
 pkgrel=1.0
 pkgdesc="Simple image viewer"
 arch=('x86_64')
@@ -54,7 +54,7 @@ optdepends=(
   'yelp: for viewing the help manual'
 )
 source=("git+https://github.com/linuxmint/xviewer.git#tag=$pkgver")
-sha256sums=('05d20dead35727c37ac222d1318868df7300c401a5f20b5a4d9b3ffedbe850d9')
+sha256sums=('8867a6417970b870c407cf19e253ff0fe3eeb835e84958eb2b3e8e27f87c1704')
 
 build() {
   arch-meson "$pkgname" build

@@ -3,7 +3,7 @@
 # Contributor: Nate Simon <njsimon10@gmail.com>
 
 pkgname=pix
-pkgver=3.4.12
+pkgver=3.4.13
 pkgrel=1
 pkgdesc="Image viewer and browser utility."
 arch=('x86_64')
@@ -48,7 +48,7 @@ optdepends=(
 )
 checkdepends=('desktop-file-utils')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz")
-sha256sums=('2018cd26faaac8f191e347351e1c77adc76ed17b52be5325d4f06fddb8473a63')
+sha256sums=('041d6bab258b1fde2d5583970263127b11139f6e5b46570d6134a18a91a93fa0')
 
 build() {
 

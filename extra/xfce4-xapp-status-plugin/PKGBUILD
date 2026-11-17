@@ -7,7 +7,6 @@ pkgdesc="XappStatus panel applet for Xfce4"
 arch=('x86_64')
 url="https://github.com/linuxmint/xfce4-xapp-status-plugin"
 license=('GPL-3.0-or-later')
-groups=('x-apps')
 depends=(
   'gtk3'
   'json-glib'

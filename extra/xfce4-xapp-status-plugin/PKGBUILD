@@ -1,13 +1,12 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=xfce4-xapp-status-plugin
-pkgver=0.4.5
+pkgver=0.4.6
 pkgrel=1
 pkgdesc="XappStatus panel applet for Xfce4"
 arch=('x86_64')
 url="https://github.com/linuxmint/xfce4-xapp-status-plugin"
 license=('GPL-3.0-or-later')
-groups=('x-apps')
 depends=(
   'gtk3'
   'json-glib'
@@ -16,7 +15,7 @@ depends=(
 )
 makedepends=('meson')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
-sha256sums=('25b5e97108c8bb801c81455c9dfdd3f2f3f6760c221f5158fcbee3b42f7c85f3')
+sha256sums=('631794d97a3c4d5463608ea63b31f9694e986cc61410ab9345043c3009496ee4')
 
 prepare() {
   cd "$pkgname-$pkgver"
@@ -27,7 +26,7 @@ prepare() {
 }
 
 build() {
-  arch-meson "$pkgname-$pkgver" build
+  arch-meson "$pkgname-$pkgver" build -Ddeprecated_warnings=true
   meson compile -C build
 }
 

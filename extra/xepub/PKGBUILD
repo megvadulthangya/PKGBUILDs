@@ -1,7 +1,7 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=xepub
-pkgver=1.0.4
+pkgver=1.0.5
 pkgrel=1
 pkgdesc="Secure, comfortable, paginated EPUB reader"
 arch=('any')
@@ -24,7 +24,7 @@ makedepends=(
 )
 checkdepends=('desktop-file-utils')
 source=("git+https://github.com/xapp-project/xepub.git#tag=$pkgver")
-sha256sums=('94e8386c960c187a7711f5a9e510343072f816fa7d407c8648d8ccb619134ebd')
+sha256sums=('d6c583bb1af235f80a9189f20f3651a4ba48ae69dcbcc5d59237cdfbd870fa30')
 
 build() {
   arch-meson "$pkgname" build

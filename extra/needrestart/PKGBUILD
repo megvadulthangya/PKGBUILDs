@@ -2,8 +2,8 @@
 # Contributor: Helmut Stult
 
 pkgname=needrestart
-pkgver=3.11
-pkgrel=5
+pkgver=3.11.1
+pkgrel=1
 pkgdesc="Restart daemons after kernel, library and CPU microcode updates."
 arch=('any')
 url="https://github.com/liske/needrestart"
@@ -26,7 +26,7 @@ backup=("etc/$pkgname/$pkgname.conf"
         "etc/$pkgname/notify.conf")
 source=("git+https://github.com/liske/needrestart.git#tag=v$pkgver"
         "$pkgname.hook")
-sha256sums=('21908c93cfd95364ba05e6e40a7bdde84771ef900619cb2dc466caf20d658fd7'
+sha256sums=('8966face897320eb6720967bc1b1652154014e372e087745586dbbe15b365180'
             'e5c6696a281f5445a3b7e2b7d1055f9189a2c39d4940721aa0c2718780f15f63')
 
 prepare() {
@@ -35,6 +35,10 @@ prepare() {
   # vmlinuz-get-version: implement decompression for LZ4 and ZSTD
   # https://github.com/liske/needrestart/pull/355 (merged)
   git cherry-pick -n 702db55c3e4ed3aa37782e59d64df0e2a67197a9
+
+  # core: add override for plasmalogin services
+  # https://github.com/liske/needrestart/issues/367
+  git cherry-pick -n 7d57c2ce5348a6a59e2da00beab9d635d4bdea7d
 
   find . -type f -exec sed -i 's|usr/sbin|usr/bin|' {} \;
   sed -i 's|sbin/init|bin/init|g' "$pkgname"

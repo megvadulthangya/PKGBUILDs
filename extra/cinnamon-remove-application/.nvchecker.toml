@@ -1,0 +1,4 @@
+[cinnamon-remove-application]
+source = "git"
+git = "https://github.com/username227/cinnamon-remove-application.git"
+prefix = "v"

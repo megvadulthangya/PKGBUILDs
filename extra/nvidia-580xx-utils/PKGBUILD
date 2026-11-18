@@ -9,7 +9,7 @@
 pkgbase=nvidia-580xx-utils
 pkgname=('nvidia-580xx-utils' 'opencl-nvidia-580xx' 'nvidia-580xx-dkms' 'nvidia-580xx-open-dkms' 'mhwd-nvidia-580xx')
 pkgver=580.196.07
-pkgrel=2
+pkgrel=3
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('LicenseRef-NVIDIA-Driver-License-Agreement')
@@ -29,7 +29,8 @@ source=('mhwd-nvidia'
         '0001-Enable-atomic-kernel-modesetting-by-default.patch'
         '0002-Add-IBT-support.patch'
         'limit-vram-usage'
-        'fix-hw-cursor-kde.patch')
+        'fix-hw-cursor-kde.patch'
+        'Fix-build-on-Linux-7.4.patch')
 sha256sums=('ee7012863c5945d1e09e96a8196a1a0efe2077b133f46aa2ccb822d1772f0652'
             'be99ff3def641bb900c2486cce96530394c5dc60548fc4642f19d3a4c784134d'
             'f77a5247a3ba63e9fad3a3b2822d0fcfa51e0f79b5a90bd79bf08ea34b64ab07'
@@ -42,7 +43,8 @@ sha256sums=('ee7012863c5945d1e09e96a8196a1a0efe2077b133f46aa2ccb822d1772f0652'
             '163c57160cc1033020680f638b44ebd94b496152dcd8951e87d5077d4d5c2009'
             '40a520b34d55807e6fae54567f41f582235f1a4b22538795a38253ea9df9791d'
             'b14f7a65359c05c373ddfc750cd4cf086a48e815489d93ad5cbe1dbf84bf8f5a'
-            'c1a1cf05dd12efd67858180461ad97a6ebe206b55b56df207854b322ce734613')
+            'c1a1cf05dd12efd67858180461ad97a6ebe206b55b56df207854b322ce734613'
+            '44bf77b6575b6e4cd8a1736e477d897322c4d02c5fa95fc9937ddeaf29905532')
 
 create_links() {
     # create soname links
@@ -70,6 +72,10 @@ prepare() {
     # NVIDIA-open
     patch -Np1 -i "${srcdir}/0001-Enable-atomic-kernel-modesetting-by-default.patch" -d "${srcdir}/${_pkg_open}/kernel-open/"
     patch -Np1 -i "${srcdir}/0002-Add-IBT-support.patch" -d "${srcdir}/${_pkg_open}/"
+
+    # Linux 7.4
+    patch -Np1 -i "${srcdir}/Fix-build-on-Linux-7.4.patch" -d "${srcdir}/${_pkg_open}/kernel-open/"
+    patch -Np1 -i "${srcdir}/Fix-build-on-Linux-7.4.patch" -d "${srcdir}/${_pkg}/kernel/"
 
     # Attempt to make builds reproducible
     sed -i "s/^NV_BUILD_HOST.*/NV_BUILD_HOST ?= manjaro/" "${srcdir}/${_pkg_open}/utils.mk"

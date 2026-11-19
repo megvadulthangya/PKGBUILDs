@@ -4,18 +4,14 @@
 # Contributor: Sam Burgos < sam dot burgos1089 at gmail dot com >
 
 pkgname=mint-themes
-pkgver=2.4.4
+pkgver=2.4.5
 pkgrel=1
 epoch=1
 pkgdesc="A collection of Mint themes."
 arch=('any')
 url="https://github.com/linuxmint/mint-themes"
 license=('GPL-3.0-or-later')
-makedepends=(
-  'inkscape'
-  'optipng'
-  'python-libsass'
-)
+makedepends=('python-libsass')
 optdepends=(
   'mint-x-icons'
   'mint-y-icons'
@@ -24,7 +20,7 @@ options=('!strip')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 #source=("http://packages.linuxmint.com/pool/main/m/$pkgname/${pkgname}_${pkgver}.tar.xz")
 noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('c5a052d20b359c21ace75587d564376621652edfca0e428e5c94602066f9502a')
+sha256sums=('bb9b519e789aa5dd2d3ff2acc2c77b4260bc499926228d1a2fb74d8bd94f7e8e')
 
 prepare() {
 #  mkdir -p "$pkgname-$pkgver"

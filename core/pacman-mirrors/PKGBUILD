@@ -3,8 +3,8 @@
 # Contributor: Philip Müller <philm@manjaro.org>
 
 pkgname=pacman-mirrors
-pkgver=5.3
-pkgrel=3
+pkgver=5.3.1
+pkgrel=1
 pkgdesc="Manjaro Linux mirror list generator for use by pacman"
 arch=('any')
 url="https://code.manjaro.org/applications/pacman-mirrors"
@@ -31,16 +31,17 @@ optdepends=(
 provides=("pacman-mirrorlist=$pkgver-$pkgrel")
 conflicts=('pacman-mirrorlist' 'reflector')
 backup=("etc/$pkgname.conf")
-source=("git+https://code.manjaro.org/applications/pacman-mirrors.git#tag=v${pkgver}"
+source=("git+https://code.manjaro.org/applications/pacman-mirrors.git#tag=${pkgver}?signed"
         "$pkgname-install.script"
         "$pkgname-upgrade.script"
         "$pkgname-install.hook"
         "$pkgname-upgrade.hook")
-sha256sums=('b85bcf515d891a8c67ae6b04603a4da4862946e0a5280f01c3b9b20231fab438'
+sha256sums=('8c46e801352fd9c5ddc8cfa8dd4d6b557451aa13fc84c3c7b11578697ef99e5e'
             '718a47605be1ca328255b19047dee6d331e0440f303b86d17485fe53937b7906'
             '3b1df8c662161903653b0ae41d910019f87a58f3ecd8e02ea9ac8859b9c43f17'
             '88befb1a9b167112e05544ec4a765705bf474209e7ef67c44ffc418e10e89bfa'
             '6b6869d9dd85cd3a3cba49013dd2fc1c5f7a0934ba1284e21d4bbd24fa2540c6')
+validpgpkeys=('688E8F82879D0E25CE541426150C200743ED46D8') # Mark Wagie <mark@manjaro.org>
 
 build() {
   cd "$pkgname"

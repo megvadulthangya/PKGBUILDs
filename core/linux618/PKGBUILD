@@ -9,7 +9,7 @@ _commit=
 _rc=
 pkgbase=linux${_basever}
 pkgver=6.18.64
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=(GPL-2.0-only)
@@ -65,41 +65,41 @@ source=("https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${_basekernel}.tar.x
         # Realtek patch
         0999-patch_realtek.patch
         # ROG ALLY Patches (wip/ally-6.14-refactor)
-        0002-hid-add-VID-PID-for-ASUS-ROG-RAIKIRI-PRO.patch
-        v17-0001-platform-x86-asus-wmi-export-symbols-used-for-re.patch
-        v17-0002-platform-x86-asus-armoury-move-existing-tunings-.patch
-        v17-0003-platform-x86-asus-armoury-add-panel_hd_mode-attr.patch
-        v17-0004-platform-x86-asus-armoury-add-apu-mem-control-su.patch
-        v17-0005-platform-x86-asus-armoury-add-core-count-control.patch
-        v17-0006-platform-x86-asus-armoury-add-screen-auto-bright.patch
-        v17-0007-platform-x86-asus-wmi-deprecate-bios-features.patch
-        v17-0008-platform-x86-asus-wmi-rename-ASUS_WMI_DEVID_PPT_.patch
-        v17-0009-platform-x86-asus-armoury-add-ppt_-and-nv_-tunin.patch
-        0014-asus-ally-hid-add-new-driver-for-ASUS-Ally-handhelds.patch
-        0015-asus-ally-hid-Add-joystick-LED-ring-support.patch
-        0016-asus-ally-hid-initial-Ally-X-gamepad-bringup.patch
-        0017-asus-ally-hid-add-QAM-steam-action-attribute-to-disa.patch
-        0018-asus-ally-hid-add-force-feedback-to-Ally-X-gamepad.patch
-        0019-asus-ally-hid-handle-screenside-QAM-buttons.patch
-        0020-asus-ally-hid-rename-input-devices.patch
-        0021-asus-ally-hid-add-gamepad-config-structures.patch
-        0022-asus-ally-hid-test-vibe.patch
-        0023-asus-ally-hid-add-deadzone-and-outer-threshold-to-JS.patch
-        0024-asus-ally-hid-test-trigger-dzot.patch
-        0025-asus-ally-hid-test-js-anti-deadzone.patch
-        0026-asus-ally-hid-test-joystick-response-curves.patch
-        0027-asus-ally-hid-test-btn-turbo.patch
-        0028-asus-ally-hid-test-gamepad-mode.patch
-        0029-ally-tmp-remapping.patch
+        # 0002-hid-add-VID-PID-for-ASUS-ROG-RAIKIRI-PRO.patch
+        # v17-0001-platform-x86-asus-wmi-export-symbols-used-for-re.patch
+        # v17-0002-platform-x86-asus-armoury-move-existing-tunings-.patch
+        # v17-0003-platform-x86-asus-armoury-add-panel_hd_mode-attr.patch
+        # v17-0004-platform-x86-asus-armoury-add-apu-mem-control-su.patch
+        # v17-0005-platform-x86-asus-armoury-add-core-count-control.patch
+        # v17-0006-platform-x86-asus-armoury-add-screen-auto-bright.patch
+        # v17-0007-platform-x86-asus-wmi-deprecate-bios-features.patch
+        # v17-0008-platform-x86-asus-wmi-rename-ASUS_WMI_DEVID_PPT_.patch
+        # v17-0009-platform-x86-asus-armoury-add-ppt_-and-nv_-tunin.patch
+        # 0014-asus-ally-hid-add-new-driver-for-ASUS-Ally-handhelds.patch
+        # 0015-asus-ally-hid-Add-joystick-LED-ring-support.patch
+        # 0016-asus-ally-hid-initial-Ally-X-gamepad-bringup.patch
+        # 0017-asus-ally-hid-add-QAM-steam-action-attribute-to-disa.patch
+        # 0018-asus-ally-hid-add-force-feedback-to-Ally-X-gamepad.patch
+        # 0019-asus-ally-hid-handle-screenside-QAM-buttons.patch
+        # 0020-asus-ally-hid-rename-input-devices.patch
+        # 0021-asus-ally-hid-add-gamepad-config-structures.patch
+        # 0022-asus-ally-hid-test-vibe.patch
+        # 0023-asus-ally-hid-add-deadzone-and-outer-threshold-to-JS.patch
+        # 0024-asus-ally-hid-test-trigger-dzot.patch
+        # 0025-asus-ally-hid-test-js-anti-deadzone.patch
+        # 0026-asus-ally-hid-test-joystick-response-curves.patch
+        # 0027-asus-ally-hid-test-btn-turbo.patch
+        # 0028-asus-ally-hid-test-gamepad-mode.patch
+        # 0029-ally-tmp-remapping.patch
         # OrangePi Neo patches
         0001-iio-imu-bmi270-Match-PNP-ID-found-on-newer-OrangePi-NEO-firmware.patch
         # Zotac Zone patches
-        0001-zotac-zone-hid-initial-impl.patch
-        0002-xpad-gate-the-zotac-zone-PID-behind-if-IS_REACHABLE-.patch
-        0003-tmp-apply-zotac-screen-quirk.patch
-        0005-zone-fix-6.15-rename-del_timer-to-timer_delete.patch
+        # 0001-zotac-zone-hid-initial-impl.patch
+        # 0002-xpad-gate-the-zotac-zone-PID-behind-if-IS_REACHABLE-.patch
+        # 0003-tmp-apply-zotac-screen-quirk.patch
+        # 0005-zone-fix-6.15-rename-del_timer-to-timer_delete.patch
         # Steamdeck (OLED)
-        0001-steam-deck.patch
+        # 0001-steam-deck.patch
         # Lenovo Legion Go S
         0000-HID-Add-Legion-Go-S-Driver.patch::https://patchwork.kernel.org/series/978420/mbox/
         # AMD patches
@@ -141,7 +141,7 @@ fi
 
 sha256sums=('9106a4605da9e31ff17659d958782b815f9591ab308d03b0ee21aad6c7dced4b'
             '4841e26f8f6c7b22c6c4d63899ff27ebdc50f61fab720cba7242d5adc3257dd4'
-            '20c56012158fafbab451baf8432dce9fcffe729099ff6cc81ae2339aff152e7c'
+            '461972fab1e17da09558430a657a9b9b2f975dd0a9fef2e540600908c30b7798'
             '37f3222fafbe67dec3740933be37867e0c378468f71e9a6d5d6a07c2a2a568fe'
             'cacb08b2f43a9fd09053bffaacc4b7bdf8381772f26e61825fb696ded100af57'
             '17314afeea1c80984eb8d7ff2c06adedd78655bf795a6a232992ee3082b773b6'
@@ -152,38 +152,7 @@ sha256sums=('9106a4605da9e31ff17659d958782b815f9591ab308d03b0ee21aad6c7dced4b'
             '160d500954014fd3ebe75b3cac836f75423df7fbcf0390a7198701e47301245f'
             'a9803ab6cd82324c7d67711e9a7155e5642d4f9652a4ebdddb0eb0ebdbe40aa0'
             '103688f3fceff664c919d94faab7a6948880710641110eaa71fe107ee06c37e9'
-            'e5671d5f6fe27c072397efeedb876912d52e104488baa8cd149727ff0814e657'
-            'b86329d9567c6cd7c21ba320eadfe41b1af1cea432ff3ea79197a3b1dabda622'
-            'c27e2ff59671343cbc10b4a63bbd46d40f3e54f84a73f58c009022ab6c6cf10e'
-            '89826ed555f9ad1bd27fc560eacc85825c4095ca5815286d94bae069cbe41901'
-            '3402a2bca1359913e38dd3b0dda88a1e94749ac4dfcc05c23b849a16778c692a'
-            'd71d5e9d6d04f63b2e7acbfc51c15c345f969d71c5622e541401cd3eb53f04e3'
-            'd89850939d37dbb9cb8ca00b14560eef01784ed0b2acbe6d5b953e9e2b02686c'
-            '0ce1d6aba709d3ab38f4af130455301ab8d0cac13765a59f034e8f1e2b0d07c2'
-            '1dd4b324a1fd9a49d11917a535e3ebd6d5e22fc5707adb8d8c5fed76073bdc8c'
-            'e75afbec74c31e6e3ea87ef81586c74539b5ac757f12cb03086f021cbc108435'
-            '1be445ba5698e135c32433c2bca3334c580d8d72dc3111d423dcc8d2da228e41'
-            '5d73542ba4aa68d0b00b044a4a3eb2ca8fbfbb16790edbb22417cffeec4caade'
-            'f91b213a05b679f14f2c61b14fbd2dda69950e17ded5d3b1e08eab09b8656f19'
-            '1e55d30afbd5e1948685bdf08768b1f3961ec5713b8dfe869fdd494b039e5a08'
-            '7da67f4e4628a1bd8adba3040e91c42b1c2ac620ffc76d2609dab0a026878976'
-            '3f58f4bf292bca23fafa946fe6d86f2c5fbce84a609dc177f2081d69dab8fd1d'
-            '6bb40862279ea8647ba62117b6a615853965e24789145690fa30abdb1e705f05'
-            '36fb699a17ad59871366348a7cc031bf4fc42ebb7f9b15d22a5ede763f9518de'
-            'b83b272409c3fac18e0e7d21dc0230652130ae1abc7386893ae2c4cbf7ace01a'
-            'cf2c859f55a045d054c5381675327a1570e98228c4871c06e53d246f1ca5285c'
-            'f0bea9dae7b29fb4980c0fa506be7219d022716cb51df70dcd0230156a808ecb'
-            '763020ec985dea291e6009dfed274eae735c8c69872d816c2c83c065a1251329'
-            '36eae257663af1df644f1a7819c03bc33c290a7bbcb319fb1e05668f198b5a81'
-            'ca69d6815b1d23a2e31e5453dadccb22c03ae9e36d5cd29dd8d8389b1437dff4'
-            '9bafa4955c27d3668d3827e3fbd9aad00195f581d3b5c9f37a4059420e504a1d'
-            '8e6f050f3e176e7076d0f11375be55b07689d599c37ddb406c7494ea54232247'
             'fc358dd3b574e4f47d25952417107ca0e743d33125ed93866697a266cde9b76e'
-            'b67f25c13e946b51712b0e828ebbf8bea980d339bd6effab17869f6a62e428df'
-            'f53e0ad0892ab4bd85f55b4cbb829481eba28865cf835a46c80bc237e0771981'
-            '138684588665b8f651dffb4e75c265a2b81f6bd7a606f75f8fc6814a4a63d3fd'
-            '3d37e1f54290bad1b7a4c5c45046341dc4c1bfc2f8648b7754bf0bd9705b3a35'
-            'f8cf8ad3e17857b51c3f7dd954eb5ac7ba44bfe0302a40e70b2c496573407edf'
             'adbb2ad0ea9a3e1591131af5fb4380aeeac27172be5c6faade459514e28c071a'
             '25bb7bbbba3b3dd55134cc42b651c7b1db24185ad9fafe2134a506303f14612c'
             '011da142f4e914799d1d91db9c8c5ca8cda087af863e081e044052103d6d8fa2'

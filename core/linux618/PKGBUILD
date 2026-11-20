@@ -57,10 +57,9 @@ source=("https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${_basekernel}.tar.x
         # https://lore.kernel.org/platform-driver-x86/20260121143519.12318-1-xglooom@gmail.com/
         0000-platform-x86-amd-pmf-Added-a-module-parameter-to-disable-the-Smart-PC-function.patch
         # ARCH Patches
-        0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
-        0002-drivers-firmware-skip-simpledrm-if-nvidia-drm.modese.patch
-        0003-drm-amdgpu-avoid-memory-allocation-in-the-critical-code-path-v3.patch::https://github.com/archlinux/linux/commit/127e151c7545f8ce65145cf9d57c737378532bc5.patch
-        0004-drm-amdgpu-use-GFP_ATOMIC-instead-of-NOWAIT-in-the-critical-path.patch::https://github.com/archlinux/linux/commit/be28c52ced30ac099f3337788fbd3d2e20ffc3f9.patch
+        0001-add-sysctl-to-allow-disabling-unprivileged-CLONE_NEW.patch
+        0002-drm-amdgpu-avoid-memory-allocation-in-the-critical-c.patch
+        0003-drm-amdgpu-use-GFP_ATOMIC-instead-of-NOWAIT-in-the-c.patch
         # Manjaro Patches
         # Realtek patch
         0999-patch_realtek.patch
@@ -92,7 +91,7 @@ source=("https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${_basekernel}.tar.x
         # 0028-asus-ally-hid-test-gamepad-mode.patch
         # 0029-ally-tmp-remapping.patch
         # OrangePi Neo patches
-        0001-iio-imu-bmi270-Match-PNP-ID-found-on-newer-OrangePi-NEO-firmware.patch
+        # 0001-iio-imu-bmi270-Match-PNP-ID-found-on-newer-OrangePi-NEO-firmware.patch
         # Zotac Zone patches
         # 0001-zotac-zone-hid-initial-impl.patch
         # 0002-xpad-gate-the-zotac-zone-PID-behind-if-IS_REACHABLE-.patch
@@ -147,12 +146,10 @@ sha256sums=('9106a4605da9e31ff17659d958782b815f9591ab308d03b0ee21aad6c7dced4b'
             '17314afeea1c80984eb8d7ff2c06adedd78655bf795a6a232992ee3082b773b6'
             '512032c6b93fce24254da6cace7bf101c8f7c824761a0f99deed4b7724ac6f3e'
             'e69ef2aa501334a5b7975e14a1f105e7d67b19a02ee89563ac9a54a462ba94c7'
-            'e5e98d62b63704cecdf32dbe6a9bafea6e70b23fa8e01fe96ca220ac6036392e'
-            'c21170eba77438abb8b8ab02aeccf16bfb2467a01303509945aa6b3a0fd16d31'
-            '160d500954014fd3ebe75b3cac836f75423df7fbcf0390a7198701e47301245f'
-            'a9803ab6cd82324c7d67711e9a7155e5642d4f9652a4ebdddb0eb0ebdbe40aa0'
+            'fc4525901142589d4bf7d2b8d1bc474647bff879e610147cd3498eca935a2289'
+            'a5497e9e0a47a581cf7d259419b1ede98096512d2e671222caf59a06816c9167'
+            '44caa7c6a79055539f16ab118bece58934cdf93557643a50017634366c864b91'
             '103688f3fceff664c919d94faab7a6948880710641110eaa71fe107ee06c37e9'
-            'fc358dd3b574e4f47d25952417107ca0e743d33125ed93866697a266cde9b76e'
             'adbb2ad0ea9a3e1591131af5fb4380aeeac27172be5c6faade459514e28c071a'
             '25bb7bbbba3b3dd55134cc42b651c7b1db24185ad9fafe2134a506303f14612c'
             '011da142f4e914799d1d91db9c8c5ca8cda087af863e081e044052103d6d8fa2'

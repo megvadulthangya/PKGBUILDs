@@ -10,17 +10,24 @@
 pkgname=freeoffice
 _revision=1238
 pkgver=2024.${_revision}
-pkgrel=1
+pkgrel=2
 pkgdesc="A complete, reliable, lightning-fast and Microsoft Office-compatible office suite with a word processor, spreadsheet, and presentation graphics software."
 arch=('x86_64')
 url="https://www.freeoffice.com/"
 license=('LicenseRef-custom')
 depends=(
   'curl'
+  'gst-plugins-base-libs'
+  'gstreamer'
+  'gtk3'
   'hicolor-icon-theme'
+  'libdecor'
   'libglvnd'
+  'libx11'
+  'libxext'
   'libxmu'
   'libxrandr'
+  'libxrender'
 )
 makedepends=(
   'chrpath'

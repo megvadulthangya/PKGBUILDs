@@ -5,8 +5,8 @@
 # https://build.opensuse.org/package/show/home:Slimbook/slimbook-keyboard-dkms
 
 pkgname=slimbook-keyboard-dkms
-pkgver=0.2.8
-pkgrel=2
+pkgver=0.2.10
+pkgrel=1
 pkgdesc="Keyboard module for Slimbook Essential model (and laptops with similar keyboards)"
 arch=('x86_64')
 url="https://github.com/Slimbook-Team/slimbook-keyboard-dkms"
@@ -15,7 +15,7 @@ depends=('dkms')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/$pkgver.tar.gz")
 #source=("https://launchpad.net/~slimbook/+archive/ubuntu/slimbook/+sourcefiles/$pkgname/$pkgver/${pkgname}_${pkgver}.tar.gz")
 #noextract=("${pkgname}_${pkgver}.tar.gz")
-sha256sums=('8ddc77c6bfd1b14ebf8bd83faa76774082f575031ef154604ba004c4b2509363')
+sha256sums=('fdd8a1cc5e4a2aa1f9fa2fd590c2c1c566a2eb8cf8a37fced4f6c9f30ee4357a')
 
 prepare() {
 #  mkdir -p "$pkgname-$pkgver"

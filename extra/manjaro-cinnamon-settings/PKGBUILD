@@ -3,8 +3,8 @@
 # Contributor: Helmut Stult
 
 pkgname=manjaro-cinnamon-settings
-pkgver=20260704
-pkgrel=2
+pkgver=20261120
+pkgrel=1
 arch=('any')
 url="https://code.manjaro.org/profiles/desktop-settings"
 license=('GPL')
@@ -30,9 +30,9 @@ optdepends=(
 )
 provides=('manjaro-desktop-settings')
 conflicts=('manjaro-desktop-settings')
-_commit=94c52dcaefe9146bdf8ec4e5250d47392c46a546  # branch/master
+_commit=b83ba84ac51cd6464923b97f02b71c92220831e8
 source=("git+$url.git#commit=${_commit}")
-sha256sums=('c99f94f4df46c01385396ada92216552aedd989481eaff24896dc2675bbac94c')
+sha256sums=('1d3af747724cb9db0d6ba2b68c6b9fb555a130c58a731c70ceb20ce100a02b08')
 
 pkgver() {
   cd desktop-settings

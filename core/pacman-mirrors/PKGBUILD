@@ -23,9 +23,8 @@ makedepends=(
   'python-poetry-core'
   'python-installer'
   'python-wheel'
-  'python-pytest'
 )
-# checkdepends=('python-pytest')
+checkdepends=('python-pytest')
 optdepends=(
   'gtk3: for interactive mode (GUI)'
   'python-gobject: for interactive mode (GUI)'

@@ -9,7 +9,7 @@ _commit=
 _rc=
 pkgbase=linux${_basever}
 pkgver=7.3.5
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="https://www.kernel.org/"
 license=(GPL-2.0-only)
@@ -45,28 +45,28 @@ source=(https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-${_basekernel}.tar.xz
         https://cdn.kernel.org/pub/linux/kernel/v7.x/patch-${pkgver}.xz
         config
         # ARCH Patches
-        0001-add-sysctl-to-disallow-unprivileged-CLONE_NEWUSER-by.patch
-        0002-drivers-firmware-skip-simpledrm-if-nvidia-drm.modese.patch
+        0001-add-sysctl-to-allow-disabling-unprivileged-CLONE_NEWUSER.patch
+        0002-drm_i915_dp:-On-DPCD-init-wake-the-DPRx-for-eDP.patch
         # Upstream Patches
         0000-drm-amdgpu-fix-race-condition-in-amdgpu_vm_wait_idle-during-process-kill.patch
         # Turn off custom brightness-curve when nonsense is found in BIOS
         0001-drm-amd-Sanity-check-custom-brightness-curve-data-po.patch
         # From Valve for Upstream (fixes suspend on deck target in inputplumber)
-        0000-usb-vhci-hcd-Unconditionally-allow-system-suspend.patch
+        # 0000-usb-vhci-hcd-Unconditionally-allow-system-suspend.patch
         # Manjaro Patches
         # Realtek patch
         0999-patch_realtek.patch
         # ROG ALLY Patches
         # https://github.com/OpenGamingCollective/linux/tree/features/asus
         # OrangePi Neo patches
-        0001-iio-imu-bmi270-Match-PNP-ID-found-on-newer-OrangePi-NEO-firmware.patch
+        # 0001-iio-imu-bmi270-Match-PNP-ID-found-on-newer-OrangePi-NEO-firmware.patch
         # Zotac Zone patches
-        0001-zotac-zone-hid-initial-impl.patch
-        0002-xpad-gate-the-zotac-zone-PID-behind-if-IS_REACHABLE-.patch
-        0003-tmp-apply-zotac-screen-quirk.patch
-        0005-zone-fix-6.15-rename-del_timer-to-timer_delete.patch
+        # 0001-zotac-zone-hid-initial-impl.patch
+        # 0002-xpad-gate-the-zotac-zone-PID-behind-if-IS_REACHABLE-.patch
+        # 0003-tmp-apply-zotac-screen-quirk.patch
+        # 0005-zone-fix-6.15-rename-del_timer-to-timer_delete.patch
         # Steamdeck (OLED)
-        0001-steam-deck.patch
+        # 0001-steam-deck.patch
         #iwlwifi: Fix firmware version handling
         0000-iwlwifi-fix.patch
 )
@@ -82,18 +82,11 @@ fi
 sha256sums=('87363c24f10e06321eb362765521094e94471f6bff8bce2d6b3e40f39f004953'
             'e4e0d4e145487087840f123650bed49f642756c34b4e613742c0a0019e0f15f4'
             '14412fda3f17e4d7c9ce875e6d9945ebe00b0f4e3e78284a17567f78dcf5c39a'
-            'ccbd1a83d4f25020b9a19cf6d7a16d9d0b3d50543082dd233f514fb655bf042c'
-            'c21170eba77438abb8b8ab02aeccf16bfb2467a01303509945aa6b3a0fd16d31'
+            '798a5e6f880b742748420a39d06b5c8b3632eb61d4bba43032d1e5ad3ac38049'
+            '70fa06c09c5a3648e9b8e04e6576803cc8e04d8d49bdb3e884e34561c2e1f00a'
             '37f3222fafbe67dec3740933be37867e0c378468f71e9a6d5d6a07c2a2a568fe'
             'cacb08b2f43a9fd09053bffaacc4b7bdf8381772f26e61825fb696ded100af57'
-            '512032c6b93fce24254da6cace7bf101c8f7c824761a0f99deed4b7724ac6f3e'
             '103688f3fceff664c919d94faab7a6948880710641110eaa71fe107ee06c37e9'
-            'fc358dd3b574e4f47d25952417107ca0e743d33125ed93866697a266cde9b76e'
-            'b67f25c13e946b51712b0e828ebbf8bea980d339bd6effab17869f6a62e428df'
-            'f53e0ad0892ab4bd85f55b4cbb829481eba28865cf835a46c80bc237e0771981'
-            '138684588665b8f651dffb4e75c265a2b81f6bd7a606f75f8fc6814a4a63d3fd'
-            '3d37e1f54290bad1b7a4c5c45046341dc4c1bfc2f8648b7754bf0bd9705b3a35'
-            'f8cf8ad3e17857b51c3f7dd954eb5ac7ba44bfe0302a40e70b2c496573407edf'
             '9628a67ac23beaf2de7194d2934386944adc64cb2a4a90e4c38b867b868654b4')
 
 export KBUILD_BUILD_HOST=manjaro
@@ -221,11 +214,13 @@ _package-headers() {
   cp -t "$builddir" -a scripts
   ln -srt "$builddir" "$builddir/scripts/gdb/vmlinux-gdb.py"
 
-  # required when STACK_VALIDATION is enabled
-  install -Dt "$builddir/tools/objtool" tools/objtool/objtool
+  if [[ $(scripts/config -s CONFIG_HAVE_STACK_VALIDATION) = y ]]; then
+    install -Dt "$builddir/tools/objtool" tools/objtool/objtool
+  fi
 
-  # required when DEBUG_INFO_BTF_MODULES is enabled
-  install -Dt "$builddir/tools/bpf/resolve_btfids" tools/bpf/resolve_btfids/resolve_btfids
+  if [[ $(scripts/config -s CONFIG_DEBUG_INFO_BTF_MODULES) = y ]]; then
+    install -Dt "$builddir/tools/bpf/resolve_btfids" tools/bpf/resolve_btfids/resolve_btfids
+  fi
 
   echo "Installing headers..."
   cp -t "$builddir" -a include
@@ -248,6 +243,16 @@ _package-headers() {
 
   echo "Installing KConfig files..."
   find . -name 'Kconfig*' -exec install -Dm644 {} "$builddir/{}" \;
+
+  if [[ $(scripts/config -s CONFIG_RUST) = y ]]; then
+    echo "Installing Rust files..."
+    install -Dt "$builddir/rust" -m644 rust/*.rmeta
+    install -Dt "$builddir/rust" rust/*.so
+  fi
+
+  echo "Installing unstripped VDSO..."
+  make INSTALL_MOD_PATH="$pkgdir/usr" vdso_install \
+    link=  # Suppress build-id symlinks
 
   echo "Removing unneeded architectures..."
   local arch

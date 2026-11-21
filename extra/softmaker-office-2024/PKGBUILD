@@ -9,7 +9,7 @@
 pkgname=softmaker-office-2024
 _revision=1238
 pkgver=2024.${_revision}
-pkgrel=1
+pkgrel=2
 pkgdesc="GDPR-compliant alternative to Microsoft Office"
 arch=('x86_64')
 url="https://www.softmaker.com/"
@@ -19,7 +19,9 @@ depends=(
   'desktop-file-utils'
   'gst-plugins-base-libs'
   'gstreamer'
+  'gtk3'
   'hicolor-icon-theme'
+  'libdecor'
   'libglvnd'
   'libx11'
   'libxext'

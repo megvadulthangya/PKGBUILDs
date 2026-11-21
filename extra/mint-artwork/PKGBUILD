@@ -8,7 +8,7 @@ pkgname=(
 )
 pkgbase=mint-artwork
 pkgver=1.9.6
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="Linux Mint Artwork and Resources"
 arch=('any')
@@ -29,13 +29,16 @@ package_cinnamon-sounds() {
 
   cd "$pkgbase-$pkgver"
   install -Dm644 usr/share/$pkgbase/sounds/* -t \
-    "${pkgdir}/usr/share/sounds/LinuxMint/"
+    "${pkgdir}/usr/share/sounds/LinuxMint/stereo"
   cp -r usr/share/sounds/* "${pkgdir}/usr/share/sounds/"
 }
 
 package_mint-artwork-styles() {
   pkgdesc="Linux Mint artwork styles"
-  depends=('mint-themes')
+  depends=(
+    'bibata-cursor-theme'
+    'mint-themes'
+  )
 
   cd "$pkgbase-$pkgver"
   install -Dm644 "usr/share/cinnamon/styles.d/22_${pkgbase}.styles" -t \

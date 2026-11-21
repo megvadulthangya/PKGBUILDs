@@ -5,7 +5,7 @@
 
 pkgname=softmaker-office-nx
 pkgver=1506
-pkgrel=1
+pkgrel=2
 pkgdesc="GDPR-compliant alternative to Microsoft Office (subscription only version)"
 url="https://www.softmaker.com"
 arch=('x86_64')
@@ -15,7 +15,9 @@ depends=(
   'desktop-file-utils'
   'gst-plugins-base-libs'
   'gstreamer'
+  'gtk3'
   'hicolor-icon-theme'
+  'libdecor'
   'libglvnd'
   'libx11'
   'libxext'

@@ -12,14 +12,14 @@
 pkgbase=nvidia-390xx-utils
 pkgname=('nvidia-390xx-utils' 'opencl-nvidia-390xx' 'nvidia-390xx-dkms' 'mhwd-nvidia-390xx')
 pkgver=390.157
-pkgrel=34
+pkgrel=35
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('custom')
+makedepends=('nvidia-driver-assistant')
 options=('!strip')
 _pkg="NVIDIA-Linux-x86_64-${pkgver}-no-compat32"
 source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.run"
-        'mhwd-nvidia'
         'nvidia-drm-outputclass.conf'
         'nvidia-390xx-utils.sysusers'
         'nvidia-390xx.rules'
@@ -50,7 +50,6 @@ source=("https://us.download.nvidia.com/XFree86/Linux-x86_64/${pkgver}/${_pkg}.r
         'kernel-7.2.patch'
         'nvidia-470xx-fix-linux-7.3.patch')
 sha256sums=('162317a49aa5a521eb888ec12119bfe5a45cec4e8653efc575a2d04fb05bf581'
-            '11176f1c070bbdbfaa01a3743ec065fe71ff867b9f72f1dce0de0339b5873bb5'
             '089d6dc247c9091b320c418b0d91ae6adda65e170934d178cdd4e9bd0785b182'
             'd8d1caa5d72c71c6430c2a0d9ce1a674787e9272ccce28b9d5898ca24e60a167'
             'e30714f9b473d810c28763d067e0b85c75f86f23618d968b49b9d1fced9a1dd6'
@@ -307,11 +306,9 @@ package_nvidia-390xx-utils() {
 
     install -d -m755 "${pkgdir}/var/lib/mhwd/ids/pci/"
 
-    # Generate mhwd database
-    sh -e ${srcdir}/mhwd-nvidia \
-    ${srcdir}/${_pkg}/README.txt \
-    ${srcdir}/${_pkg}/kernel/nvidia/nv-kernel.o_binary \
-    > ${pkgdir}/var/lib/mhwd/ids/pci/nvidia-390xx.ids
-    # add PCIID: 1b82 Nvidia Gforce 1070 Ti
-    sed -i 's/1b81 1b84/1b81 1b82 1b84/g' ${pkgdir}/var/lib/mhwd/ids/pci/nvidia-390xx.ids
+    # Generate the MHWD ID list from the NVIDIA supportedchips data shipped
+    # with nvidia-driver-assistant. Only the 4-digit PCI Device IDs are written;
+    # Subsystem Vendor IDs and Subsystem Device IDs are intentionally ignored.
+    nvidia-driver-assistant --generate-ids 390 \
+        > "${pkgdir}/var/lib/mhwd/ids/pci/nvidia-390xx.ids"
 }

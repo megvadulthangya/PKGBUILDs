@@ -10,16 +10,15 @@
 pkgbase=nvidia-utils
 pkgname=('nvidia-utils' 'opencl-nvidia' 'nvidia-dkms' 'nvidia-open-dkms' 'nvidia-settings' 'mhwd-nvidia')
 pkgver=620.73.04
-pkgrel=1
+pkgrel=2
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('LicenseRef-NVIDIA-Driver-License-Agreement')
-makedepends=('desktop-file-utils')
+makedepends=('desktop-file-utils' 'nvidia-driver-assistant')
 options=('!strip')
 _pkg="NVIDIA-Linux-x86_64-${pkgver}"
 _pkg_open="NVIDIA-kernel-module-source-${pkgver}"
-source=('mhwd-nvidia'
-        'nvidia-drm-outputclass.conf'
+source=('nvidia-drm-outputclass.conf'
         'nvidia-utils.sysusers'
         'nvidia.rules'
         'systemd-homed-override.conf'
@@ -33,8 +32,7 @@ source=('mhwd-nvidia'
         'limit-vram-usage'
         'cuda-no-stable-perf-limit')
 
-sha512sums=('6d1e8b6e5fe62b1488a779b62b71a861f498d73eb1e0bba430a119edf7d03e047a112894bb54dced9742a555ccdc27cda280c292986870e31bbc3fc91c4c7f6e'
-            'de7116c09f282a27920a1382df84aa86f559e537664bb30689605177ce37dc5067748acf9afd66a3269a6e323461356592fdfc624c86523bf105ff8fe47d3770'
+sha512sums=('de7116c09f282a27920a1382df84aa86f559e537664bb30689605177ce37dc5067748acf9afd66a3269a6e323461356592fdfc624c86523bf105ff8fe47d3770'
             '5ee3227f2765afb10ee716deb85d7c6295ce4a9242c2fb78f27c87e1537bb5d10c29043ac554c106751ff427db27605401c1f56fa39095ef745f10a9df1c237c'
             '7f1457dc454144fdece5abf795744c4c948a13feb8d49c20e2a1b8b8973e86f980233b521485d73eb039c396688f287a3a5b3de8cb1fb20ed70cc62e4ba91250'
             'a0183adce78e40853edf7e6b73867e7a8ea5dabac8e8164e42781f64d5232fbe869f850ab0697c3718ebced5cde760d0e807c05da50a982071dfe1157c31d6b8'
@@ -376,9 +374,9 @@ package_mhwd-nvidia() {
 
     install -d "$pkgdir/var/lib/mhwd/ids/pci/"
 
-    # Generate mhwd database
-    sh -e "${srcdir}/mhwd-nvidia" \
-      "${srcdir}/${_pkg}/README.txt" \
-      "${srcdir}/${_pkg}/kernel-open/nvidia/nv-kernel.o_binary" \
-      > "${pkgdir}/var/lib/mhwd/ids/pci/nvidia.ids"
+    # Generate the MHWD ID list from the NVIDIA supportedchips data shipped
+    # with nvidia-driver-assistant. Only the 4-digit PCI Device IDs are written;
+    # Subsystem Vendor IDs and Subsystem Device IDs are intentionally ignored.
+    nvidia-driver-assistant --generate-ids latest \
+        > "${pkgdir}/var/lib/mhwd/ids/pci/nvidia.ids"
 }

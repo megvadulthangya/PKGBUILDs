@@ -9,16 +9,15 @@
 pkgbase=nvidia-580xx-utils
 pkgname=('nvidia-580xx-utils' 'opencl-nvidia-580xx' 'nvidia-580xx-dkms' 'nvidia-580xx-open-dkms' 'mhwd-nvidia-580xx')
 pkgver=580.196.07
-pkgrel=3
+pkgrel=4
 arch=('x86_64')
 url="https://www.nvidia.com/"
 license=('LicenseRef-NVIDIA-Driver-License-Agreement')
-makedepends=('desktop-file-utils')
+makedepends=('desktop-file-utils' 'nvidia-driver-assistant')
 options=('!strip')
 _pkg="NVIDIA-Linux-x86_64-${pkgver}"
 _pkg_open="NVIDIA-kernel-module-source-${pkgver}"
-source=('mhwd-nvidia'
-        'nvidia-drm-outputclass.conf'
+source=('nvidia-drm-outputclass.conf'
         'nvidia-utils.sysusers'
         'nvidia.rules'
         'systemd-homed-override.conf'
@@ -31,8 +30,7 @@ source=('mhwd-nvidia'
         'limit-vram-usage'
         'fix-hw-cursor-kde.patch'
         'Fix-build-on-Linux-7.4.patch')
-sha256sums=('ee7012863c5945d1e09e96a8196a1a0efe2077b133f46aa2ccb822d1772f0652'
-            'be99ff3def641bb900c2486cce96530394c5dc60548fc4642f19d3a4c784134d'
+sha256sums=('be99ff3def641bb900c2486cce96530394c5dc60548fc4642f19d3a4c784134d'
             'f77a5247a3ba63e9fad3a3b2822d0fcfa51e0f79b5a90bd79bf08ea34b64ab07'
             'e30714f9b473d810c28763d067e0b85c75f86f23618d968b49b9d1fced9a1dd6'
             'c5aa7b8abe69e72bfdc6b9ee8afbfd350bcc557e894558f2e6e4087fa9aa0dd8'
@@ -358,9 +356,9 @@ package_mhwd-nvidia-580xx() {
 
     install -d "$pkgdir/var/lib/mhwd/ids/pci/"
 
-    # Generate mhwd database
-    sh -e "${srcdir}/mhwd-nvidia" \
-      "${srcdir}/${_pkg}/README.txt" \
-      "${srcdir}/${_pkg}/kernel-open/nvidia/nv-kernel.o_binary" \
-      > "${pkgdir}/var/lib/mhwd/ids/pci/nvidia-580xx.ids"
+    # Generate the MHWD ID list from the NVIDIA supportedchips data shipped
+    # with nvidia-driver-assistant. Only the 4-digit PCI Device IDs are written;
+    # Subsystem Vendor IDs and Subsystem Device IDs are intentionally ignored.
+    nvidia-driver-assistant --generate-ids 580 \
+        > "${pkgdir}/var/lib/mhwd/ids/pci/nvidia-580xx.ids"
 }

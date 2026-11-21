@@ -9,13 +9,15 @@ pkgname=(
   'pamac-gnome-integration'
 )
 pkgver=11.7.5
-pkgrel=5
+pkgrel=6
 pkgdesc="A Package Manager based on libalpm with AUR and Appstream support (GTK4)"
 arch=('x86_64' 'aarch64')
 url="https://github.com/manjaro/pamac"
 license=('GPL-3.0-or-later')
 depends=(
   'archlinux-appstream-data'
+  'gdk-pixbuf2'
+  'glib2'
   'gtk3'
   'gtk4'
 #  'jemalloc' ## causes glib error & coredump
@@ -40,6 +42,7 @@ _backports=(
   90053f8aff07002864b5196380e10503640c53f0
   8f909f63fcdfec1a3050e1f60959c1c33d8d1541
   363e794fef4f9f6a0e54757fd12155cf27e02cc3
+  de9454c800b42f83adbb3cea4b498b8cf6195a05
 )
 
 _reverts=(
@@ -86,11 +89,13 @@ check() {
 
 package_pamac-gtk() {
   optdepends=(
-    'pamac-gnome-integration: for integration into GNOME'
-    'libpamac-flatpak-plugin: for Flatpak support'
-    'libpamac-snap-plugin: for Snap support'
-#  'libpamac-aur-plugin: for AUR support'
-#  'libpamac-appstream-plugin: for Appstream support'
+    'pamac-gnome-integration: Software Updates integration on GNOME'
+    'pamac-tray-icon-plasma: Tray icon on Plasma'
+    'libpamac-flatpak-plugin: Flatpak support'
+    'libpamac-snap-plugin: Snap support'
+#  'libpamac-aur-plugin: AUR support'
+#  'libpamac-appstream-plugin: Appstream support'
+    'xapp: Required for tray icon in Cinnamon Wayland sessions'
   )
   provides=(
     'pamac'

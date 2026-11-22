@@ -1,4 +1,0 @@
-[ryzenadj]
-source = "git"
-git = "https://github.com/FlyGoat/RyzenAdj.git"
-prefix = "v"

@@ -1,4 +1,0 @@
-[dmenu-manjaro]
-source = "git"
-git = "https://git.suckless.org/dmenu"
-

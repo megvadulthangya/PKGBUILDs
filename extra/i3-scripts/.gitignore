@@ -1,7 +1,0 @@
-i3-scripts/*
-*.tar.xz
-*.tar.gz
-*.zip
-src/*
-pkg/*
-*.log

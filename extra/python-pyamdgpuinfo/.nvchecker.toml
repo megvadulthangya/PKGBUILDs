@@ -1,4 +1,0 @@
-[python-pyamdgpuinfo]
-source = "git"
-git = "https://github.com/mark9064/pyamdgpuinfo.git"
-prefix = "v"

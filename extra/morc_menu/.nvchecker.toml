@@ -1,4 +1,0 @@
-[morc_menu]
-source = "git"
-git = "https://github.com/Boruch-Baum/morc_menu.git"
-prefix = "v"

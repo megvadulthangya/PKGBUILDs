@@ -3,7 +3,7 @@
 
 pkgname=clipit
 pkgver=1.4.5+25+gf35db54
-pkgrel=1
+pkgrel=2
 epoch=1
 pkgdesc="Lightweight GTK+ clipboard manager (fork of Parcellite)"
 arch=('x86_64')
@@ -18,18 +18,23 @@ makedepends=(
   'intltool'
   'meson'
 )
-checkdepends=('appstream-glib')
+checkdepends=(
+  'appstream-glib'
+  'desktop-file-utils'
+)
 optdepends=('xdotool: for automatic paste')
 _commit=f35db540c9d3c57b13439d66597736e917e8c9a1
 source=("git+https://github.com/CristianHenzel/ClipIt.git#commit=${_commit}"
         '0001-Autostart-in-MATE.patch'
         "${pkgname}-${pkgver//+*/}-force-gdk_backend-x11.patch"
         'incompatible-pointer-types.patch'
+        'clipit-pr211-c23-function-prototype.patch'
         "${pkgname}.appdata.xml")
 sha256sums=('b029c84ca67e29701206d88fe18e3466ad72f476595490a18e632bca6f0cdc9a'
             '803e5c0f0ba27be3754ca501dc0f3164b802a013b9e4b9f619f9ded1533465ad'
             '4d8829899c0a7bd72ad41678b15eef86d467efd864850fe0870cd5dd2675d6e5'
             'f810dd20c0dffe31f329a8dd00824c286158c749386395b259fca2766e4b79f4'
+            '05b11a3b86b92e57307e8bb6bb622aed427726ae5f25ab9168b8b117f9e653f7'
             '4d82871c3862275595efd34521901318cbce56ff23d1d605d95d031c66ed9b7b')
 
 pkgver() {
@@ -49,6 +54,10 @@ prepare() {
 
   # Fix -Werror=incompatible-pointer-types
   patch -Np1 -i "${srcdir}/incompatible-pointer-types.patch"
+
+  # Fix compilation with C23 struct function prototype
+  # https://github.com/CristianHenzel/ClipIt/pull/211
+  patch -Np1 -i "${srcdir}/clipit-pr211-c23-function-prototype.patch"
 }
 
 build() {

@@ -3,7 +3,7 @@
 # Contributor: Helmut Stult
 
 pkgname=lightdm-settings
-pkgver=2.1.2
+pkgver=2.1.3
 pkgrel=1
 pkgdesc="A configuration tool for the LightDM display manager "
 arch=('any')
@@ -22,7 +22,7 @@ install='add-autologin-group.install'
 source=("$pkgname-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz"
         'add-autologin-group.script'
         'add-autologin-group.service')
-sha256sums=('95a0ac229b47957bf566e1b9f0b1676c5f96c532e7c5c07f6f8c7a8b3c682f07'
+sha256sums=('bb88ab679021d57603d649a68ffc590f433b0978a885cdeac681ce47fe57532a'
             '1f9fd7253f69b2c59f7ca247edfd6b3a566ce7e3291f131fc021a8ca10bb2eb5'
             '2199300cc27b6b407e46206abd181b2be2679d2520ddd183e4a37a3fc691739a')
 

@@ -4,8 +4,8 @@
 pkgbase=linux66-rt
 pkgname=("$pkgbase" "$pkgbase-headers")
 _basekernel=6.6
-_sub=161
-_rtpatchver=rt83
+_sub=162
+_rtpatchver=rt84
 _basever=${pkgbase//linux}
 _kernelname=-MANJARO
 if [[ "$_sub" == "0" ]]; then
@@ -13,8 +13,8 @@ if [[ "$_sub" == "0" ]]; then
 else
     _pkgver=${_basekernel}.${_sub}
 fi
-pkgver=6.6.161_rt83
-pkgrel=2
+pkgver=6.6.162_rt84
+pkgrel=1
 arch=('x86_64')
 url="https://www.kernel.org"
 license=('GPL2')
@@ -36,12 +36,12 @@ source=("https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${_basekernel}.tar.x
 _srcdir="linux-${_basekernel}"
 
 sha256sums=('d926a06c63dd8ac7df3f86ee1ffc2ce2a3b81a2d168484e76b5b389aba8e56d0'
-            '7ffb1b01e8740a9eba2197f4dd67f1b5eb75665a1db3e0da927824f340a3cb1a'
+            '23dce79102d1f31ef016cde80a220329a9fdb2b98ecf53d15ebc5f99526e8a0e'
             '05f04019d4a2ee072238c32860fa80d673687d84d78ef436ae9332b6fb788467'
             'e1d17690dd21e8d5482b63ca66bfe6b478d39e8e8b59eedd53adb0a55ebc308d'
             'b88d42565ce771cb6c8f98b7c05aada6b8024578a1985e5772dc5a2d07facee0'
-            '7af75b6b27c28091d4f1e0b63997336446707f57b10ee1f5b38d6d20f003dbba'
-            '0e13323bb7b6bde1e6c5a10bbae273fae6a7651273900c64743d09375bab28a1')
+            '83eccc7ad0059ca402f5184e2481b8c541f43f5e86384bb1d31ae5f434591da0'
+            '8490dad7c09452d0e705fe11f9ecd0980ca2a5f1eb5d76f110996632c1600a36')
 if [[ ! "$_sub" == "0" ]]; then
   source+=("$url/pub/linux/kernel/v6.x/patch-${_pkgver}.xz")
 fi

@@ -9,7 +9,7 @@ pkgname=(
   'pamac-gnome-integration'
 )
 pkgver=11.7.5
-pkgrel=6
+pkgrel=7
 pkgdesc="A Package Manager based on libalpm with AUR and Appstream support (GTK4)"
 arch=('x86_64' 'aarch64')
 url="https://github.com/manjaro/pamac"
@@ -17,6 +17,7 @@ license=('GPL-3.0-or-later')
 depends=(
   'archlinux-appstream-data'
   'gdk-pixbuf2'
+  'glibc'
   'glib2'
   'gtk3'
   'gtk4'
@@ -43,6 +44,8 @@ _backports=(
   8f909f63fcdfec1a3050e1f60959c1c33d8d1541
   363e794fef4f9f6a0e54757fd12155cf27e02cc3
   de9454c800b42f83adbb3cea4b498b8cf6195a05
+  c12e7ebe14197151b4c18025735109818369404a
+  e77caa85e6d0adde6e06ae8b2e5cef830d631d10
 )
 
 _reverts=(

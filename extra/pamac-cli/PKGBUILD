@@ -3,8 +3,8 @@
 # Contributor: Guillaume Benoit <guillaume@manjaro.org>
 
 pkgname=pamac-cli
-pkgver=11.7.4
-pkgrel=2
+pkgver=11.7.4+4+g00c19aa
+pkgrel=1
 pkgdesc="A CLI Package Manager based on libalpm with AUR support"
 arch=('x86_64' 'aarch64')
 url="https://github.com/manjaro/pamac-cli"
@@ -24,11 +24,20 @@ makedepends=(
 )
 conflicts=('pamac<=7.3.4-2')
 options=('debug')
-source=("git+https://github.com/manjaro/pamac-cli.git#tag=$pkgver")
-sha256sums=('a347066c47a3e6ad8d32f6b947f4568592bd1bf038ea9b72a387b6f81a95c0ee')
+_commit=00c19aa90ebc5c5902d89babe6d6ff0b79e457b4
+source=("git+https://github.com/manjaro/pamac-cli.git#commit=${_commit}")
+sha256sums=('1440c1e93175c98bcf02435aabe5cdc36eeee67fcca5e4b5ce30808697105b1d')
 
 _backports=(
 )
+
+_reverts=(
+)
+
+pkgver() {
+  cd "$pkgname"
+  git describe --tags --abbrev=7 | sed 's/-/+/g'
+}
 
 prepare() {
   cd "$pkgname"

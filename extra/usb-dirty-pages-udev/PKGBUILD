@@ -2,19 +2,20 @@
 # Contributor: Bruno Goncalves <bigbruno@gmail.com>
 
 pkgname=usb-dirty-pages-udev
-pkgver=23.10.15
-pkgrel=4
-_rel=2049
+pkgver=26.11.24
+pkgrel=1
+_rel=2208
 pkgdesc="Use udev to specify dirty pages for usb devices"
 arch=('any')
 url="https://github.com/biglinux/usb-dirty-pages-udev"
 license=('GPL-3.0-or-later')
 conflicts=('udev-usb-sync')
-source=("${url}/archive/refs/tags/${pkgname}-${pkgver}-${_rel}.tar.gz")
-sha256sums=('f97a0e9d46109cbaad8e07dec115988d88df70549bad559a4f3e594d01188deb')
+replaces=('udev-usb-sync')
+source=("${pkgname}-${pkgver}-${_rel}.tar.gz::${url}/archive/refs/tags/${pkgver}-${_rel}.tar.gz")
+sha256sums=('eaf0490bd1b985786d5a9ba1689a410f6c6271ccb0b0ac0d9f6c23ef98dc267e')
 
 package() {
-  cd "${pkgname}-${pkgname}-${pkgver}-${_rel}"
+  cd "${pkgname}-${pkgver}-${_rel}"
   install -Dm755 "usr/bin/${pkgname}" -t "$pkgdir/usr/bin/"
   install -Dm644 "etc/udev/rules.d/60-${pkgname}.rules" -t "$pkgdir/usr/lib/udev/rules.d/"
 }

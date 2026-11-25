@@ -1,4 +1,0 @@
-[manjaro-get-iso]
-source = "git"
-git = "https://code.manjaro.org/applications/manjaro-get-iso.git"
-prefix = "v"

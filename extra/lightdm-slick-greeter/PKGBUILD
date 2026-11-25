@@ -14,7 +14,7 @@
 
 pkgname=lightdm-slick-greeter
 _pkgname=${pkgname#lightdm-}
-pkgver=2.2.11
+pkgver=2.2.12
 pkgrel=1
 pkgdesc="A slick-looking LightDM greeter"
 arch=('x86_64')
@@ -43,7 +43,7 @@ optdepends=(
   'onboard: On-screen keyboard'
 )
 source=("$pkgname-$pkgver.tar.gz::${url}/archive/${pkgver}.tar.gz")
-sha256sums=('2fc5bade9e0909e63610b7cc571fe9106bc8044ed62141ff3875ff1eaeb8538d')
+sha256sums=('8bbd423515e432ba5c90c439c41c5480e8585e2ae5dbe44d1d538bcb180f0f38')
 
 prepare() {
   cd "${_pkgname}-${pkgver}"

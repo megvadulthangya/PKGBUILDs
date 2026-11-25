@@ -3,8 +3,8 @@
 # Contributor: Nate Simon <njsimon10@gmail.com>
 
 pkgname=pix
-pkgver=3.4.13
-pkgrel=2
+pkgver=3.4.14
+pkgrel=1
 pkgdesc="Image viewer and browser utility."
 arch=('x86_64')
 url="https://github.com/linuxmint/pix"
@@ -48,7 +48,7 @@ optdepends=(
 )
 checkdepends=('desktop-file-utils')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz")
-sha256sums=('041d6bab258b1fde2d5583970263127b11139f6e5b46570d6134a18a91a93fa0')
+sha256sums=('9e179f42c10d6b21ada7d8767b22314246fe34669b795bc81d52ffb01852b6db')
 
 build() {
 

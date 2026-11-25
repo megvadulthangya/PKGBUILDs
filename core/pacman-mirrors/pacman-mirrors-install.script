@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Skip if running in a build chroot/container
+if [[ -f /.manjaro-chroot ]] || [[ -f /.manjaro-tools ]]; then
+    echo ":: [chroot detected] Skipping pacman-mirrors configuration"
+    exit 0
+fi
+
 if [ -f /etc/pacman-mirrors.conf.pacsave ]; then
     echo "Your current config has been restored."
     echo "A new pacman-mirrors.conf is created as /etc/pacman-mirrors-new-$(date +%Y%m%d).conf"
@@ -17,3 +23,4 @@ else
 fi
 
 echo "hint: use \`pacman-mirrors\` to generate and update your pacman mirrorlist."
+

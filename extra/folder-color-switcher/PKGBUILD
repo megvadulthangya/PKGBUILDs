@@ -4,7 +4,7 @@
 # Contributor: twa022 <twa022 at gmail dot com>
 
 pkgname=folder-color-switcher
-pkgver=1.7.2
+pkgver=1.7.3
 pkgrel=1
 pkgdesc="Folder color switcher for Nemo and Caja"
 arch=('any')
@@ -16,7 +16,7 @@ optdepends=(
 )
 source=("http://packages.linuxmint.com/pool/main/f/$pkgname/${pkgname}_${pkgver}.tar.xz")
 noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('edfafb3f01b624bde8ded6a756830671ba27d9159934239b2af49b264eb38dca')
+sha256sums=('eb2296d8db47eeb5fdfa2aca798f904895434d2470e18db0018196275251a2fc')
 
 prepare() {
   mkdir -p "$pkgname-$pkgver"

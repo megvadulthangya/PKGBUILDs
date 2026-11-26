@@ -9,7 +9,7 @@
 # Contributor: CReimer
 
 pkgname=cinnamon
-pkgver=6.8.2
+pkgver=6.8.4
 pkgrel=1
 pkgdesc='Desktop environment which provides advanced innovative features and a traditional user experience'
 arch=(x86_64)
@@ -111,7 +111,7 @@ source=(
   30_org.archlinux.cinnamon.gschema.override
   manjaro-settings.patch
 )
-b2sums=('fc52036befa8643053b649b43da39795d4c3c5121e55f905179567acfb9681f27887c18584680e48d7e4a59f0c5e9b95bd453e2d0a10ef836ab2531f4dd21b51'
+b2sums=('832cce67f77711745de84f226796a21b2b84a18c02f596eb0f26eff934c05adb8c5e6b09b25156521d54d7d5fdbf09f535e9ac00288ce7296d0f0dc70c6a53d8'
         '3becf1f40068fc629109e6e7d464c3c484296afacc9ab6328b2ccbb3c9735bcbfa9550f9f73b430ede178ae668e37c660ce322b5b4d1873526de3d3d41185160'
         '97582a7734c1282c0c2f879e6b0ebe9acb2591592431702aff1557b08189d47f40bebfd10e1fae001546bfc87dea847bd33f64fd7a496f878a442651b255ea00'
         'eba1c9660c68916e70ca68c4de73d6f170c534cbdc71c7a11ae4f7c86d73e210d703967c63bb76c3c0a331384c6b928076f284c3c7de1560d561b8eb0dd7bc79')

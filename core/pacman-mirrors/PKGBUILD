@@ -1,10 +1,11 @@
-# Maintainer: Frede Hundewadt <fh@manjaro.org>
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 # Contributor: Philip Müller <philm@manjaro.org>
+# Contributor: Stefano Capitani <stefano@manjaro.org>
+# Contributor: Frede Hundewadt
 
 pkgname=pacman-mirrors
 pkgver=5.3.2
-pkgrel=1
+pkgrel=3
 pkgdesc="Manjaro Linux mirror list generator for use by pacman"
 arch=('any')
 url="https://code.manjaro.org/applications/pacman-mirrors"
@@ -38,14 +39,25 @@ source=("git+https://code.manjaro.org/applications/pacman-mirrors.git#tag=${pkgv
         "$pkgname-install.hook"
         "$pkgname-upgrade.hook")
 sha256sums=('59c3d3faa1ef3c34fc05a0a06d8a6599085674e67d3ad263799654b4978b11c0'
-            '718a47605be1ca328255b19047dee6d331e0440f303b86d17485fe53937b7906'
-            '3b1df8c662161903653b0ae41d910019f87a58f3ecd8e02ea9ac8859b9c43f17'
+            '333d85311929ed8e1fb41b08c58996b734fbaf1dd69057069641e0f490391bc6'
+            '168250232b29a68262ac907016722532b1f7f72da24aa8b80a5143f21ffaade6'
             '88befb1a9b167112e05544ec4a765705bf474209e7ef67c44ffc418e10e89bfa'
             '6b6869d9dd85cd3a3cba49013dd2fc1c5f7a0934ba1284e21d4bbd24fa2540c6')
 validpgpkeys=('688E8F82879D0E25CE541426150C200743ED46D8') # Mark Wagie <mark@manjaro.org>
 
+prepare() {
+  cd "$pkgname"
+
+  # Read version from importlib.metadata (pyproject.toml)
+  # instead of hardcoded __version__
+  git cherry-pick -n \
+    6e56f30da376a15a8ccc00cb22ec16e398333c60 \
+    1d7baad616708d704356fa5c29e734d72e4cf4f5
+}
+
 build() {
   cd "$pkgname"
+
   python -m build --wheel --no-isolation
   pybabel compile -D pacman_mirrors -d data/locale
   curl -o data/share/mirrors.json https://repo.manjaro.org/mirrors.json

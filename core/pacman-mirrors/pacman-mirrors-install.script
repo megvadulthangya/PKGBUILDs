@@ -8,12 +8,17 @@ if [ -f /etc/pacman-mirrors.conf.pacsave ]; then
     mv /etc/pacman-mirrors.conf.pacsave /etc/pacman-mirrors.conf
 fi
 
-if [ -f /etc/pacman.d/mirrorlist ]; then
-    # fetch new data files
-    pacman-mirrors --no-mirrorlist
-else
-    # create mirrorlist
-    pacman-mirrors -f5
+# Skip if running in a build chroot/container
+if [[ -f /.manjaro-chroot ]] || [[ -f /.manjaro-tools ]]; then
+    echo ":: [chroot detected] Skipping pacman-mirrors configuration"
+    exit 0
+    if [ -f /etc/pacman.d/mirrorlist ]; then
+        # fetch new data files
+        pacman-mirrors --no-mirrorlist
+    else
+        # create mirrorlist
+        pacman-mirrors -f5
+    fi
 fi
 
 echo "hint: use \`pacman-mirrors\` to generate and update your pacman mirrorlist."

@@ -1,0 +1,4 @@
+[manjaro-settings-manager]
+source = "git"
+git = "https://code.manjaro.org/applications/manjaro-settings-manager.git"
+exclude_regex= "4.*"

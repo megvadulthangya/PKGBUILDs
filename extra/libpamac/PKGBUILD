@@ -10,8 +10,8 @@ pkgname=(
 #  'libpamac-aur-plugin'
 #  'libpamac-appstream-plugin'
 )
-pkgver=11.7.4
-pkgrel=7
+pkgver=11.7.4+42+g3b3fe0d
+pkgrel=1
 _sover=11.7
 pkgdesc="Library for Pamac package manager based on libalpm"
 arch=('x86_64' 'aarch64')
@@ -19,7 +19,7 @@ url="https://github.com/manjaro/libpamac"
 license=('GPL-3.0-or-later')
 depends=(
   'appstream'
-  'dbus-glib'  ## deprecated, is this still needed?
+  # 'dbus-glib'  ## deprecated, is this still needed?
   'git'
   'glib2'
   'glibc'
@@ -31,22 +31,19 @@ depends=(
   'polkit'
 )
 makedepends=(
-  'asciidoc'
   'flatpak'
   'git'
   'gobject-introspection'
   'meson'
-  'snapd'
   'snapd-glib'
   'vala'
 )
 options=('debug')
-source=("git+https://github.com/manjaro/libpamac.git#tag=$pkgver")
-sha256sums=('13f531db76921740e7d5b2478cc774d29757313ff4a85befe5c683c6b0cd0d47')
+_commit=3b3fe0d148ddf6503b17b208a1151e1383a6c2e4
+source=("git+https://github.com/manjaro/libpamac.git#commit=${_commit}")
+sha256sums=('5dc74118146fd1041a63288fd002cf5bdd9276dd6a25bfb6a4144d6e74ad375a')
 
 _backports=(
-  add94a888180ddbe04acae082e9db5cfb34c2fcd
-  c7efe923f980a3f5966f376bd6d6e6146539a970
 )
 
 _reverts=(
@@ -57,9 +54,14 @@ _create_links() {
   find "$pkgdir" -type f -name '*.so*' ! -path '*xorg/*' -print0 | while read -d $'\0' _lib; do
       _soname=$(dirname "${_lib}")/$(readelf -d "${_lib}" | grep -Po 'SONAME.*: \[\K[^]]*' || true)
       _base=$(echo ${_soname} | sed -r 's/(.*)\.so.*/\1.so/')
-      [[ -e "${_soname}" ]] || ln -s $(basename "${_lib}") "${_soname}"
-      [[ -e "${_base}" ]] || ln -s $(basename "${_soname}") "${_base}"
+      [[ -e "${_soname}" ]] || ln -sv $(basename "${_lib}") "${_soname}"
+      [[ -e "${_base}" ]] || ln -sv $(basename "${_soname}") "${_base}"
   done
+}
+
+pkgver() {
+  cd "$pkgbase"
+  git describe --tags --abbrev=7 | sed 's/-/+/g'
 }
 
 prepare() {
@@ -82,9 +84,11 @@ prepare() {
 }
 
 build() {
-  arch-meson "$pkgbase" build \
-    -Denable-snap=true \
+  local meson_options=(
+    -Denable-snap=true
     -Denable-flatpak=true
+  )
+  arch-meson "$pkgbase" build "${meson_options[@]}"
   meson compile -C build
 }
 
@@ -112,16 +116,16 @@ package_libpamac() {
   cd "$pkgbase"
 
   # remove libpamac-snap
-  rm "$pkgdir/usr/lib/$pkgbase-snap".{so,so.*}
+  rm -v "$pkgdir/usr/lib/$pkgbase-snap".{so,so.*}
 
   # remove libpamac-flatpak
-  rm "$pkgdir/usr/lib/$pkgbase-flatpak".{so,so.*}
+  rm -v "$pkgdir/usr/lib/$pkgbase-flatpak".{so,so.*}
 
   # remove libpamac-appstream
-  #rm "$pkgdir/usr/lib/$pkgbase-appstream".{so,so.*}
+  #rm -v "$pkgdir/usr/lib/$pkgbase-appstream".{so,so.*}
 
   # remove libpamac-aur
-  #rm "$pkgdir/usr/lib/$pkgbase-aur".{so,so.*}
+  #rm -v "$pkgdir/usr/lib/$pkgbase-aur".{so,so.*}
 }
 
 package_libpamac-snap-plugin() {
@@ -137,7 +141,7 @@ package_libpamac-snap-plugin() {
   )
   replaces=('pamac-snap-plugin')
 
-  install -Dm755 "build/src/$pkgbase-snap.so.${_sover}" -t "$pkgdir/usr/lib/"
+  install -Dvm755 "build/src/$pkgbase-snap.so.${_sover}" -t "$pkgdir/usr/lib/"
 
   _create_links
 }
@@ -145,6 +149,7 @@ package_libpamac-snap-plugin() {
 package_libpamac-flatpak-plugin() {
   pkgdesc="Flatpak plugin for Pamac"
   depends=(
+    'appstream'
     'flatpak'
     'libpamac'
   )
@@ -157,7 +162,7 @@ package_libpamac-flatpak-plugin() {
   )
   install="$pkgname.install"
 
-  install -Dm755 "build/src/$pkgbase-flatpak.so.${_sover}" -t "$pkgdir/usr/lib/"
+  install -Dvm755 "build/src/$pkgbase-flatpak.so.${_sover}" -t "$pkgdir/usr/lib/"
 
   _create_links
 }
@@ -172,7 +177,7 @@ package_libpamac-appstream-plugin() {
     "libpamac-appstream.so.${pkgver//.*/}"
   )
 
-  install -Dm755 "build/src/$pkgbase-appstream.so.${_sover}" -t "$pkgdir/usr/lib/"
+  install -Dvm755 "build/src/$pkgbase-appstream.so.${_sover}" -t "$pkgdir/usr/lib/"
 
   _create_links
 }
@@ -187,7 +192,7 @@ package_libpamac-aur-plugin() {
     "libpamac-aur.so.${pkgver//.*/}"
   )
 
-  install -Dm755 "build/src/$pkgbase-aur.so.${_sover}" -t "$pkgdir/usr/lib/"
+  install -Dvm755 "build/src/$pkgbase-aur.so.${_sover}" -t "$pkgdir/usr/lib/"
 
   _create_links
 }

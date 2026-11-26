@@ -1,7 +1,7 @@
 # Maintainer: Mark Wagie <mark at manjaro dot org>
 
 pkgname=mint-translations
-pkgver=2026.11.16
+pkgver=2026.11.25
 pkgrel=1
 pkgdesc="Translation files for some Linux Mint programs"
 arch=('any')
@@ -9,7 +9,7 @@ url="https://github.com/linuxmint/mint-translations"
 license=('GPL-3.0-or-later')
 source=("http://packages.linuxmint.com/pool/main/m/${pkgname}/${pkgname}_${pkgver}.tar.xz")
 noextract=("${pkgname}_${pkgver}.tar.xz")
-sha256sums=('eb1603e1cdb0acccca783811defbf8139cac7fd95e73b7ea2a6dd0ccd571f12c')
+sha256sums=('09ce6bc97f6389e184d865247fd5b6b8b0eba3f82b736d909dff9921e9179d53')
 
 prepare() {
   mkdir -p "$pkgname-$pkgver"

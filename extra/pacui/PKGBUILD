@@ -3,7 +3,7 @@
 # Contributor: Stefano Capitani <stefanoatmanjarodotorg>
 
 pkgname=pacui
-pkgver=r1372.2b18871
+pkgver=r1379.295c9a2
 pkgrel=1
 epoch=1
 pkgdesc="Bash script providing advanced Pacman and AUR helper functionality in a simple UI"
@@ -28,9 +28,9 @@ optdepends=(
   'snapd: Snap update support'
   'yay: Option for AUR support'
 )
-_commit=2b188711e5ff4d799e0ad6d4203f0e6f57d03c98
+_commit=295c9a27c871ad72ad8e3eec97f1b2f2e050e8b4
 source=("git+https://codeberg.org/excalibur1234/pacui.git#commit=${_commit}")
-sha256sums=('e7172c16210eff575a52881bc4cdc3da236172410a296d293ab11bc6585085f2')
+sha256sums=('59e621c74720de3528114b0496bbb8af3ce9c0c0b58ceda8a01e30e2cb2eb1b2')
 
 pkgver() {
   cd "$pkgname"

@@ -30,6 +30,7 @@ depends=(
   'libxrender'
   'shared-mime-info'
 )
+checkdepends=('desktop-file-utils')
 install='softmaker-office.install'
 source=(
         "https://www.softmaker.net/down/${pkgname}-${_revision}-amd64.tgz"
@@ -43,9 +44,9 @@ sha256sums=('20be3d3061f5abfa85de35db62b34d22dca6cb3e56d3ae3c647c84686494e841'
             '00af1be185b00ab98ae33e6cad82ae00d845d78c6c4d7ab028d25f836f079f54'
             'c99ddfed2be5266f6036ed57394fe83867ac374eed7fc7165cb6f65a6360a479'
             'a70b5f3f7e54c4aee273636e7a8f8ad9ec8dbca1498132c6d9724e12eba39cbc'
-            'd3ed0ea90bda5217d8d0837dca2646a63b57cf05f05028fb27a73a12b68b7a89'
-            '460c616eb9ddeaed95cb67922f8e302c6eb5e38f546a3c6c9fa03baa05abb00c'
-            'e6890c6dca685e38334e2c15f70f7862cf1e10d760c95b6ad1a6dea5d1215c78')
+            '67c168be5de59f0908806024acd515f7ca6aa238f7c12aa7595d605a7ff33f29'
+            '67b1a5f5f189bc7ba5d61c1a1b98f5ae3ff2c66f38f6dbedecc1822ab375d8c2'
+            'a4e876c9e0db62aebcb035e28716520f3ae3cd2fc07e0909748c9e7593afe78c')
 
 prepare() {
   mkdir -p "${pkgname}-${_revision}"
@@ -57,6 +58,10 @@ prepare() {
   sed -i -e 's|icon name="application-x-pmd"|icon name="application-x-sm-2024-pmd"|g' "mime/${pkgname}.xml"
   sed -i -e 's|icon name="application-x-prd"|icon name="application-x-sm-2024-prd"|g' "mime/${pkgname}.xml"
   sed -i -e 's|icon name="application-x-tmd"|icon name="application-x-sm-2024-tmd"|g' "mime/${pkgname}.xml"
+}
+
+check() {
+  desktop-file-validate *.desktop
 }
 
 package() {

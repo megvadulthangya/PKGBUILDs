@@ -5,7 +5,7 @@
 
 pkgname=pacman-mirrors
 pkgver=5.3.2
-pkgrel=7
+pkgrel=8
 pkgdesc="Manjaro Linux mirror list generator for use by pacman"
 arch=('any')
 url="https://code.manjaro.org/applications/pacman-mirrors"
@@ -40,7 +40,7 @@ source=("git+https://code.manjaro.org/applications/pacman-mirrors.git#tag=${pkgv
         "$pkgname-upgrade.hook")
 sha256sums=('59c3d3faa1ef3c34fc05a0a06d8a6599085674e67d3ad263799654b4978b11c0'
             '0b0b3cbe47182da9e3f270fcf85e0e739958dfee5c830dc3501f8627d32b2b36'
-            '6871d812f1cad936412a93c0155d9efaa9e79e9b180969cecbb7569f9cbb51b9'
+            '6c131a3164e77789f9ca70e7e559472f7f242ba723b32622eececbc3bbc13770'
             '88befb1a9b167112e05544ec4a765705bf474209e7ef67c44ffc418e10e89bfa'
             '6b6869d9dd85cd3a3cba49013dd2fc1c5f7a0934ba1284e21d4bbd24fa2540c6')
 validpgpkeys=('688E8F82879D0E25CE541426150C200743ED46D8') # Mark Wagie <mark@manjaro.org>

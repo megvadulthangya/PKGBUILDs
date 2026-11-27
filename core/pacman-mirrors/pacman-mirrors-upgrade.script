@@ -9,5 +9,5 @@
 #     echo "Hint: Use \`pacmanmirrors\` to generate and update your pacman mirrorlist."
 # fi
 
-pacmanmirrors nomirrorlist
+pacman-mirrors nomirrorlist
 echo "Hint: Use \`pacmanmirrors\` to generate and update your pacman mirrorlist."

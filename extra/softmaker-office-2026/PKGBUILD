@@ -30,6 +30,7 @@ depends=(
   'libxrender'
   'shared-mime-info'
 )
+checkdepends=('desktop-file-utils')
 install='softmaker-office.install'
 source=( "https://www.softmaker.net/down/${pkgname}-${_revision}-amd64.tgz"
         'planmaker-2026.desktop'
@@ -40,9 +41,9 @@ source=( "https://www.softmaker.net/down/${pkgname}-${_revision}-amd64.tgz"
         'textmaker26'
         "${pkgname}.xml")
 sha256sums=('79e008afe625c5db853f99c622c45064ef65de06be5c1992e44eff8cce4ca995'
-            'a859406ea51ae91f7043ad11e129cfe43dc79703b3b437175d603f770db70780'
-            'ee40d6f6b9ac2908c2566529ec9c69d043a0b35ba00af61ec518a572618ed46b'
-            '9d3a56f7ca745f827d1312ff1f9b2ed8231d580f66d7f9f3cf5c12817f9490a5'
+            'b135b417f8e2b9e65220e7d287e595883808790e3440d8bfb1d25bc4ed36953a'
+            '9ac15887ce2d0c748b78bf8768b6fe6e30d32f04d44c41408a3020502ec9d90e'
+            'b687de5abaae701249e27e66da3a76756ae007f5b639a67b0f58c76a2e562b09'
             '97de4fac0faab13c2836e400ddb9ba13f8b3595c714e90ef4e6de5ce175bd47f'
             '5e42cb3b3cca062ca124d138141fcb562d0be5239dde236ecbda749e2938348c'
             '4297dc182873a6c40e4deed71cf7c1ecf5646e126d59823224affb544d9e0ba7'
@@ -58,6 +59,10 @@ prepare() {
   sed -i -e 's|icon name="application-x-pmd"|icon name="application-x-sm-2026-pmd"|g' "mime/${pkgname}.xml"
   sed -i -e 's|icon name="application-x-prd"|icon name="application-x-sm-2026-prd"|g' "mime/${pkgname}.xml"
   sed -i -e 's|icon name="application-x-tmd"|icon name="application-x-sm-2026-tmd"|g' "mime/${pkgname}.xml"
+}
+
+check() {
+  desktop-file-validate *.desktop
 }
 
 package() {

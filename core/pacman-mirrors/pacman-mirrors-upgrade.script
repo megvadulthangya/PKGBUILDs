@@ -3,7 +3,7 @@
 # Skip pacman-mirrors configuration in chroot
 if systemd-detect-virt --quiet --chroot; then
     echo "Skipping pacman-mirrors configuration in chroot"
-    return
+    exit 0
 else
     pacman-mirrors --no-mirrorlist
     echo "hint: use \`pacman-mirrors\` to generate and update your pacman mirrorlist."

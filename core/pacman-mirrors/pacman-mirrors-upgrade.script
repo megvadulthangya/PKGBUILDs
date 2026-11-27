@@ -1,10 +1,13 @@
 #!/bin/bash
 
-# Detect chroot/container (any type) and skip pacman-mirrors configuration
-if [[ -f /.manjaro-chroot ]] || [[ -f /.manjaro-tools ]]; then
-    echo ":: [chroot / container detected] Skipping pacman-mirrors configuration"
-    exit 0
-else
-    pacman-mirrors --no-mirrorlist
-    echo "Hint: Use \`pacman-mirrors\` to generate and update your pacman mirrorlist."
-fi
+# Detect chroot/container (any type) and skip pacmanmirrors configuration
+# if [[ f /.manjarochroot ]] || [[ f /.manjarotools ]]; then
+#     echo ":: [chroot / container detected] Skipping pacmanmirrors configuration"
+#     exit 0
+# else
+#     pacmanmirrors nomirrorlist
+#     echo "Hint: Use \`pacmanmirrors\` to generate and update your pacman mirrorlist."
+# fi
+
+pacmanmirrors nomirrorlist
+echo "Hint: Use \`pacmanmirrors\` to generate and update your pacman mirrorlist."

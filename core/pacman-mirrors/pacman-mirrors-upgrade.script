@@ -1,13 +1,10 @@
 #!/bin/bash
 
-# Detect chroot/container (any type) and skip pacmanmirrors configuration
-# if [[ -f /.manjaro-chroot ]] || [[ -f /.manjaro-tools ]]; then
-#     echo ":: [chroot / container detected] Skipping pacman-mirrors configuration"
-#     exit 0
-# else
-#     pacman-mirrors --no-mirrorlist
-#     echo "Hint: Use \`pacman-nmirrors\` to generate and update your pacman mirrorlist."
-# fi
-
-pacman-mirrors --no-mirrorlist
-echo "Hint: Use \`pacman-mirrors\` to generate and update your pacman mirrorlist."
+# Skip pacman-mirrors configuration in chroot
+if systemd-detect-virt --quiet --chroot; then
+    echo "Skipping pacman-mirrors configuration in chroot"
+    return
+else
+    pacman-mirrors --no-mirrorlist
+    echo "hint: use \`pacman-mirrors\` to generate and update your pacman mirrorlist."
+fi

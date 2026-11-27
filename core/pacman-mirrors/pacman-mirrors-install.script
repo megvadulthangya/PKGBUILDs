@@ -1,9 +1,10 @@
 #!/bin/bash
 
-# Detect chroot/container (any type) and skip pacman-mirrors configuration
-if [[ -f /.manjaro-chroot ]] || [[ -f /.manjaro-tools ]]; then
-    echo ":: [chroot / container detected] Skipping pacman-mirrors configuration"
-    exit 0
+# Skip pacman-mirrors configuration in chroot
+if systemd-detect-virt --quiet --chroot; then
+    echo "Skipping pacman-mirrors configuration in chroot"
+    return
+else
     if [ -f /etc/pacman.d/mirrorlist ]; then
         # fetch new data files
         pacman-mirrors --no-mirrorlist

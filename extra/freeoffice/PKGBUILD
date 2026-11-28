@@ -29,10 +29,8 @@ depends=(
   'libxrandr'
   'libxrender'
 )
-makedepends=(
-  'chrpath'
-  'xz'
-)
+makedepends=('chrpath')
+checkdepends=('desktop-file-utils')
 install="${pkgname}.install"
 source=("https://www.softmaker.net/down/softmaker-${pkgname}-2024-${_revision}-amd64.tgz"
         "${pkgname}-textmaker"
@@ -45,15 +43,13 @@ sha256sums=('60e421c691355760f33ecc5717ad9d112425f575d5037a478d821375d8765b5f'
             '491577d73d1dad9e9b5b2e0e067881d8d291baf5f9825482996e9309c5ade422'
             'db9cb24a40d3025c89ae4b952b5ebf537661f731716f09099d915793406548c4'
             '81b29a332975a5b96da00d14627dbaafc1c7d1beefacce5e77bdb68f98c1a3c6'
-            'e4b3bbe1e57140cafaab42a5ecd1986e0f2c9eb57f640190cc7789e911a0b743'
-            '88afbad3aba31a589ab25bfa127a0eaf6cb6c03eba976992cab6e438d7a44818'
-            '544bd17f0f2306d570c59e2a295493e3e53742fccaf46ce7d9c9daf0f04141b5')
+            '9aa1f2e0068903232c827a798c5dbd559eee98a6f681eb91867198bdff5df9b0'
+            'f883838bfdd361ac897eb7328112d1e7db8b7e15c2e5447b0bd4551c2542e22b'
+            '54870af45d374fd04c79150142860891bba8ecf908d28d4ae6151edf5b68d21f')
 
 prepare() {
-  xz -df "freeoffice2024.tar.lzma"
-
   mkdir -p "${pkgname}-2024_${_revision}"
-  bsdtar xvf "freeoffice2024.tar" -C "${pkgname}-2024_${_revision}"
+  bsdtar xvf "freeoffice2024.tar.lzma" -C "${pkgname}-2024_${_revision}"
 
   cd "${pkgname}-2024_${_revision}"
 
@@ -61,6 +57,10 @@ prepare() {
   chrpath --delete "textmaker"
   chrpath --delete "planmaker"
   chrpath --delete "presentations"
+}
+
+check() {
+  desktop-file-validate *.desktop
 }
 
 package() {
